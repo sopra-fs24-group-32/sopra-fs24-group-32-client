@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
@@ -21,25 +21,34 @@ Player.propTypes = {
 };
 
 const Game = () => {
-  // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate 
+  // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
+  const { id } = useParams();
 
   // define a state variable (using the state hook).
   // if this variable changes, the component will re-render, but the variable will
   // keep its value throughout render cycles.
   // a component can have as many state variables as you like.
-  // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState 
+  // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
   const [users, setUsers] = useState<User[]>(null);
 
-  const logout = (): void => {
+  async function logout() {
+    const token = localStorage.getItem("token");
+    const requestBody = JSON.stringify({ token });
+    // eslint-disable-next-line
+    await api.post(`/logoutToken`, requestBody);
     localStorage.removeItem("token");
     navigate("/login");
+  }
+
+  const navigateToUser = (id: Number) => {
+    navigate(`/game/${id}`);
   };
 
   // the effect hook can be used to react to change in your component.
   // in this case, the effect hook is only run once, the first time the component is mounted
   // this can be achieved by leaving the second argument an empty array.
-  // for more information on the effect hook, please see https://react.dev/reference/react/useEffect 
+  // for more information on the effect hook, please see https://react.dev/reference/react/useEffect
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
@@ -86,7 +95,7 @@ const Game = () => {
       <div className="game">
         <ul className="game user-list">
           {users.map((user: User) => (
-            <li key={user.id}>
+            <li key={user.id} onClick={() => navigateToUser(user.id)}>
               <Player user={user} />
             </li>
           ))}
@@ -101,9 +110,7 @@ const Game = () => {
   return (
     <BaseContainer className="game container">
       <h2>Happy Coding!</h2>
-      <p className="game paragraph">
-        Get all users from secure endpoint:
-      </p>
+      <p className="game paragraph">Get all users from secure endpoint:</p>
       {content}
     </BaseContainer>
   );

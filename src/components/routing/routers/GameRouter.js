@@ -1,30 +1,27 @@
 import React from "react";
-import {Navigate, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Game from "../../views/Game";
+import UserDetail from "../../views/User";
+import UserChange from "../../views/UserChange";
+
 import PropTypes from "prop-types";
 
-const GameRouter = () => {
+const GameRouter = ({ base }) => {
   return (
-    <div style={{display: "flex", flexDirection: "column"}}>
-      <Routes>
-
-        <Route path="" element={<Game />} />
-
-        <Route path="dashboard" element={<Game />} />
-
-        <Route path="*" element={<Navigate to="dashboard" replace />} />
-
-      </Routes>
-   
-    </div>
+    <Routes>
+      <Route path="dashboard" element={<Game />} />
+      <Route path=":id" element={<UserDetail />} />
+      <Route path=":id/change" element={<UserChange />} />
+      <Route path="/" element={<Game />} />
+    </Routes>
   );
 };
 /*
-* Don't forget to export your component!
+ * Don't forget to export your component!
  */
 
 GameRouter.propTypes = {
-  base: PropTypes.string
-}
+  base: PropTypes.string,
+};
 
 export default GameRouter;

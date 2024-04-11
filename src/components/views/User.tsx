@@ -34,10 +34,10 @@ const UserDetail = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   async function logout() {
-    const token = localStorage.getItem("token");
-    const requestBody = JSON.stringify({ token });
+    const userToken = localStorage.getItem("userToken");
+    const requestBody = JSON.stringify({ userToken });
     await api.post(`/logout/${id}`, requestBody);
-    localStorage.removeItem("token");
+    localStorage.removeItem("userToken");
     navigate("/login");
   }
 
@@ -48,8 +48,8 @@ const UserDetail = () => {
   useEffect(() => {
     async function getAuthentication() {
       try {
-        const token = localStorage.getItem("token");
-        const requestBody = JSON.stringify({ token });
+        const userToken = localStorage.getItem("userToken");
+        const requestBody = JSON.stringify({ userToken });
         // eslint-disable-next-line
         const response = await api.post(`/authenticate/${id}`, requestBody);
         setIsAuthenticated(response.data === true);

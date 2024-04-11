@@ -33,11 +33,11 @@ const Game = () => {
   const [users, setUsers] = useState<User[]>(null);
 
   async function logout() {
-    const token = localStorage.getItem("token");
-    const requestBody = JSON.stringify({ token });
-    // eslint-disable-next-line
-    await api.post(`/logoutToken`, requestBody);
-    localStorage.removeItem("token");
+    // const userToken = localStorage.getItem("userToken");
+    // const requestBody = JSON.stringify({ userToken });
+    // // eslint-disable-next-line
+    // await api.post(`/logoutuserToken`, requestBody);
+    localStorage.removeItem("userToken");
     navigate("/login");
   }
 

@@ -11,9 +11,9 @@ const UserChange = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   async function logout() {
-    localStorage.removeItem("token");
-    navigate("/login");
-    await api.post(`/logout/${id}`);
+    localStorage.removeItem("userToken");
+    // navigate("/login");
+    // await api.post(`/logout/${id}`);
   }
 
   const [user, setUser] = useState<User | null>(null);

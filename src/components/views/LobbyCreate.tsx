@@ -19,7 +19,7 @@ const LobbyCreate = () => {
 
       const lobby = new Lobby(response.data);
 
-      navigate(`/lobby/host/${lobby.lobbyId}`);
+      navigate(`/lobby/host/${lobby.id}`);
     } catch (error) {
       alert(
         `Something went wrong during the register: \n${handleError(error)}`

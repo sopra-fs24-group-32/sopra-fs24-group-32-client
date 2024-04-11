@@ -56,7 +56,7 @@ const LobbyDetailHost = () => {
         <ul className="game user-list">
           <li key="lobbyId">
             <div className="player container">
-              <div className="player lobbyId">Lobby ID: {lobby.lobbyId}</div>
+              <div className="player lobbyId">Lobby ID: {lobby.id}</div>
             </div>
           </li>
           <li key="maxAmtPlayers">

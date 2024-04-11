@@ -43,14 +43,14 @@ const Register = () => {
   const doRegister = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
-      const response = await api.post("/users", requestBody);
+      const response = await api.post("/user/register", requestBody);
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
 
-      // Store the token into the local storage.
-      console.log(user.token);
-      localStorage.setItem("token", user.token);
+      // Store the userToken into the local storage.
+      console.log(user.userToken);
+      localStorage.setItem("userToken", user.userToken);
 
       navigate("/lobby/initial");
     } catch (error) {

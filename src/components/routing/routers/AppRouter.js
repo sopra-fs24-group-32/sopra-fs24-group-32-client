@@ -6,10 +6,10 @@ import { LoginGuard } from "../routeProtectors/LoginGuard";
 import Login from "../../views/Login";
 import Register from "../../views/Register";
 import LobbyInitial from "../../views/LobbyInitial";
-// import LobbyCreate from "../../views/LobbyCreate";
-// import LobbyHost from "../../views/LobbyHost";
-// import LobbyJoin from "../../views/LobbyJoin";
-// import LobbyJoined from "../../views/LobbyJoined";
+import LobbyCreate from "../../views/LobbyCreate";
+import LobbyHost from "../../views/LobbyHost";
+import LobbyJoin from "../../views/LobbyJoin";
+import LobbyJoined from "../../views/LobbyJoined";
 
 /**
  * Main router of your application.
@@ -31,13 +31,13 @@ const AppRouter = () => {
 
         <Route path="/lobby/initial" element={<LobbyInitial />} />
 
-        {/* <Route path="/lobby/create" element={<LobbyCreate />} />
+        <Route path="/lobby/create" element={<LobbyCreate />} />
 
         <Route path="/lobby/join" element={<LobbyJoin />} />
 
         <Route path="/lobby/joined/:id" element={<LobbyJoined />} />
 
-        <Route path="/lobby/host/:id" element={<LobbyHost />} /> */}
+        <Route path="/lobby/host/:id" element={<LobbyHost />} />
 
         <Route path="/login" element={<LoginGuard />}>
           <Route path="/login" element={<Login />} />

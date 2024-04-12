@@ -18,7 +18,7 @@ const LobbyCreate = () => {
       const response = await api.post("/lobby/create", requestBody);
 
       const lobby = new Lobby(response.data);
-
+      
       navigate(`/lobby/host/${lobby.id}`);
     } catch (error) {
       alert(

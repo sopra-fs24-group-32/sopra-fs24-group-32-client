@@ -63,7 +63,9 @@ const UserDetail = () => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
-        const response = await api.get(`/users/${id}`);
+
+        const userId = localStorage.getItem("id");
+        const response = await api.get(`/users/${userId}`);
         console.log("requested data:", response.data);
         console.log("requested data:", response);
         // delays continuous execution of an async operation for 1 second.

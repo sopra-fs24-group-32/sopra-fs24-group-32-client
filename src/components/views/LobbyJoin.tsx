@@ -21,7 +21,6 @@ const LobbyJoin = () => {
       );
 
       const lobby = new Lobby(response.data);
-
       navigate(`/lobby/joined/${lobby.id}`);
     } catch (error) {
       alert(

@@ -10,6 +10,8 @@ import LobbyCreate from "../../views/LobbyCreate";
 import LobbyHost from "../../views/LobbyHost";
 import LobbyJoin from "../../views/LobbyJoin";
 import LobbyJoined from "../../views/LobbyJoined";
+import GameCreate from "../../views/GameCreate";
+import GameGuess from "../../views/GameGuess";
 
 /**
  * Main router of your application.
@@ -38,6 +40,10 @@ const AppRouter = () => {
         <Route path="/lobby/joined/:id" element={<LobbyJoined />} />
 
         <Route path="/lobby/host/:id" element={<LobbyHost />} />
+
+        <Route path="/game/create/:id" element={<GameCreate />} />
+
+        <Route path="/game/guess/:id" element={<GameGuess />} />
 
         <Route path="/login" element={<LoginGuard />}>
           <Route path="/login" element={<Login />} />

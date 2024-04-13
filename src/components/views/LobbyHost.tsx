@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api, handleError } from "helpers/api";
+import { handleError, api } from 'helpers/api';
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +7,11 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
+import Lobby from "models/Lobby";
+
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { getDomain } from "helpers/getDomain";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -23,29 +28,59 @@ Player.propTypes = {
 const LobbyDetailHost = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [lobby, setLobby] = useState(new Lobby());
 
-  const [lobby, setLobby] = useState<User>(null);
+
+  const fetchLobby = async () => {
+
+    try {
+      const response = await api.get(`/lobby/${id}`);
+      setLobby(response.data);
+      console.log("Game status: ", lobby.gameStarted)
+    } catch (error) {
+      console.error(
+        `Something went wrong while fetching the lobby: \n${handleError(
+          error
+        )}`
+      );
+      console.error("Details:", error);
+      alert(
+        "Something went wrong while fetching the lobby! See the console for details."
+      );
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await api.get(`/lobby/${id}`);
+    console.log(`Successfully fetched lobby details!`);
+    fetchLobby();
+  }, []);
 
-        setLobby(response.data);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the lobby: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the lobby! See the console for details."
-        );
+  useEffect(() => {
+    const interval = setInterval(fetchLobby, 1000);
+    return () => clearInterval(interval);
+  }, []);
+  
+  useEffect(() => {
+
+    const Socket = new SockJS(getDomain() + "/websocket");
+    const stompClient = Stomp.over(Socket);
+    let subscription;
+
+    stompClient.connect(
+      {}, (frame) => {
+      subscription = stompClient.subscribe(`/topic/lobby/${id}`,
+        async (message) => {
+          // const messageBody = JSON.parse(message.body);
+          fetchLobby();
+        }
+      );
+    }); 
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
       }
-    }
-
-    fetchData();
+      stompClient.disconnect();
+    };
   }, []);
 
   let content = <Spinner />;
@@ -59,20 +94,31 @@ const LobbyDetailHost = () => {
               <div className="player lobbyId">Lobby ID: {lobby.id}</div>
             </div>
           </li>
+          <li key="lobbyInvitationCode">
+            <div className="player container">
+              <div className="player invitationCode">Invitation Code: {lobby.lobbyInvitationCode}</div>
+            </div>
+          </li>
           <li key="maxAmtPlayers">
             <div className="player container">
-              <div className="player maxAmtPlayers">
-                Max Players: {lobby.maxAmtPlayers}
+              <div className="player maxAmtPlayers">Maximum Players: {lobby.maxAmtUsers}
               </div>
             </div>
           </li>
           <li key="lobbyOwner">
             <div className="player container">
-              <div className="player lobbyOwner">Owner: {lobby.lobbyOwner}</div>
+              <div className="player lobbyOwner">Game Host: {lobby.lobbyOwner}</div>
             </div>
           </li>
-          {lobby.allPlayers &&
-            lobby.allPlayers.map((player, index) => (
+          <li key="joinedPlayers">
+            <div className="player container">
+              <div className="player joinedPlayers">
+                  Number of Joined Players: {lobby.users && lobby.users.length > 0 ? `${lobby.users.length}` : "No players joined yet!"}
+              </div>
+            </div>
+          </li>
+          {lobby.users &&
+            lobby.users.map((player, index) => (
               <li
                 key={`player-${index}`}
                 style={{
@@ -94,10 +140,10 @@ const LobbyDetailHost = () => {
                       className="player-username"
                       style={{ fontWeight: "bold", marginRight: "15px" }}
                     >
-                      Username: {player.username}
+                      {player.username}
                     </span>
                     <span className="player-points" style={{ color: "#555" }}>
-                      Points: {player.points}
+                      Score: {player.score}
                     </span>
                   </div>
                 </div>
@@ -111,6 +157,15 @@ const LobbyDetailHost = () => {
           onClick={() => navigate("/game")}
         >
           Back
+        </Button>
+
+        <Button
+          width="100%"
+          disabled={!lobby.users || lobby.users.length < 2}
+          style={{ marginBottom: "10px" }}
+          onClick={() => navigate("/game")}
+        >
+          Start Game
         </Button>
       </div>
     );

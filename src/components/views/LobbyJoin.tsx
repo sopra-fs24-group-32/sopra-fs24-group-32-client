@@ -66,7 +66,7 @@ const LobbyJoin = () => {
               width="100%"
               onClick={() => joinLobby()}
             >
-              Register
+              Join Game
             </Button>
           </div>
         </div>

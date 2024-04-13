@@ -20,135 +20,97 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
-const UserDetail = () => {
-  // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
+const LobbyDetailJoined = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // define a state variable (using the state hook).
-  // if this variable changes, the component will re-render, but the variable will
-  // keep its value throughout render cycles.
-  // a component can have as many state variables as you like.
-  // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
-  const [user, setUser] = useState<User>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [lobby, setLobby] = useState<User>(null);
 
-  async function logout() {
-    // const userToken = localStorage.getItem("userToken");
-    // const requestBody = JSON.stringify({ userToken });
-    // await api.post(`/logout/${id}`, requestBody);
-    localStorage.removeItem("userToken");
-    navigate("/login");
-  }
-
-  // the effect hook can be used to react to change in your component.
-  // in this case, the effect hook is only run once, the first time the component is mounted
-  // this can be achieved by leaving the second argument an empty array.
-  // for more information on the effect hook, please see https://react.dev/reference/react/useEffect
   useEffect(() => {
-    async function getAuthentication() {
-      try {
-        const userToken = localStorage.getItem("userToken");
-        const requestBody = JSON.stringify({ userToken });
-        // eslint-disable-next-line
-        const response = await api.post(`/authenticate/${id}`, requestBody);
-        setIsAuthenticated(response.data === true);
-      } catch (error) {
-        console.error(
-          `Something went wrong while authenticating: \n${handleError(error)}`
-        );
-        console.error("Details:", error);
-      }
-    }
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
+        const response = await api.get(`/lobby/${id}`);
 
-        const userId = localStorage.getItem("id");
-        const response = await api.get(`/users/${userId}`);
-        console.log("requested data:", response.data);
-        console.log("requested data:", response);
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Get the returned users and update the state.
-        setUser(response.data);
-
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
-        console.log("requested data:", response.data);
-
-        // See here to get more data.
-        console.log(response);
+        setLobby(response.data);
       } catch (error) {
         console.error(
-          `Something went wrong while fetching the user: \n${handleError(
+          `Something went wrong while fetching the lobby: \n${handleError(
             error
           )}`
         );
         console.error("Details:", error);
         alert(
-          "Something went wrong while fetching the user! See the console for details."
+          "Something went wrong while fetching the lobby! See the console for details."
         );
       }
     }
 
     fetchData();
-    getAuthentication();
   }, []);
 
   let content = <Spinner />;
 
-  if (user) {
+  if (lobby) {
     content = (
       <div className="game">
         <ul className="game user-list">
-          <li key={user.id}>
+          <li key="lobbyId">
             <div className="player container">
-              <div className="player ">id: {user.id}</div>
+              <div className="player lobbyId">Lobby ID: {lobby.id}</div>
             </div>
           </li>
-          <li key={user.username}>
+          <li key="maxAmtPlayers">
             <div className="player container">
-              <div className="player username">username: {user.username}</div>
-            </div>
-          </li>
-          <li key={user?.birthdate}>
-            <div className="player container">
-              <div className="player birthdate">
-                birthdate: {user.birthdate}
+              <div className="player maxAmtPlayers">
+                Max Players: {lobby.maxAmtPlayers}
               </div>
             </div>
           </li>
-          <li key={user?.status}>
+          <li key="lobbyOwner">
             <div className="player container">
-              <div className="player status">status: {user.status}</div>
+              <div className="player lobbyOwner">Owner: {lobby.lobbyOwner}</div>
             </div>
           </li>
-          <li key={user.createdAt}>
-            <div className="player container">
-              <div className="player createdAt">
-                createdAt: {user.createdAt}
-              </div>
-            </div>
-          </li>
+          {lobby.allPlayers &&
+            lobby.allPlayers.map((player, index) => (
+              <li
+                key={`player-${index}`}
+                style={{
+                  backgroundColor: "#f0f0f0",
+                  marginBottom: "10px",
+                  borderRadius: "5px",
+                }}
+              >
+                <div
+                  className="player container"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "10px",
+                  }}
+                >
+                  <div className="player-info">
+                    <span
+                      className="player-username"
+                      style={{ fontWeight: "bold", marginRight: "15px" }}
+                    >
+                      Username: {player.username}
+                    </span>
+                    <span className="player-points" style={{ color: "#555" }}>
+                      Points: {player.points}
+                    </span>
+                  </div>
+                </div>
+              </li>
+            ))}
         </ul>
+
         <Button
           width="100%"
           style={{ marginBottom: "10px" }}
           onClick={() => navigate("/game")}
         >
           Back
-        </Button>
-        <Button
-          width="100%"
-          style={{ marginBottom: "10px" }}
-          onClick={() => navigate(`/game/${id}/change`)}
-          disabled={isAuthenticated === false}
-        >
-          Edit
         </Button>
       </div>
     );
@@ -163,4 +125,4 @@ const UserDetail = () => {
   );
 };
 
-export default UserDetail;
+export default LobbyDetailJoined;

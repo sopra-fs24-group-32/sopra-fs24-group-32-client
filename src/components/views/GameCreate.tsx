@@ -46,10 +46,12 @@ const GameCreate = () => {
         setTimer((prevTime) => {
           if (prevTime > 0) return prevTime - 1;
           clearInterval(interval);
+
           return 0;
         });
       }, 1000);
       //checkAllGuessesSubmitted();         //not implemented yet in the backend and therefore doesnt work
+
       return () => clearInterval(interval);
     }
   }, [generatedImage]);

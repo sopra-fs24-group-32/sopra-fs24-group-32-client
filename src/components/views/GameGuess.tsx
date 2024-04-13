@@ -62,6 +62,7 @@ const GameGuess = () => {
       const countdown = setInterval(() => {
         setTimer((prevTime) => prevTime - 1);
       }, 1000);
+
       return () => clearInterval(countdown);
     }
   }, [timer, isWaitingForImage]);

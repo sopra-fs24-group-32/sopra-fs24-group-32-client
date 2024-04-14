@@ -1,4 +1,6 @@
-import React from "react";
+import React, {useState} from "react";
+import {setUpConnection} from './helpers/Websocket';
+
 import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
 
@@ -11,10 +13,10 @@ import AppRouter from "./components/routing/routers/AppRouter";
 const App = () => {
   return (
     <div>
-      <Header height="100" />
+      <Header height = "100"/>
       <AppRouter />
     </div>
-  );
-};
+  )
+}
 
 export default App;

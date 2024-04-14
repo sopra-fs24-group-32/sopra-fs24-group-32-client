@@ -87,12 +87,13 @@ const GameCreate = () => {
 
     stompClient.connect(
       {}, (frame) => {
-      subscription = stompClient.subscribe(`/topic/lobby/${id}`,
-        async (message) => {
-          fetchGameSettings();
-        }
-      );
-    }); 
+        subscription = stompClient.subscribe(`/topic/lobby/${id}`,
+          async (message) => {
+            fetchGameSettings();
+          }
+        );
+      }); 
+
     return () => {
       if (subscription) {
         subscription.unsubscribe();

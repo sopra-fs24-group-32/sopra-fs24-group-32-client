@@ -13,6 +13,7 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import { getDomain } from "helpers/getDomain";
 
+
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
@@ -32,31 +33,32 @@ const LobbyDetailJoined = () => {
   const [lobby, setLobby] = useState(new Lobby());
 
   
-   const fetchData = async () =>{
-      try {
-        const response = await api.get(`/lobby/${id}`);
+  const fetchData = async () =>{
+    try {
+      const response = await api.get(`/lobby/${id}`);
 
-        setLobby(response.data);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the lobby: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the lobby! See the console for details."
-        );
-      }
-    };
+      setLobby(response.data);
+    } catch (error) {
+      console.error(
+        `Something went wrong while fetching the lobby: \n${handleError(
+          error
+        )}`
+      );
+      console.error("Details:", error);
+      alert(
+        "Something went wrong while fetching the lobby! See the console for details."
+      );
+    }
+  };
 
   useEffect(() => {
-    console.log(`Successfully fetched lobby details!`);
+    console.log("Successfully fetched lobby details!");
     fetchData();
   }, []);
 
   useEffect(() => {
     const interval = setInterval(fetchData, 1000);
+    
     return () => clearInterval(interval);
   }, []);
 
@@ -68,13 +70,14 @@ const LobbyDetailJoined = () => {
 
     stompClient.connect(
       {}, (frame) => {
-      subscription = stompClient.subscribe(`/topic/lobby/${id}`,
-        async (message) => {
+        subscription = stompClient.subscribe(`/topic/lobby/${id}`,
+          async (message) => {
           // const messageBody = JSON.parse(message.body);
-          fetchData();
-        }
-      );
-    }); 
+            fetchData();
+          }
+        );
+      });
+       
     return () => {
       if (subscription) {
         subscription.unsubscribe();

@@ -8,6 +8,9 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 
+import SockJS from "sockjs-client/dist/sockjs";
+import {over} from 'stompjs';
+
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
@@ -25,8 +28,33 @@ const LobbyDetailHost = () => {
   const { id } = useParams();
 
   const [lobby, setLobby] = useState<User>(null);
+  const [stompClient, setStompClient] = useState(null);
 
   useEffect(() => {
+    const onConnect = () => {
+      console.log("CONNECTING..");
+      if(stompClient){
+        console.log("Connected to WebSocket");
+        const subscription = stompClient.subscribe("/game/public", onMessageReceived);
+      }  
+    }
+
+    const onError = (error) => {
+      console.log("Error:", error);
+    }
+
+    const onMessageReceived = (payload) => {
+      console.log("Message received:", payload.body);
+    }
+
+    async function connectAndSubscribeUserToSocket(){
+      const sock = new SockJS("http://localhost:8080/ws");
+      const client = over(sock);
+      setStompClient(client);
+      client.connect({}, onConnect, onError);
+    }
+
+
     async function fetchData() {
       try {
         const response = await api.get(`/lobby/${id}`);
@@ -46,6 +74,7 @@ const LobbyDetailHost = () => {
     }
 
     fetchData();
+    connectAndSubscribeUserToSocket();
   }, []);
 
   let content = <Spinner />;

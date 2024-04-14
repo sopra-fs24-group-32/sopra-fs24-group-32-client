@@ -51,7 +51,7 @@ const Register = () => {
       // Store the userToken into the local storage.
       console.log(user.userToken);
       localStorage.setItem("userToken", user.userToken);
-      localStorage.setItem("id", user.id);
+      localStorage.setItem("username", user.username);
 
       navigate("/lobby/initial");
     } catch (error) {

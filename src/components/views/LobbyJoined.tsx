@@ -7,6 +7,12 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
+import Lobby from "models/Lobby";
+
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { getDomain } from "helpers/getDomain";
+
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -24,28 +30,60 @@ const LobbyDetailJoined = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [lobby, setLobby] = useState<User>(null);
+  const [lobby, setLobby] = useState(new Lobby());
+
+  
+  const fetchData = async () =>{
+    try {
+      const response = await api.get(`/lobby/${id}`);
+
+      setLobby(response.data);
+    } catch (error) {
+      console.error(
+        `Something went wrong while fetching the lobby: \n${handleError(
+          error
+        )}`
+      );
+      console.error("Details:", error);
+      alert(
+        "Something went wrong while fetching the lobby! See the console for details."
+      );
+    }
+  };
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await api.get(`/lobby/${id}`);
-
-        setLobby(response.data);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the lobby: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the lobby! See the console for details."
-        );
-      }
-    }
-
+    console.log("Successfully fetched lobby details!");
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(fetchData, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+
+    const Socket = new SockJS(getDomain() + "/websocket");
+    const stompClient = Stomp.over(Socket);
+    let subscription;
+
+    stompClient.connect(
+      {}, (frame) => {
+        subscription = stompClient.subscribe(`/topic/lobby/${id}`,
+          async (message) => {
+          // const messageBody = JSON.parse(message.body);
+            fetchData();
+          }
+        );
+      });
+       
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+      stompClient.disconnect();
+    };
   }, []);
 
   let content = <Spinner />;
@@ -62,17 +100,24 @@ const LobbyDetailJoined = () => {
           <li key="maxAmtPlayers">
             <div className="player container">
               <div className="player maxAmtPlayers">
-                Max Players: {lobby.maxAmtPlayers}
+                Max Players: {lobby.maxAmtUsers}
               </div>
             </div>
           </li>
           <li key="lobbyOwner">
             <div className="player container">
-              <div className="player lobbyOwner">Owner: {lobby.lobbyOwner}</div>
+              <div className="player lobbyOwner">Game Host: {lobby.lobbyOwner}</div>
             </div>
           </li>
-          {lobby.allPlayers &&
-            lobby.allPlayers.map((player, index) => (
+          <li key="joinedPlayers">
+            <div className="player container">
+              <div className="player joinedPlayers">
+                  Number of Joined Players: {lobby.users && lobby.users.length > 0 ? `${lobby.users.length}` : "No players joined yet!"}
+              </div>
+            </div>
+          </li>
+          {lobby.users &&
+            lobby.users.map((player, index) => (
               <li
                 key={`player-${index}`}
                 style={{
@@ -94,10 +139,10 @@ const LobbyDetailJoined = () => {
                       className="player-username"
                       style={{ fontWeight: "bold", marginRight: "15px" }}
                     >
-                      Username: {player.username}
+                      {player.username}
                     </span>
                     <span className="player-points" style={{ color: "#555" }}>
-                      Points: {player.points}
+                      Score: {player.score}
                     </span>
                   </div>
                 </div>
@@ -119,7 +164,7 @@ const LobbyDetailJoined = () => {
   return (
     <BaseContainer className="game container">
       <h2>Happy Coding!</h2>
-      <p className="game paragraph">Get user from secure endpoint:</p>
+      <p className="game paragraph">Waiting for the Host to start the game</p>
       {content}
     </BaseContainer>
   );

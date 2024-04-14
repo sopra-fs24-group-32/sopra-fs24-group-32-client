@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { handleError, api } from 'helpers/api';
+import { handleError, api } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useNavigate, useParams } from "react-router-dom";
@@ -49,32 +49,15 @@ const LobbyDetailHost = () => {
     }
   };
 
-  // const startGame = async () => {
-  //   try {
-  //     const response = await api.post(`/lobby/start/${id}`);
-  //     setLobby(prevState => ({
-  //       ...prevState,
-  //       gameStarted: true
-  //     }));
-  //     console.log("Game started successfully:", response.data);
-  //   } catch (error) {
-  //     console.error(`Error starting the game: \n${handleError(error)}`);
-  //     alert("Failed to start the game! See the console for details.");
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   console.log(`Successfully fetched lobby details!`);
-  //   startGame();
-  // }, []);
 
   useEffect(() => {
-    console.log(`Successfully fetched lobby details!`);
+    console.log("Successfully fetched lobby details!");
     fetchLobby();
   }, []);
 
   useEffect(() => {
     const interval = setInterval(fetchLobby, 1000);
+    
     return () => clearInterval(interval);
   }, []);
   
@@ -86,13 +69,14 @@ const LobbyDetailHost = () => {
 
     stompClient.connect(
       {}, (frame) => {
-      subscription = stompClient.subscribe(`/topic/lobby/${id}`,
-        async (message) => {
+        subscription = stompClient.subscribe(`/topic/lobby/${id}`,
+          async (message) => {
           // const messageBody = JSON.parse(message.body);
-          fetchLobby();
-        }
-      );
-    }); 
+            fetchLobby();
+          }
+        );
+      }); 
+
     return () => {
       if (subscription) {
         subscription.unsubscribe();
@@ -184,7 +168,7 @@ const LobbyDetailHost = () => {
           // add onClick event to navigate to the game page 
           // and then set lobby.gameStarted to true
           // onClick={() => navigate(`/lobby/start/${id}`)}
-          onClick={() => navigate(`/game`)}
+          onClick={() => navigate("/game")}
 
         >
           Start Game

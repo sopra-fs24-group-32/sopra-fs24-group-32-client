@@ -8,12 +8,6 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
 
-import SockJS from "sockjs-client";
-import Stomp from "stompjs";
-import { getDomain } from "helpers/getDomain";
-
-
-
 const LobbyCreate = () => {
   const navigate = useNavigate();
   // const [lobbyId, setLobbyId] = useState<string>(null);

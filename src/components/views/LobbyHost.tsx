@@ -36,7 +36,6 @@ const LobbyDetailHost = () => {
     try {
       const response = await api.get(`/lobby/${id}`);
       setLobby(response.data);
-      console.log("Game status: ", lobby.gameStarted)
     } catch (error) {
       console.error(
         `Something went wrong while fetching the lobby: \n${handleError(
@@ -49,6 +48,25 @@ const LobbyDetailHost = () => {
       );
     }
   };
+
+  // const startGame = async () => {
+  //   try {
+  //     const response = await api.post(`/lobby/start/${id}`);
+  //     setLobby(prevState => ({
+  //       ...prevState,
+  //       gameStarted: true
+  //     }));
+  //     console.log("Game started successfully:", response.data);
+  //   } catch (error) {
+  //     console.error(`Error starting the game: \n${handleError(error)}`);
+  //     alert("Failed to start the game! See the console for details.");
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   console.log(`Successfully fetched lobby details!`);
+  //   startGame();
+  // }, []);
 
   useEffect(() => {
     console.log(`Successfully fetched lobby details!`);
@@ -163,7 +181,11 @@ const LobbyDetailHost = () => {
           width="100%"
           disabled={!lobby.users || lobby.users.length < 2}
           style={{ marginBottom: "10px" }}
-          onClick={() => navigate("/game")}
+          // add onClick event to navigate to the game page 
+          // and then set lobby.gameStarted to true
+          // onClick={() => navigate(`/lobby/start/${id}`)}
+          onClick={() => navigate(`/game`)}
+
         >
           Start Game
         </Button>

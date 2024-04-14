@@ -56,7 +56,7 @@ const LobbyJoin = () => {
       <div className="join container">
         <div className="join form">
           <FormField
-            label="Code"
+            label="Invitation Code"
             value={invitationCode}
             onChange={(un: string) => setInvitationCode(un)}
           />

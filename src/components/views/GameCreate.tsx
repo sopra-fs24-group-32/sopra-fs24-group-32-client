@@ -5,6 +5,10 @@ import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import { getDomain } from "helpers/getDomain";
+
 const GameCreate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -74,6 +78,28 @@ const GameCreate = () => {
       );
     }
   };
+
+  useEffect(() => {
+
+    const Socket = new SockJS(getDomain() + "/websocket");
+    const stompClient = Stomp.over(Socket);
+    let subscription;
+
+    stompClient.connect(
+      {}, (frame) => {
+      subscription = stompClient.subscribe(`/topic/lobby/${id}`,
+        async (message) => {
+          fetchGameSettings();
+        }
+      );
+    }); 
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+      stompClient.disconnect();
+    };
+  }, []);
 
   return (
     <BaseContainer>

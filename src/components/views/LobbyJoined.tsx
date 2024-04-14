@@ -10,7 +10,8 @@ import { User } from "types";
 import Lobby from "models/Lobby";
 
 import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+//import Stomp from "stompjs";
+import {over} from "stompjs";
 import { getDomain } from "helpers/getDomain";
 
 
@@ -26,12 +27,13 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
+
 const LobbyDetailJoined = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [lobby, setLobby] = useState(new Lobby());
-
+  const [stompClient, setStompClient] = useState(null);
   
   const fetchData = async () =>{
     try {
@@ -51,8 +53,65 @@ const LobbyDetailJoined = () => {
     }
   };
 
+
+  //WEBSOCKET SUBSCRIPTION
+  const connectAndSubscribeUserToSocket = async () =>{
+    const sock = new SockJS(getDomain() + "/ws");
+    const client = over(sock);
+    setStompClient(client);
+  }
+
+
+  useEffect(() => {
+
+    const onConnect = () => {
+      if(stompClient){
+        const subscription = stompClient.subscribe("/game/public", onMessageReceived);
+        /*
+        const username = localStorage.getItem("username");
+        const message = {
+          username: username,
+        };
+        stompClient.send("/game/lobby/join", {}, JSON.stringify(message));
+        */
+      }
+    }
+
+    const onError = (error) => {
+      console.log("Error:", error);
+    }
+    /*
+    Here we wait for the host to start the game
+    As soon as the host started the game we receive the user that will generate the next picture
+    If this user corresponds to this client -> navigate to picture generation page, else to guessing page
+    */
+    const onMessageReceived = (payload) => {
+
+      const username = localStorage.getItem("username");
+      
+      const body = JSON.parse(payload.body);
+      
+      const nextPictureGenerator = body.username;
+
+      
+
+      if(username === nextPictureGenerator){
+        console.log("YOU ARE PICTURE GENERATOR");
+        navigate(`/lobby/create/${id}`);
+      }else{
+        console.log("YOU ARE INPUT GUESSER");
+        navigate(`/lobby/guess/${id}`);
+      }
+    }
+    if(stompClient){
+      stompClient.connect({}, onConnect, onError);
+    }
+  }, [stompClient]);
+
+
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
+    connectAndSubscribeUserToSocket();
     fetchData();
   }, []);
 
@@ -62,6 +121,7 @@ const LobbyDetailJoined = () => {
     return () => clearInterval(interval);
   }, []);
 
+  /*
   useEffect(() => {
 
     const Socket = new SockJS(getDomain() + "/websocket");
@@ -85,6 +145,7 @@ const LobbyDetailJoined = () => {
       stompClient.disconnect();
     };
   }, []);
+  */
 
   let content = <Spinner />;
 

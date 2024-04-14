@@ -10,7 +10,8 @@ import { User } from "types";
 import Lobby from "models/Lobby";
 
 import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+//import Stomp from "stompjs";
+import {over} from "stompjs";
 import { getDomain } from "helpers/getDomain";
 
 const Player = ({ user }: { user: User }) => (
@@ -29,6 +30,7 @@ const LobbyDetailHost = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [lobby, setLobby] = useState(new Lobby());
+  const [stompClient, setStompClient] = useState(null);
 
 
   const fetchLobby = async () => {
@@ -49,10 +51,61 @@ const LobbyDetailHost = () => {
     }
   };
 
+    //WEBSOCKET SUBSCRIPTION
+  const connectAndSubscribeUserToSocket = async () =>{
+    const sock = new SockJS(getDomain() + "/ws");
+    const client = over(sock);
+    setStompClient(client);
+  }
+
+
+  useEffect(() => {
+
+    const onConnect = () => {
+      if(stompClient){
+        const subscription = stompClient.subscribe("/game/public", onMessageReceived);
+        /*
+        const username = localStorage.getItem("username");
+        const message = {
+          username: username,
+        };
+
+        stompClient.send("/game/lobby/join", {}, JSON.stringify(message));
+        */
+      }
+    }
+
+    const onError = (error) => {
+      console.log("Error:", error);
+    }
+
+    const onMessageReceived = (payload) => {
+      const username = localStorage.getItem("username");
+      
+      const body = JSON.parse(payload.body);
+      
+      const nextPictureGenerator = body.username;
+
+      
+
+      if(username === nextPictureGenerator){
+        console.log("YOU ARE PICTURE GENERATOR");
+        navigate(`/lobby/create/${id}`);
+      }else{
+        console.log("YOU ARE INPUT GUESSER");
+        navigate(`/lobby/guess/${id}`);
+      }
+    }
+    if(stompClient){
+      stompClient.connect({}, onConnect, onError);
+    }
+  }, [stompClient]);
+
 
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
     fetchLobby();
+    connectAndSubscribeUserToSocket();
   }, []);
 
   useEffect(() => {
@@ -60,30 +113,15 @@ const LobbyDetailHost = () => {
     
     return () => clearInterval(interval);
   }, []);
-  
-  useEffect(() => {
 
-    const Socket = new SockJS(getDomain() + "/websocket");
-    const stompClient = Stomp.over(Socket);
-    let subscription;
+  //START GAME
+  //In the 'onMessageReceived' method -> check if host is next person to generate a picture or not
+  //See comment of 'onMessageReceived' in 'LobbyJoined.tsx' for reference
+  const doStartGame = () =>{
+    {/* //TODO set lobby.gameStarted to true */}
 
-    stompClient.connect(
-      {}, (frame) => {
-        subscription = stompClient.subscribe(`/topic/lobby/${id}`,
-          async (message) => {
-          // const messageBody = JSON.parse(message.body);
-            fetchLobby();
-          }
-        );
-      }); 
-
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
-      stompClient.disconnect();
-    };
-  }, []);
+    stompClient.send("/game/lobby/startgame", {}, id);
+  }
 
   let content = <Spinner />;
 
@@ -165,11 +203,7 @@ const LobbyDetailHost = () => {
           width="100%"
           disabled={!lobby.users || lobby.users.length < 2}
           style={{ marginBottom: "10px" }}
-          // add onClick event to navigate to the game page 
-          // and then set lobby.gameStarted to true
-          // onClick={() => navigate(`/lobby/start/${id}`)}
-          onClick={() => navigate("/game")}
-
+          onClick={() => doStartGame()}
         >
           Start Game
         </Button>

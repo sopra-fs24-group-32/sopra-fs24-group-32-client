@@ -51,7 +51,7 @@ const LobbyDetailHost = () => {
   const connectAndSubscribeUserToSocket = async () => {
     const sock = new SockJS(getDomain() + "/ws");
     const client = over(sock);
-    setStompClient(client);
+    setStompClient(client, { websocket: { withCredentials: false } });
   };
 
   useEffect(() => {

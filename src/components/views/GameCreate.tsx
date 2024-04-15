@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
+import {useWebSocket} from "../../helpers/WebSocketContext";
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -17,6 +18,7 @@ const GameCreate = () => {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [timer, setTimer] = useState(30); // Default timer
   const [allGuessesSubmitted, setAllGuessesSubmitted] = useState(false);
+  const {stompClient} = useWebSocket();
 
   const sendDalle = async () => {
     setIsSubmitting(true);
@@ -79,6 +81,7 @@ const GameCreate = () => {
     }
   };
 
+  /*
   useEffect(() => {
     const Socket = new SockJS(getDomain() + "/websocket");
     const stompClient = Stomp.over(Socket);
@@ -100,6 +103,8 @@ const GameCreate = () => {
       stompClient.disconnect();
     };
   }, []);
+
+  */
 
   return (
     <BaseContainer>

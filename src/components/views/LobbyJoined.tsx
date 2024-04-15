@@ -11,6 +11,7 @@ import Lobby from "models/Lobby";
 
 import SockJS from "sockjs-client";
 //import Stomp from "stompjs";
+import { useWebSocket } from "../../helpers/WebSocketContext";
 import { over } from "stompjs";
 import { getDomain } from "helpers/getDomain";
 
@@ -31,6 +32,7 @@ const LobbyDetailJoined = () => {
   const { id } = useParams();
 
   const [lobby, setLobby] = useState(new Lobby());
+  const { getStompClient } = useWebSocket();
   const [stompClient, setStompClient] = useState(null);
 
   const fetchData = async () => {
@@ -50,11 +52,14 @@ const LobbyDetailJoined = () => {
   };
 
   //WEBSOCKET SUBSCRIPTION
-  const connectAndSubscribeUserToSocket = async () => {
-    const sock = new SockJS(getDomain() + "/ws");
-    const client = over(sock);
-    setStompClient(client);
-  };
+  useEffect(() => {
+    const connectAndSubscribeUserToSocket = async () => {
+      const sock = new SockJS(getDomain() + "/ws");
+      const client = over(sock, { websocket: { withCredentials: false } });
+      setStompClient(client);
+    };
+    connectAndSubscribeUserToSocket();
+  }, [getStompClient]);
 
   useEffect(() => {
     const onConnect = () => {
@@ -63,13 +68,6 @@ const LobbyDetailJoined = () => {
           "/game/public",
           onMessageReceived
         );
-        /*
-        const username = localStorage.getItem("username");
-        const message = {
-          username: username,
-        };
-        stompClient.send("/game/lobby/join", {}, JSON.stringify(message));
-        */
       }
     };
 
@@ -103,7 +101,6 @@ const LobbyDetailJoined = () => {
 
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
-    connectAndSubscribeUserToSocket();
     fetchData();
   }, []);
 
@@ -112,32 +109,6 @@ const LobbyDetailJoined = () => {
 
     return () => clearInterval(interval);
   }, []);
-
-  /*
-  useEffect(() => {
-
-    const Socket = new SockJS(getDomain() + "/websocket");
-    const stompClient = Stomp.over(Socket);
-    let subscription;
-
-    stompClient.connect(
-      {}, (frame) => {
-        subscription = stompClient.subscribe(`/topic/lobby/${id}`,
-          async (message) => {
-          // const messageBody = JSON.parse(message.body);
-            fetchData();
-          }
-        );
-      });
-       
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
-      stompClient.disconnect();
-    };
-  }, []);
-  */
 
   let content = <Spinner />;
 

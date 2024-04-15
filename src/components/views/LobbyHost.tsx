@@ -90,10 +90,10 @@ const LobbyDetailHost = () => {
 
       if(username === nextPictureGenerator){
         console.log("YOU ARE PICTURE GENERATOR");
-        navigate(`/lobby/create/${id}`);
+        navigate(`/game/create/${id}`);
       }else{
         console.log("YOU ARE INPUT GUESSER");
-        navigate(`/lobby/guess/${id}`);
+        navigate(`/game/guess/${id}`);
       }
     }
     if(stompClient){

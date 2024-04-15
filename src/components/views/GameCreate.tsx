@@ -22,6 +22,7 @@ const GameCreate = () => {
     setIsSubmitting(true);
     try {
       const requestBody = JSON.stringify({ description: imageDescription });
+      console.log(requestBody);
       const response = await api.post(`/game/image/${id}`, requestBody);
       setGeneratedImage(response.data.imageUrl);
 
@@ -80,19 +81,18 @@ const GameCreate = () => {
   };
 
   useEffect(() => {
-
     const Socket = new SockJS(getDomain() + "/websocket");
     const stompClient = Stomp.over(Socket);
     let subscription;
 
-    stompClient.connect(
-      {}, (frame) => {
-        subscription = stompClient.subscribe(`/topic/lobby/${id}`,
-          async (message) => {
-            fetchGameSettings();
-          }
-        );
-      }); 
+    stompClient.connect({}, (frame) => {
+      subscription = stompClient.subscribe(
+        `/topic/lobby/${id}`,
+        async (message) => {
+          fetchGameSettings();
+        }
+      );
+    });
 
     return () => {
       if (subscription) {

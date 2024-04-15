@@ -20,8 +20,8 @@ const GameGuess = () => {
         //fetchSettings();      //fail since server doesnt work yet
         //fetchRoles();          //fail since server doesnt work yet
         const response = await api.get(`/game/image/${id}`);
-        if (response.data.imageReady) {
-          setImage(response.data.imageUrl);
+        if (response.data) {
+          setImage(response.data);
           setIsWaitingForImage(false);
         } else {
           setTimeout(fetchImage, 5000);

@@ -11,7 +11,7 @@ import Lobby from "models/Lobby";
 
 import SockJS from "sockjs-client";
 //import Stomp from "stompjs";
-import {over} from "stompjs";
+import { over } from "stompjs";
 import { getDomain } from "helpers/getDomain";
 
 const Player = ({ user }: { user: User }) => (
@@ -32,17 +32,13 @@ const LobbyDetailHost = () => {
   const [lobby, setLobby] = useState(new Lobby());
   const [stompClient, setStompClient] = useState(null);
 
-
   const fetchLobby = async () => {
-
     try {
       const response = await api.get(`/lobby/${id}`);
       setLobby(response.data);
     } catch (error) {
       console.error(
-        `Something went wrong while fetching the lobby: \n${handleError(
-          error
-        )}`
+        `Something went wrong while fetching the lobby: \n${handleError(error)}`
       );
       console.error("Details:", error);
       alert(
@@ -51,19 +47,20 @@ const LobbyDetailHost = () => {
     }
   };
 
-    //WEBSOCKET SUBSCRIPTION
-  const connectAndSubscribeUserToSocket = async () =>{
+  //WEBSOCKET SUBSCRIPTION
+  const connectAndSubscribeUserToSocket = async () => {
     const sock = new SockJS(getDomain() + "/ws");
     const client = over(sock);
     setStompClient(client);
-  }
-
+  };
 
   useEffect(() => {
-
     const onConnect = () => {
-      if(stompClient){
-        const subscription = stompClient.subscribe("/game/public", onMessageReceived);
+      if (stompClient) {
+        const subscription = stompClient.subscribe(
+          "/game/public",
+          onMessageReceived
+        );
         /*
         const username = localStorage.getItem("username");
         const message = {
@@ -73,34 +70,31 @@ const LobbyDetailHost = () => {
         stompClient.send("/game/lobby/join", {}, JSON.stringify(message));
         */
       }
-    }
+    };
 
     const onError = (error) => {
       console.log("Error:", error);
-    }
+    };
 
     const onMessageReceived = (payload) => {
       const username = localStorage.getItem("username");
-      
+
       const body = JSON.parse(payload.body);
-      
+
       const nextPictureGenerator = body.username;
 
-      
-
-      if(username === nextPictureGenerator){
+      if (username === nextPictureGenerator) {
         console.log("YOU ARE PICTURE GENERATOR");
         navigate(`/game/create/${id}`);
-      }else{
+      } else {
         console.log("YOU ARE INPUT GUESSER");
         navigate(`/game/guess/${id}`);
       }
-    }
-    if(stompClient){
+    };
+    if (stompClient) {
       stompClient.connect({}, onConnect, onError);
     }
   }, [stompClient]);
-
 
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
@@ -110,18 +104,20 @@ const LobbyDetailHost = () => {
 
   useEffect(() => {
     const interval = setInterval(fetchLobby, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
   //START GAME
   //In the 'onMessageReceived' method -> check if host is next person to generate a picture or not
   //See comment of 'onMessageReceived' in 'LobbyJoined.tsx' for reference
-  const doStartGame = () =>{
-    {/* //TODO set lobby.gameStarted to true */}
+  const doStartGame = () => {
+    {
+      /* //TODO set lobby.gameStarted to true */
+    }
 
     stompClient.send("/game/lobby/startgame", {}, id);
-  }
+  };
 
   let content = <Spinner />;
 
@@ -136,24 +132,32 @@ const LobbyDetailHost = () => {
           </li>
           <li key="lobbyInvitationCode">
             <div className="player container">
-              <div className="player invitationCode">Invitation Code: {lobby.lobbyInvitationCode}</div>
+              <div className="player invitationCode">
+                Invitation Code: {lobby.lobbyInvitationCode}
+              </div>
             </div>
           </li>
           <li key="maxAmtPlayers">
             <div className="player container">
-              <div className="player maxAmtPlayers">Maximum Players: {lobby.maxAmtUsers}
+              <div className="player maxAmtPlayers">
+                Maximum Players: {lobby.maxAmtUsers}
               </div>
             </div>
           </li>
           <li key="lobbyOwner">
             <div className="player container">
-              <div className="player lobbyOwner">Game Host: {lobby.lobbyOwner}</div>
+              <div className="player lobbyOwner">
+                Game Host: {lobby.lobbyOwner}
+              </div>
             </div>
           </li>
           <li key="joinedPlayers">
             <div className="player container">
               <div className="player joinedPlayers">
-                  Number of Joined Players: {lobby.users && lobby.users.length > 0 ? `${lobby.users.length}` : "No players joined yet!"}
+                Number of Joined Players:{" "}
+                {lobby.users && lobby.users.length > 0
+                  ? `${lobby.users.length}`
+                  : "No players joined yet!"}
               </div>
             </div>
           </li>

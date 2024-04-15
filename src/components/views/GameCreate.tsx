@@ -22,9 +22,8 @@ const GameCreate = () => {
     setIsSubmitting(true);
     try {
       const requestBody = JSON.stringify({ description: imageDescription });
-      console.log(requestBody);
       const response = await api.post(`/game/image/${id}`, requestBody);
-      setGeneratedImage(response.data.imageUrl);
+      setGeneratedImage(response.data);
 
       await fetchGameSettings(); // Fetch or set the timer immediately after image is set
     } catch (error) {

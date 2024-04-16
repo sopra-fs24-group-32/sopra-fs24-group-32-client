@@ -80,7 +80,7 @@ const GameGuess = () => {
       const timeGuessSubmitted = 10.0; // to be replaced with the actual time the guess was submitted
       const requestBody = JSON.stringify({ playerGuessed, timeGuessSubmitted });
       const userTokenJson = JSON.stringify({ userToken });
-      await api.post(`/game/chatgpt/${id}`, requestBody, {
+      await api.put(`/game/chatgpt/${id}`, requestBody, {
         headers: {
           "Content-Type": "application/json",
           userToken: userTokenJson,

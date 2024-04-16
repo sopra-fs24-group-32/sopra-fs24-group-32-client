@@ -8,7 +8,8 @@ import BaseContainer from "components/ui/BaseContainer";
 const GameGuess = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [imageDescriptionGuess, setImageDescriptionGuess] = useState("");
+  const userToken = localStorage.getItem("userToken");
+  const [playerGuessed, setPlayerGuessed] = useState("");
   const [timer, setTimer] = useState(30); // Default timer
   const [image, setImage] = useState("");
   const [isWaitingForImage, setIsWaitingForImage] = useState(true);
@@ -76,8 +77,25 @@ const GameGuess = () => {
 
   const sendGuess = async () => {
     try {
+      const timeGuessSubmitted = 10.0; // to be replaced with the actual time the guess was submitted
+      const requestBody = JSON.stringify({ playerGuessed, timeGuessSubmitted });
+      const userTokenJson = JSON.stringify({ userToken });
+      await api.post(`/game/chatgpt/${id}`, requestBody, {
+        headers: {
+          "Content-Type": "application/json",
+          userToken: userTokenJson,
+        },
+      }); //commented out since api not available atm
+      alert("Guess submitted!");
+      navigate("/results");
+    } catch (error) {
+      alert(`Something went wrong: \n${handleError(error)}`);
+    }
+  };
+  /*const sendGuess = async () => {
+    try {
       const requestBody = JSON.stringify({
-        description: imageDescriptionGuess,
+        description: playerGuessed,
       });
       // await api.post(`/game/guess/${id}`, requestBody);  //commented out since api not available atm
       alert("Guess submitted!");
@@ -86,6 +104,7 @@ const GameGuess = () => {
       alert(`Something went wrong: \n${handleError(error)}`);
     }
   };
+  */
 
   return (
     <BaseContainer>
@@ -113,13 +132,13 @@ const GameGuess = () => {
                   type="text"
                   className="register input"
                   placeholder="enter here.."
-                  value={imageDescriptionGuess}
-                  onChange={(e) => setImageDescriptionGuess(e.target.value)}
+                  value={playerGuessed}
+                  onChange={(e) => setPlayerGuessed(e.target.value)}
                 />
               </div>
               <div className="register button-container">
                 <Button
-                  disabled={!imageDescriptionGuess || timer === 0}
+                  disabled={!playerGuessed || timer === 0}
                   width="100%"
                   onClick={sendGuess}
                 >

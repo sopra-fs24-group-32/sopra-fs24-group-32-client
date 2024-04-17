@@ -51,6 +51,16 @@ const LobbyDetailJoined = () => {
     }
   };
 
+  const leaveLobby = async () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+      await api.post(`/lobby/leave/${id}`, { userToken });
+      navigate("/lobby/initial");
+    } catch (error) {
+      alert(`Failed to leave the lobby: ${error.message}`);
+    }
+  };
+  
   //WEBSOCKET SUBSCRIPTION
   useEffect(() => {
     const connectAndSubscribeUserToSocket = async () => {
@@ -170,31 +180,42 @@ const LobbyDetailJoined = () => {
                   backgroundColor: "#f0f0f0",
                   marginBottom: "10px",
                   borderRadius: "5px",
+                  padding: "10px",
                 }}
               >
                 <div
                   className="player container"
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    padding: "10px",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <div className="player-info">
-                    <span
-                      className="player-username"
-                      style={{ fontWeight: "bold", marginRight: "15px" }}
-                    >
-                      {player.username}
-                    </span>
-                    <span className="player-points" style={{ color: "#555" }}>
-                      Score: {player.score}
-                    </span>
+                  <div
+                    className="player-username"
+                    style={{
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      marginBottom: "5px",
+                    }}
+                    onClick={() => navigate(`/game/${player.id}`)} // Navigate to user profile
+                  >
+                    {player.username}
                   </div>
+                  <div className="player-score">Score: {player.score}</div>
                 </div>
               </li>
             ))}
         </ul>
+
+        <Button
+          width="100%"
+          style={{ marginTop: "20px", marginBottom: "20px" }}
+          onClick={leaveLobby}
+        >
+          Leave Lobby
+        </Button>
 
         <Button
           width="100%"

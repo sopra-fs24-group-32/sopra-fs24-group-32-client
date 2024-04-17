@@ -182,7 +182,7 @@ const LobbyDetailJoined = () => {
                       cursor: "pointer",
                       marginBottom: "5px",
                     }}
-                    onClick={() => navigate(`/user/${player.id}`)} // Navigate to user profile
+                    onClick={() => navigate(`/game/${player.id}`)} // Navigate to user profile
                   >
                     {player.username}
                   </div>

@@ -126,10 +126,11 @@ const LobbyDetailHost = () => {
     try {
       console.log(formData, "formData");
       const userToken = localStorage.getItem("userToken");
+      const userTokenString = JSON.stringify({ userToken });
       // eslint-disable-next-line
       const config = {
         headers: {
-          userToken: userToken,
+          "userToken": userTokenString,
         },
       };
 

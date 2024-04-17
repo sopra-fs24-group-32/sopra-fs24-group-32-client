@@ -271,7 +271,7 @@ const LobbyDetailHost = () => {
               onChange={handleChange}
             />
           </label>
-          <label>
+          {/* <label>
             Time Limit:
             <input
               type="number"
@@ -279,9 +279,9 @@ const LobbyDetailHost = () => {
               value={formData.timeLimit}
               onChange={handleChange}
             />
-          </label>
+          </label> */}
           <Button type="submit">Update Lobby</Button>
-          {/* <Button onClick={() => setEditMode(false)}>Cancel</Button> */}
+          <Button onClick={() => setEditMode(false)}>Cancel</Button>
         </form>
       </div>
     );

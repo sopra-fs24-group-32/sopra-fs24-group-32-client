@@ -14,28 +14,28 @@ import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { getDomain } from "helpers/getDomain";
 
-const Player = ({ user }: { user: User }) => (
-  <div className="player container">
-    <div className="player username">{user.username}</div>
-    <div className="player name">{user.name}</div>
-    <div className="player id">id: {user.id}</div>
-  </div>
-);
-
-Player.propTypes = {
-  user: PropTypes.object,
-};
-
 const LobbyDetailHost = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [lobby, setLobby] = useState(new Lobby());
   const [stompClient, setStompClient] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    maxAmtUsers: 50,
+    amtOfRounds: 0,
+    timeLimit: 60,
+  });
 
   const fetchLobby = async () => {
     try {
       const response = await api.get(`/lobby/${id}`);
       setLobby(response.data);
+
+      setFormData({
+        maxAmtUsers: response.data.maxAmtUsers || 50,
+        amtOfRounds: response.data.amtOfRounds || 5,
+        timeLimit: response.data.timeLimit || 60,
+      });
     } catch (error) {
       console.error(
         `Something went wrong while fetching the lobby: \n${handleError(error)}`
@@ -102,12 +102,6 @@ const LobbyDetailHost = () => {
     connectAndSubscribeUserToSocket();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(fetchLobby, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   //START GAME
   //In the 'onMessageReceived' method -> check if host is next person to generate a picture or not
   //See comment of 'onMessageReceived' in 'LobbyJoined.tsx' for reference
@@ -119,9 +113,48 @@ const LobbyDetailHost = () => {
     stompClient.send("/game/lobby/startgame", {}, id);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      console.log(formData, "formData");
+      const userToken = localStorage.getItem("userToken");
+      // eslint-disable-next-line
+      const config = {
+        headers: {
+          userToken: userToken,
+        },
+      };
+
+      // Making the PUT request with headers
+      const updatedLobby = await api.put(
+        `/lobby/update/${id}`,
+        formData,
+        config
+      );
+      console.log("Lobby updated:", updatedLobby.data);
+      setLobby(updatedLobby.data);
+      setEditMode(false);
+    } catch (error) {
+      console.error(
+        `Something went wrong while updating the lobby: \n${handleError(error)}`
+      );
+      alert(
+        "Something went wrong while updating the lobby! See the console for details."
+      );
+    }
+  };
+
   let content = <Spinner />;
 
-  if (lobby) {
+  if (lobby && !editMode) {
     content = (
       <div className="game">
         <ul className="game user-list">
@@ -198,11 +231,10 @@ const LobbyDetailHost = () => {
         <Button
           width="100%"
           style={{ marginBottom: "10px" }}
-          onClick={() => navigate("/game")}
+          onClick={() => setEditMode(true)}
         >
-          Back
+          Edit Settings
         </Button>
-
         <Button
           width="100%"
           disabled={!lobby.users || lobby.users.length < 2}
@@ -211,6 +243,46 @@ const LobbyDetailHost = () => {
         >
           Start Game
         </Button>
+      </div>
+    );
+  }
+
+  if (lobby && editMode) {
+    content = (
+      <div className="game">
+        <form onSubmit={handleSubmit}>
+          {/* Assuming id is not editable but shown for reference */}
+          <p>Lobby ID: {id}</p>
+          <label>
+            Amount of Rounds:
+            <input
+              type="number"
+              name="amtOfRounds"
+              value={formData.amtOfRounds}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Maxiumum Amount of Users:
+            <input
+              type="number"
+              name="maxAmtUsers"
+              value={formData.maxAmtUsers}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Time Limit:
+            <input
+              type="number"
+              name="timeLimit"
+              value={formData.timeLimit}
+              onChange={handleChange}
+            />
+          </label>
+          <Button type="submit">Update Lobby</Button>
+          <Button onClick={() => setEditMode(false)}>Cancel</Button>
+        </form>
       </div>
     );
   }

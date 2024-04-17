@@ -139,6 +139,23 @@ const LobbyDetailJoined = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const leaveLobby = async () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+      const requestBody = JSON.stringify({ userToken });
+      // eslint-disable-next-line
+      const response = await api.post(`/lobby/leave/${id}`, requestBody);
+
+      const responseDatea = response.data;
+      // eslint-disable-next-line
+      navigate(`/lobby/initial`);
+    } catch (error) {
+      alert(
+        `Something went wrong during the register: \n${handleError(error)}`
+      );
+    }
+  };
+
   let content = <Spinner />;
 
   if (lobby) {
@@ -222,9 +239,9 @@ const LobbyDetailJoined = () => {
         <Button
           width="100%"
           style={{ marginBottom: "10px" }}
-          onClick={() => navigate("/game")}
+          onClick={() => leaveLobby()}
         >
-          Back
+          Leave lobby
         </Button>
       </div>
     );

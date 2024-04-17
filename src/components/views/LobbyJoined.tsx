@@ -78,7 +78,17 @@ const LobbyDetailJoined = () => {
           "/game/public",
           onMessageReceived
         );
+        
+        //HERE THE SUBSCRIPTION FOR /GAME/LOBBY/JOIN HAPPENS
+        /*
+        You could for example the user token instead of hello
+        The logic that follows when all the users receive the message from the server happens in 'onMessageReceived2'
+        */
+        const subscription2 = stompClient.subscribe("/game/join", onMessageReceived2);
+        stompClient.send("/game/lobby/join", {}, "Hello");
       }
+      
+
     };
 
     const onError = (error) => {
@@ -104,6 +114,15 @@ const LobbyDetailJoined = () => {
         navigate(`/game/guess/${id}`);
       }
     };
+
+    const onMessageReceived2 = (payload) =>{
+      //HERE YOU RECEIVE THE USER THAT JOINED
+      /*
+      You could for example send the user as a userGetDTO and append it to the page
+      */
+      console.log("USER JOINED");
+    }
+
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
     }

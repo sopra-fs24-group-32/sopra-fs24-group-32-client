@@ -23,10 +23,12 @@ const LobbyJoin = () => {
       const lobby = new Lobby(response.data);
       navigate(`/lobby/joined/${lobby.id}`);
     } catch (error) {
-      navigate(`/lobby/initial`);
-      alert(
-        `Something went wrong during the register: \n${handleError(error)}`
+      console.error(
+        `Something went wrong while joining the lobby: \n${handleError(error)}`
       );
+      console.error("Details:", error);
+      const errorMessage = error.response?.data?.message || error.message || "An unknown error occurred";
+      alert(`Something went wrong while joining the lobby. Reason: ${errorMessage}`);
     }
   };
 

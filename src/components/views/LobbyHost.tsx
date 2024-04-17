@@ -26,6 +26,7 @@ const LobbyDetailHost = () => {
     timeLimit: 60,
   });
 
+  
   const fetchLobby = async () => {
     try {
       const response = await api.get(`/lobby/${id}`);

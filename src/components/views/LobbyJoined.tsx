@@ -27,13 +27,15 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
+//let stompClient = null;
+
 const LobbyDetailJoined = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [lobby, setLobby] = useState(new Lobby());
-  const { getStompClient } = useWebSocket();
   const [stompClient, setStompClient] = useState(null);
+  const {getStompClient} = useWebSocket();
 
   const fetchData = async () => {
     try {
@@ -108,10 +110,10 @@ const LobbyDetailJoined = () => {
       const nextPictureGenerator = body.username;
 
       if (username === nextPictureGenerator) {
-        console.log("YOU ARE PICTURE GENERATOR");
+        stompClient.disconnect();
         navigate(`/game/create/${id}`);
       } else {
-        console.log("YOU ARE INPUT GUESSER");
+        stompClient.disconnect();
         navigate(`/game/guess/${id}`);
       }
     };
@@ -125,6 +127,7 @@ const LobbyDetailJoined = () => {
     };
 
     if (stompClient) {
+      console.log(stompClient);
       stompClient.connect({}, onConnect, onError);
     }
   }, [stompClient]);
@@ -235,3 +238,5 @@ const LobbyDetailJoined = () => {
 };
 
 export default LobbyDetailJoined;
+
+//export {stompClient as stompClientUser}

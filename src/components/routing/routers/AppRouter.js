@@ -5,7 +5,7 @@ import GameRouter from "./GameRouter";
 import { LoginGuard } from "../routeProtectors/LoginGuard";
 import Login from "../../views/Login";
 import Register from "../../views/Register";
-import LobbyInitial from "../../views/LobbyInitial";
+import Home from "../../views/Home";
 import LobbyCreate from "../../views/LobbyCreate";
 import LobbyHost from "../../views/LobbyHost";
 import LobbyJoin from "../../views/LobbyJoin";
@@ -32,7 +32,7 @@ const AppRouter = () => {
           <Route path="*" element={<GameRouter />} />
         </Route>
 
-        <Route path="/lobby/initial" element={<LobbyInitial />} />
+        <Route path="/home" element={<Home />} />
 
         <Route path="/lobby/create" element={<LobbyCreate />} />
 

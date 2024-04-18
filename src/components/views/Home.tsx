@@ -7,7 +7,7 @@ import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
-const Login = () => {
+const Home = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
@@ -20,16 +20,40 @@ const Login = () => {
     navigate("/lobby/join");
   };
 
+  async function logout() {
+    const userToken = localStorage.getItem("userToken");
+    const requestBody = JSON.stringify({ userToken });
+    // eslint-disable-next-line
+    await api.post(`/logoutByToken`, requestBody);
+    localStorage.removeItem("userToken");
+    navigate("/login");
+  }
+
   return (
     <BaseContainer>
-      <Button width="100%" onClick={navigateToCreateLobby}>
+      <Button
+        width="100%"
+        style={{ marginBottom: "20px" }}
+        onClick={navigateToCreateLobby}
+      >
         Create Lobby
       </Button>
-      <Button width="100%" onClick={navigateToJoinLobby}>
+      <Button
+        width="100%"
+        style={{ marginBottom: "20px" }}
+        onClick={navigateToJoinLobby}
+      >
         Join Lobby
+      </Button>
+      <Button
+        width="100%"
+        style={{ marginBottom: "20px" }}
+        onClick={() => logout()}
+      >
+        Logout
       </Button>
     </BaseContainer>
   );
 };
 
-export default Login;
+export default Home;

@@ -55,12 +55,12 @@ const LobbyDetailJoined = () => {
     try {
       const userToken = localStorage.getItem("userToken");
       await api.post(`/lobby/leave/${id}`, { userToken });
-      navigate("/lobby/initial");
+      navigate("/home");
     } catch (error) {
       alert(`Failed to leave the lobby: ${error.message}`);
     }
   };
-  
+
   //WEBSOCKET SUBSCRIPTION
   useEffect(() => {
     const connectAndSubscribeUserToSocket = async () => {
@@ -78,17 +78,18 @@ const LobbyDetailJoined = () => {
           "/game/public",
           onMessageReceived
         );
-        
+
         //HERE THE SUBSCRIPTION FOR /GAME/LOBBY/JOIN HAPPENS
         /*
         You could for example the user token instead of hello
         The logic that follows when all the users receive the message from the server happens in 'onMessageReceived2'
         */
-        const subscription2 = stompClient.subscribe("/game/join", onMessageReceived2);
+        const subscription2 = stompClient.subscribe(
+          "/game/join",
+          onMessageReceived2
+        );
         stompClient.send("/game/lobby/join", {}, "Hello");
       }
-      
-
     };
 
     const onError = (error) => {
@@ -115,13 +116,13 @@ const LobbyDetailJoined = () => {
       }
     };
 
-    const onMessageReceived2 = (payload) =>{
+    const onMessageReceived2 = (payload) => {
       //HERE YOU RECEIVE THE USER THAT JOINED
       /*
       You could for example send the user as a userGetDTO and append it to the page
       */
       console.log("USER JOINED");
-    }
+    };
 
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);

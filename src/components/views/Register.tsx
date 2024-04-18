@@ -55,7 +55,7 @@ const Register = () => {
       localStorage.setItem("username", user.username);
       console.log(user.username);
 
-      navigate("/lobby/initial");
+      navigate("/home");
     } catch (error) {
       alert(
         `Something went wrong during the register: \n${handleError(error)}`

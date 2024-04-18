@@ -11,9 +11,12 @@ const UserChange = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   async function logout() {
+    const userToken = localStorage.getItem("userToken");
+    const requestBody = JSON.stringify({ userToken });
+    // eslint-disable-next-line
+    await api.post(`/logoutByToken`, requestBody);
     localStorage.removeItem("userToken");
-    // navigate("/login");
-    // await api.post(`/logout/${id}`);
+    navigate("/login");
   }
 
   const [user, setUser] = useState<User | null>(null);

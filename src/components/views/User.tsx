@@ -36,7 +36,8 @@ const UserDetail = () => {
   async function logout() {
     const userToken = localStorage.getItem("userToken");
     const requestBody = JSON.stringify({ userToken });
-    await api.post(`/logout/${id}`, requestBody);
+    // eslint-disable-next-line
+    await api.post(`/logoutByToken`, requestBody);
     localStorage.removeItem("userToken");
     navigate("/login");
   }

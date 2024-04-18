@@ -18,7 +18,7 @@ const GameGuess = () => {
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        //fetchSettings();      //fail since server doesnt work yet
+        //fetchSettings(); //fail since server doesnt work yet
         //fetchRoles();          //fail since server doesnt work yet
         const response = await api.get(`/game/image/${id}`);
         if (response.data) {
@@ -29,7 +29,7 @@ const GameGuess = () => {
         }
       } catch (error) {
         alert(`Failed to retrieve image: ${handleError(error)}`);
-        setIsWaitingForImage(false);
+        //setIsWaitingForImage(false);
       }
     };
     if (isWaitingForImage) {
@@ -41,7 +41,7 @@ const GameGuess = () => {
   const fetchSettings = async () => {
     try {
       const response = await api.get(`/lobby/${id}`);
-      setTimer(response.data.timerDuration || 30);
+      setTimer(response.data.timeLimit || 30);
     } catch (error) {
       console.error(`Failed to fetch lobby settings: ${handleError(error)}`);
     }
@@ -71,7 +71,7 @@ const GameGuess = () => {
   useEffect(() => {
     if (timer === 0) {
       alert("Time is up!");
-      //navigate("/results");
+      navigate(`/game/scoreboard/${id}`);
     }
   }, [timer, navigate]);
 
@@ -80,13 +80,14 @@ const GameGuess = () => {
       const timeGuessSubmitted = 10.0; // to be replaced with the actual time the guess was submitted
       const requestBody = JSON.stringify({ playerGuessed, timeGuessSubmitted });
       const userTokenJson = JSON.stringify({ userToken });
-      await api.put(`/game/chatgpt/${id}`, requestBody, {
+      const response = await api.put(`/game/chatgpt/${id}`, requestBody, {
         headers: {
           "Content-Type": "application/json",
           userToken: userTokenJson,
         },
       }); //commented out since api not available atm
       alert("Guess submitted!");
+      console.log("response ---------------------", playerGuessed, response);
       navigate("/results");
     } catch (error) {
       alert(`Something went wrong: \n${handleError(error)}`);
@@ -123,7 +124,9 @@ const GameGuess = () => {
             <>
               <h3>Remaining time: {timer} seconds</h3>
               <h3>Image drawn by DALL-E</h3>
-              {image && <img src={image} alt="Generated from DALL-E" />}
+              {image && (
+                <img src={image} width="60%" alt="Generated from DALL-E" />
+              )}
               <div className="register field">
                 <label className="register label">
                   Type in your guess for the image description

@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { GameGuard } from "../routeProtectors/GameGuard";
 import GameRouter from "./GameRouter";
 import { LoginGuard } from "../routeProtectors/LoginGuard";
+import { LoggedInGuard } from "../routeProtectors/LoggedInGuard";
 import Login from "../../views/Login";
 import Register from "../../views/Register";
 import Home from "../../views/Home";
@@ -32,19 +33,21 @@ const AppRouter = () => {
           <Route path="*" element={<GameRouter />} />
         </Route>
 
-        <Route path="/home" element={<Home />} />
+        <Route element={<LoggedInGuard redirectTo="login" />}>
+          <Route path="/home" element={<Home />} />
 
-        <Route path="/lobby/create" element={<LobbyCreate />} />
+          <Route path="/lobby/create" element={<LobbyCreate />} />
 
-        <Route path="/lobby/join" element={<LobbyJoin />} />
+          <Route path="/lobby/join" element={<LobbyJoin />} />
 
-        <Route path="/lobby/joined/:id" element={<LobbyJoined />} />
+          <Route path="/lobby/joined/:id" element={<LobbyJoined />} />
 
-        <Route path="/lobby/host/:id" element={<LobbyHost />} />
+          <Route path="/lobby/host/:id" element={<LobbyHost />} />
 
-        <Route path="/game/create/:id" element={<GameCreate />} />
+          <Route path="/game/create/:id" element={<GameCreate />} />
 
-        <Route path="/game/guess/:id" element={<GameGuess />} />
+          <Route path="/game/guess/:id" element={<GameGuess />} />
+        </Route>
 
         <Route path="/game/scoreboard/:id" element={<Scoreboard />} />
 
@@ -52,11 +55,9 @@ const AppRouter = () => {
           <Route path="/login" element={<Login />} />
         </Route>
 
-        <Route path="/register">
-          <Route path="/register" element={<Register />} />
-        </Route>
+        <Route path="/register" element={<Register />} />
 
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/home" replace />} />
       </Routes>
     </BrowserRouter>
   );

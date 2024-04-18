@@ -134,12 +134,6 @@ const LobbyDetailJoined = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(fetchData, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   let content = <Spinner />;
 
   if (lobby) {

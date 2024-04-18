@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
-import {useWebSocket} from "../../helpers/WebSocketContext";
+import { useWebSocket } from "../../helpers/WebSocketContext";
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -18,7 +18,7 @@ const GameCreate = () => {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [timer, setTimer] = useState(30); // Default timer
   const [allGuessesSubmitted, setAllGuessesSubmitted] = useState(false);
-  const {stompClient} = useWebSocket();
+  const { stompClient } = useWebSocket();
 
   const sendDalle = async () => {
     setIsSubmitting(true);
@@ -111,15 +111,18 @@ const GameCreate = () => {
       <div className="join container">
         {isSubmitting ? (
           <div className="join form">
-            <h2>Your image is being created...</h2>
             {generatedImage ? (
               <>
-                <img src={generatedImage} alt="Generated" />
+                <h2>Your created Image:</h2>
+                <img src={generatedImage} width="70%" alt="Generated" />
                 <p>Waiting for all players to submit their guesses...</p>
                 <p>Time remaining: {timer} seconds</p>
               </>
             ) : (
-              <p>Loading image...</p>
+              <>
+                <h2>Your image is being created...</h2>
+                <p>Loading image...</p>
+              </>
             )}
             <h3>Description: {imageDescription}</h3>
           </div>

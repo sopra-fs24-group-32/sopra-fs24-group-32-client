@@ -49,11 +49,14 @@ const LobbyDetailHost = () => {
   };
 
   //WEBSOCKET SUBSCRIPTION
-  const connectAndSubscribeUserToSocket = async () => {
-    const sock = new SockJS(getDomain() + "/ws");
-    const client = over(sock);
-    setStompClient(client, { websocket: { withCredentials: false } });
-  };
+  useEffect(() => {
+    const connectAndSubscribeUserToSocket = async () => {
+      const sock = new SockJS(getDomain() + "/ws");
+      const client = over(sock, { websocket: { withCredentials: false } });
+      setStompClient(client);
+    };
+    connectAndSubscribeUserToSocket();
+  }, []);
 
   useEffect(() => {
     const onConnect = () => {
@@ -62,14 +65,6 @@ const LobbyDetailHost = () => {
           "/game/public",
           onMessageReceived
         );
-        /*
-        const username = localStorage.getItem("username");
-        const message = {
-          username: username,
-        };
-
-        stompClient.send("/game/lobby/join", {}, JSON.stringify(message));
-        */
       }
     };
 
@@ -85,10 +80,10 @@ const LobbyDetailHost = () => {
       const nextPictureGenerator = body.username;
 
       if (username === nextPictureGenerator) {
-        console.log("YOU ARE PICTURE GENERATOR");
+        stompClient.disconnect();
         navigate(`/game/create/${id}`);
       } else {
-        console.log("YOU ARE INPUT GUESSER");
+        stompClient.disconnect();
         navigate(`/game/guess/${id}`);
       }
     };
@@ -100,7 +95,6 @@ const LobbyDetailHost = () => {
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
     fetchLobby();
-    connectAndSubscribeUserToSocket();
   }, []);
 
   //START GAME

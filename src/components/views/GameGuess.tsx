@@ -11,21 +11,27 @@ const GameGuess = () => {
   const userToken = localStorage.getItem("userToken");
   const [playerGuessed, setPlayerGuessed] = useState("");
   const [timer, setTimer] = useState(30); // Default timer
+  const [timeAvailable, setTimeAvailable] = useState(30); // default time available
+  const [startTime, setStartTime] = useState(0);
+  const [timeSubmitted, setTimeSubmitted] = useState(0);
   const [image, setImage] = useState("");
   const [isWaitingForImage, setIsWaitingForImage] = useState(true);
   const [creatorName, setCreatorName] = useState("");
+  const [playerSubmitted, setPlayerSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
-        //fetchSettings(); //fail since server doesnt work yet
         //fetchRoles();          //fail since server doesnt work yet
         const response = await api.get(`/game/image/${id}`);
+        console.log(response.data);
         if (response.data) {
+          await fetchSettings();
           setImage(response.data);
           setIsWaitingForImage(false);
+          setStartTime(Date.now());
         } else {
-          setTimeout(fetchImage, 5000);
+          setTimeout(fetchImage, 1000);
         }
       } catch (error) {
         alert(`Failed to retrieve image: ${handleError(error)}`);
@@ -40,8 +46,11 @@ const GameGuess = () => {
   // Fetch lobby settings
   const fetchSettings = async () => {
     try {
+      console.log("---------------setting fetch");
       const response = await api.get(`/lobby/${id}`);
+      console.log("timelimit ------------------", response.data.timeLimit);
       setTimer(response.data.timeLimit || 30);
+      setTimeAvailable(response.data.timeLimit || 30);
     } catch (error) {
       console.error(`Failed to fetch lobby settings: ${handleError(error)}`);
     }
@@ -70,15 +79,23 @@ const GameGuess = () => {
 
   useEffect(() => {
     if (timer === 0) {
-      alert("Time is up!");
+      if (!playerSubmitted) {
+        console.log("--------------------------empty");
+        sendEmptyGuess();
+      }
       navigate(`/game/scoreboard/${id}`);
     }
   }, [timer, navigate]);
 
-  const sendGuess = async () => {
+  const sendEmptyGuess = async () => {
     try {
-      const timeGuessSubmitted = 10.0; // to be replaced with the actual time the guess was submitted
-      const requestBody = JSON.stringify({ playerGuessed, timeGuessSubmitted });
+      const emptyString = "";
+      console.log(
+        "----------------------time avail",
+        timeAvailable,
+        emptyString
+      );
+      const requestBody = JSON.stringify({ emptyString, timeAvailable });
       const userTokenJson = JSON.stringify({ userToken });
       const response = await api.put(`/game/chatgpt/${id}`, requestBody, {
         headers: {
@@ -86,26 +103,37 @@ const GameGuess = () => {
           userToken: userTokenJson,
         },
       }); //commented out since api not available atm
-      alert("Guess submitted!");
       console.log("response ---------------------", playerGuessed, response);
-      navigate("/results");
     } catch (error) {
       alert(`Something went wrong: \n${handleError(error)}`);
     }
   };
-  /*const sendGuess = async () => {
+
+  const sendGuess = async () => {
     try {
-      const requestBody = JSON.stringify({
-        description: playerGuessed,
-      });
-      // await api.post(`/game/guess/${id}`, requestBody);  //commented out since api not available atm
-      alert("Guess submitted!");
+      setPlayerSubmitted(true);
+      const endTime = Date.now();
+      const elapsed = (endTime - startTime) / 1000;
+      console.log(
+        "--------------------------------time and guess",
+        elapsed,
+        playerGuessed
+      );
+      setTimeSubmitted(elapsed);
+      const requestBody = JSON.stringify({ playerGuessed, elapsed });
+      const userTokenJson = JSON.stringify({ userToken });
+      const response = await api.put(`/game/chatgpt/${id}`, requestBody, {
+        headers: {
+          "Content-Type": "application/json",
+          userToken: userTokenJson,
+        },
+      }); //commented out since api not available atm
+      console.log("response ---------------------", playerGuessed, response);
       //navigate("/results");
     } catch (error) {
       alert(`Something went wrong: \n${handleError(error)}`);
     }
   };
-  */
 
   return (
     <BaseContainer>
@@ -125,13 +153,14 @@ const GameGuess = () => {
               <h3>Remaining time: {timer} seconds</h3>
               <h3>Image drawn by DALL-E</h3>
               {image && (
-                <img src={image} width="60%" alt="Generated from DALL-E" />
+                <img src={image} width="80%" alt="Generated from DALL-E" />
               )}
               <div className="register field">
                 <label className="register label">
                   Type in your guess for the image description
                 </label>
                 <input
+                  disabled={playerSubmitted}
                   type="text"
                   className="register input"
                   placeholder="enter here.."
@@ -141,7 +170,7 @@ const GameGuess = () => {
               </div>
               <div className="register button-container">
                 <Button
-                  disabled={!playerGuessed || timer === 0}
+                  disabled={!playerGuessed || timer === 0 || playerSubmitted}
                   width="100%"
                   onClick={sendGuess}
                 >
@@ -149,6 +178,13 @@ const GameGuess = () => {
                 </Button>
               </div>
             </>
+          )}
+          {playerSubmitted ? (
+            <>
+              <h3>You submitted in {timeSubmitted} seconds!</h3>
+            </>
+          ) : (
+            <></>
           )}
         </div>
       </div>

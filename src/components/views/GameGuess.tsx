@@ -88,7 +88,7 @@ const GameGuess = () => {
       }); //commented out since api not available atm
       alert("Guess submitted!");
       console.log("response ---------------------", playerGuessed, response);
-      navigate("/results");
+      navigate(`/game/scoreboard/${id}`);
     } catch (error) {
       alert(`Something went wrong: \n${handleError(error)}`);
     }

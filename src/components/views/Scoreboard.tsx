@@ -29,12 +29,17 @@ const Scoreboard = () => {
   const [playerGuessed, setPlayerGuessed] = useState("");
   const [timer, setTimer] = useState(10); // Default timer
   const [users, setUsers] = useState([]);
+  const [lobbyOwner, setLobbyOwner] = useState("");
+  const [currentUser, setCurrentUser] = useState(
+    localStorage.getItem("username")
+  );
 
   //fetch score board values needs to be changed
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await api.get(`/lobby/${id}`); // Assuming this endpoint gives user scores
+        setLobbyOwner(response.data.lobbyOwner);
         if (response.data.users && Array.isArray(response.data.users)) {
           // Sort users by score in descending order
           const sortedUsers = response.data.users.sort(
@@ -49,6 +54,22 @@ const Scoreboard = () => {
     }
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    let interval;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else {
+      // When the timer reaches 0, clear the interval and call continueGame
+      clearInterval(interval);
+      //continueGame();
+    }
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [timer]);
 
   // function need to be changed
   const continueGame = async () => {
@@ -84,9 +105,17 @@ const Scoreboard = () => {
             </li>
           ))}
         </ul>
-        <Button width="100%" onClick={continueGame}>
-          Continue Game
-        </Button>
+        {currentUser === lobbyOwner ? (
+          <>
+            <Button width="100%" onClick={continueGame}>
+              Continue Game
+            </Button>
+          </>
+        ) : (
+          <>
+            <h3>Waiting for next round to start..</h3>
+          </>
+        )}
       </div>
     );
   }
@@ -95,6 +124,7 @@ const Scoreboard = () => {
     <BaseContainer className="game container">
       <h2>Scoreboard</h2>
       {content}
+      <div className="timer">{timer} seconds remaining</div>
     </BaseContainer>
   );
 };

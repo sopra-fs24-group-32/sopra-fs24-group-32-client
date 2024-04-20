@@ -78,12 +78,11 @@ const LobbyDetailJoined = () => {
         const subPublic = stompClient.subscribe("/game/public", onMessageReceived);
 
         // Subscribe to join messages
-        const subJoin = stompClient.subscribe("/game/join", onMessageReceived2);
-
-        // Subscribe to join/leave messages
+        const subJoin = stompClient.subscribe("/game/join", joinMessage);
         
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);        
-        
+        const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
+
         // Send the user token to server to register this client
         const userToken = localStorage.getItem("userToken");
         if (userToken) {
@@ -118,7 +117,7 @@ const LobbyDetailJoined = () => {
       }
     };
 
-    const onMessageReceived2 = (payload) => {
+    const joinMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
     
@@ -131,6 +130,17 @@ const LobbyDetailJoined = () => {
           return prevLobby;
         }
         const newUsersList = [...prevLobby.users, data];
+        return { ...prevLobby, users: newUsersList };
+      });
+    };
+
+    const leaveMessage = (payload) => {
+      const data = JSON.parse(payload.body);
+      console.log("Join message received:", data);
+    
+      // Update the state to include the new user
+      setLobby(prevLobby => {
+        const newUsersList = prevLobby.users.filter(user => user.id !== data.id);
         return { ...prevLobby, users: newUsersList };
       });
     };
@@ -223,14 +233,6 @@ const LobbyDetailJoined = () => {
               </li>
             ))}
         </ul>
-
-        <Button
-          width="100%"
-          style={{ marginTop: "20px", marginBottom: "20px" }}
-          onClick={leaveLobby}
-        >
-          Leave Lobby
-        </Button>
 
         <Button
           width="100%"

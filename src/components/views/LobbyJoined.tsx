@@ -74,18 +74,21 @@ const LobbyDetailJoined = () => {
   useEffect(() => {
     const onConnect = () => {
       if (stompClient) {
-        const subscription = stompClient.subscribe(
-          "/game/public",
-          onMessageReceived
-        );
+        // Subscribe to public messages
+        const subPublic = stompClient.subscribe("/game/public", onMessageReceived);
+
+        // Subscribe to join messages
+        const subJoin = stompClient.subscribe("/game/join", onMessageReceived2);
+
+        // Subscribe to join/leave messages
         
-        //HERE THE SUBSCRIPTION FOR /GAME/LOBBY/JOIN HAPPENS
-        /*
-        You could for example the user token instead of hello
-        The logic that follows when all the users receive the message from the server happens in 'onMessageReceived2'
-        */
-        const subscription2 = stompClient.subscribe("/game/join", onMessageReceived2);
-        stompClient.send("/game/lobby/join", {}, "Hello");
+        //const subLeave = client.subscribe("/game/leave", onMessageReceived3);        
+        
+        // Send the user token to server to register this client
+        const userToken = localStorage.getItem("userToken");
+        if (userToken) {
+          stompClient.send("/game/lobby/join", {}, userToken);
+        }
       }
       
 
@@ -115,13 +118,23 @@ const LobbyDetailJoined = () => {
       }
     };
 
-    const onMessageReceived2 = (payload) =>{
-      //HERE YOU RECEIVE THE USER THAT JOINED
-      /*
-      You could for example send the user as a userGetDTO and append it to the page
-      */
-      console.log("USER JOINED");
-    }
+    const onMessageReceived2 = (payload) => {
+      const data = JSON.parse(payload.body);
+      console.log("Join message received:", data);
+    
+      // Update the state to include the new user
+      setLobby(prevLobby => {
+
+        // Check if the user is already in the list
+        if (prevLobby.users.some(user => user.id === data.id)) {
+          console.log("User already in lobby:", data.username);
+          return prevLobby;
+        }
+        const newUsersList = [...prevLobby.users, data];
+        return { ...prevLobby, users: newUsersList };
+      });
+    };
+    
 
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
@@ -133,11 +146,11 @@ const LobbyDetailJoined = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(fetchData, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
+//  useEffect(() => {
+//    const interval = setInterval(fetchData, 1000);
+//
+//    return () => clearInterval(interval);
+//  }, []);
 
   let content = <Spinner />;
 

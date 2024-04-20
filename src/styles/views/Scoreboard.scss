@@ -1,0 +1,21 @@
+// CSS changes (add these to your stylesheet)
+.player.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player.rank {
+  /* styles for the rank, for example, width or color */
+  margin-right: 1em; // Adjust spacing as needed
+}
+
+.player.username {
+  /* styles to make sure it doesn't take the whole width, for example */
+  flex-grow: 1;
+}
+
+.player.score {
+  /* styles for the score */
+  margin-left: auto; // This will push the score to the far right
+}

@@ -1,40 +1,53 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import "styles/views/Login.scss";
+import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
+import PropTypes from "prop-types";
+import "styles/views/Game.scss";
+import "styles/views/Scoreboard.scss";
+
+const Player = ({ rank, username, score }) => (
+  <div className="player container">
+    <div className="player rank">{rank}.</div>
+    <div className="player username">{username}</div>
+    <div className="player score">Points: {score}</div>
+  </div>
+);
+
+Player.propTypes = {
+  rank: PropTypes.number.isRequired,
+  username: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
+};
 
 const Scoreboard = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const userToken = localStorage.getItem("userToken");
   const [playerGuessed, setPlayerGuessed] = useState("");
-  const [timer, setTimer] = useState(30); // Default timer
-  const [image, setImage] = useState("");
-  const [isWaitingForImage, setIsWaitingForImage] = useState(true);
-  const [creatorName, setCreatorName] = useState("");
+  const [timer, setTimer] = useState(10); // Default timer
+  const [users, setUsers] = useState([]);
 
   //fetch score board values needs to be changed
   useEffect(() => {
-    const fetchImage = async () => {
-      //try {
-      //fetchSettings(); //fail since server doesnt work yet
-      //fetchRoles();          //fail since server doesnt work yet
-      //const response = await api.get(`/game/image/${id}`);
-      //if (response.data) {
-      //  setImage(response.data);
-      //  setIsWaitingForImage(false);
-      //} else {
-      //  setTimeout(fetchImage, 5000);
-      //}
-      //} catch (error) {
-      //  alert(`Failed to retrieve image: ${handleError(error)}`);
-      //setIsWaitingForImage(false);
-      //}
-      console.log("show score");
-    };
-    //fetchImage();
+    async function fetchData() {
+      try {
+        const response = await api.get(`/lobby/${id}`); // Assuming this endpoint gives user scores
+        if (response.data.users && Array.isArray(response.data.users)) {
+          // Sort users by score in descending order
+          const sortedUsers = response.data.users.sort(
+            (a, b) => b.score - a.score
+          );
+          setUsers(sortedUsers);
+        }
+      } catch (error) {
+        console.error(`Failed to fetch users: \n${handleError(error)}`);
+        alert("Failed to load users. Please check the console for details.");
+      }
+    }
+    fetchData();
   }, [id]);
 
   // function need to be changed
@@ -55,17 +68,33 @@ const Scoreboard = () => {
     }
   };
 
-  return (
-    <BaseContainer>
-      <div className="join container">
-        <div className="join form">
-          <div className="register button-container">
-            <Button width="100%" onClick={continueGame}>
-              Continue Game
-            </Button>
-          </div>
-        </div>
+  let content = <Spinner />;
+
+  if (users.length > 0) {
+    content = (
+      <div className="game">
+        <ul className="game user-list">
+          {users.map((user, index) => (
+            <li key={user.id}>
+              <Player
+                rank={index + 1}
+                username={user.username}
+                score={user.score}
+              />
+            </li>
+          ))}
+        </ul>
+        <Button width="100%" onClick={continueGame}>
+          Continue Game
+        </Button>
       </div>
+    );
+  }
+
+  return (
+    <BaseContainer className="game container">
+      <h2>Scoreboard</h2>
+      {content}
     </BaseContainer>
   );
 };

@@ -61,10 +61,20 @@ const LobbyDetailHost = () => {
   useEffect(() => {
     const onConnect = () => {
       if (stompClient) {
-        const subscription = stompClient.subscribe(
-          "/game/public",
-          onMessageReceived
-        );
+        // Subscribe to public messages
+        const subPublic = stompClient.subscribe("/game/public", onMessageReceived);
+
+        // Subscribe to join messages
+        const subJoin = stompClient.subscribe("/game/join", joinMessage);
+        
+        //const subLeave = client.subscribe("/game/leave", onMessageReceived3);        
+        const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
+
+        // Send the user token to server to register this client
+        const userToken = localStorage.getItem("userToken");
+        if (userToken) {
+          stompClient.send("/game/lobby/join", {}, userToken);
+        }
       }
     };
 
@@ -86,6 +96,34 @@ const LobbyDetailHost = () => {
         stompClient.disconnect();
         navigate(`/game/guess/${id}`);
       }
+    };
+
+    const joinMessage = (payload) => {
+      const data = JSON.parse(payload.body);
+      console.log("Join message received:", data);
+    
+      // Update the state to include the new user
+      setLobby(prevLobby => {
+
+        // Check if the user is already in the list
+        if (prevLobby.users.some(user => user.id === data.id)) {
+          console.log("User already in lobby:", data.username);
+          return prevLobby;
+        }
+        const newUsersList = [...prevLobby.users, data];
+        return { ...prevLobby, users: newUsersList };
+      });
+    };
+
+    const leaveMessage = (payload) => {
+      const data = JSON.parse(payload.body);
+      console.log("Join message received:", data);
+    
+      // Update the state to include the new user
+      setLobby(prevLobby => {
+        const newUsersList = prevLobby.users.filter(user => user.id !== data.id);
+        return { ...prevLobby, users: newUsersList };
+      });
     };
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
@@ -197,27 +235,30 @@ const LobbyDetailHost = () => {
                   backgroundColor: "#f0f0f0",
                   marginBottom: "10px",
                   borderRadius: "5px",
+                  padding: "10px",
                 }}
               >
                 <div
                   className="player container"
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
-                    padding: "10px",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  <div className="player-info">
-                    <span
-                      className="player-username"
-                      style={{ fontWeight: "bold", marginRight: "15px" }}
-                    >
-                      {player.username}
-                    </span>
-                    <span className="player-points" style={{ color: "#555" }}>
-                      Score: {player.score}
-                    </span>
+                  <div
+                    className="player-username"
+                    style={{
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      marginBottom: "5px",
+                    }}
+                    onClick={() => navigate(`/game/${player.id}`)} // Navigate to user profile
+                  >
+                    {player.username}
                   </div>
+                  <div className="player-score">Score: {player.score}</div>
                 </div>
               </li>
             ))}

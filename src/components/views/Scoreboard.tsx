@@ -4,6 +4,9 @@ import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
+import { getDomain } from "helpers/getDomain";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import "styles/views/Scoreboard.scss";
@@ -33,6 +36,7 @@ const Scoreboard = () => {
   const [currentUser, setCurrentUser] = useState(
     localStorage.getItem("username")
   );
+  const [stompClient, setStompClient] = useState(null);
 
   //fetch score board values needs to be changed
   useEffect(() => {
@@ -89,6 +93,58 @@ const Scoreboard = () => {
     }
   };
 
+  const nextRound = () => {
+    stompClient.send("/game/continueGame", {}, id);
+  }
+
+  //WEBSOCKET SUBSCRIPTION
+  useEffect(() => {
+    const connectAndSubscribeUserToSocket = async () => {
+      const sock = new SockJS(getDomain() + "/ws");
+      const client = over(sock, { websocket: { withCredentials: false } });
+      setStompClient(client);
+    };
+    connectAndSubscribeUserToSocket();
+  }, []);
+
+  useEffect(() => {
+    const onConnect = () => {
+      if (stompClient) {
+        const subscription = stompClient.subscribe(
+          "/game/public",
+          onMessageReceived
+        );
+      }
+    };
+
+    const onError = (error) => {
+      console.log("Error:", error);
+    };
+
+    const onMessageReceived = (payload) => {
+      const username = localStorage.getItem("username");
+
+      const body = JSON.parse(payload.body);
+
+      const nextPictureGenerator = body.username;
+
+      if (username === nextPictureGenerator) {
+        console.log("YOUR TURN TO GENERATE A PICTURE");
+        //stompClient.disconnect();
+        //navigate(`/game/create/${id}`);
+      } else {
+        console.log("YOUR TURN TO GUESS THE INPUT");
+        //stompClient.disconnect();
+        //navigate(`/game/guess/${id}`);
+      }
+    };
+    if (stompClient) {
+      stompClient.connect({}, onConnect, onError);
+    }
+  }, [stompClient]);
+
+  //WEBSOCKET SUBSCRIPTION
+
   let content = <Spinner />;
 
   if (users.length > 0) {
@@ -109,6 +165,9 @@ const Scoreboard = () => {
           <>
             <Button width="100%" onClick={continueGame}>
               Continue Game
+            </Button>
+            <Button width="100%" onClick={nextRound}>
+              Next Round
             </Button>
           </>
         ) : (

@@ -66,7 +66,7 @@ const LobbyDetailHost = () => {
 
         // Subscribe to join messages
         const subJoin = stompClient.subscribe("/game/join", joinMessage);
-        
+
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);        
         const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
 
@@ -101,16 +101,18 @@ const LobbyDetailHost = () => {
     const joinMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-    
+
       // Update the state to include the new user
       setLobby(prevLobby => {
 
         // Check if the user is already in the list
         if (prevLobby.users.some(user => user.id === data.id)) {
           console.log("User already in lobby:", data.username);
+
           return prevLobby;
         }
         const newUsersList = [...prevLobby.users, data];
+
         return { ...prevLobby, users: newUsersList };
       });
     };
@@ -118,10 +120,11 @@ const LobbyDetailHost = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-    
+
       // Update the state to include the new user
       setLobby(prevLobby => {
         const newUsersList = prevLobby.users.filter(user => user.id !== data.id);
+        
         return { ...prevLobby, users: newUsersList };
       });
     };
@@ -227,41 +230,38 @@ const LobbyDetailHost = () => {
               </div>
             </div>
           </li>
-          {lobby.users &&
-            lobby.users.map((player, index) => (
-              <li
-                key={`player-${index}`}
+          {lobby.users && lobby.users.map((player, index) => (
+            <li
+              key={`player-${index}`}
+              style={{
+                backgroundColor: "#f0f0f0",
+                marginBottom: "10px",
+                borderRadius: "5px",
+                padding: "10px",
+              }}
+            >
+              <div className="player container tooltip"
                 style={{
-                  backgroundColor: "#f0f0f0",
-                  marginBottom: "10px",
-                  borderRadius: "5px",
-                  padding: "10px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <div
-                  className="player container"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    className="player-username"
-                    style={{
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      marginBottom: "5px",
-                    }}
-                    onClick={() => navigate(`/game/${player.id}`)} // Navigate to user profile
-                  >
-                    {player.username}
-                  </div>
-                  <div className="player-score">Score: {player.score}</div>
+                <div className="player-username" style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                  {player.username}
                 </div>
-              </li>
-            ))}
+                <div className="player-score">Score: {player.score}</div>
+                <span className="tooltip-text">
+                  ID: {player.id}<br />
+                  Username: {player.username}<br />
+                  Birthdate: {player.birthdate}<br />
+                  Status: {player.status}<br />
+                  Created At: {player.createdAt}
+                </span>
+              </div>
+            </li>
+          ))}
         </ul>
 
         <Button

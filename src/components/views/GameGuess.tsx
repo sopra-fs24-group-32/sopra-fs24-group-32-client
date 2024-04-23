@@ -34,8 +34,13 @@ const GameGuess = () => {
           setTimeout(fetchImage, 1000);
         }
       } catch (error) {
-        alert(`Failed to retrieve image: ${handleError(error)}`);
-        //setIsWaitingForImage(false);
+        if (error.response && error.response.status === 404) {
+          console.log("--------------rerun--------------");
+          setTimeout(fetchImage, 1000);
+        } else {
+          alert(`Failed to retrieve image: ${handleError(error)}`);
+          //setIsWaitingForImage(false);
+        }
       }
     };
     if (isWaitingForImage) {

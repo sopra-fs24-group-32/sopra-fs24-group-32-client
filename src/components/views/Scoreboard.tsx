@@ -97,7 +97,7 @@ const Scoreboard = () => {
     stompClient.send("/game/continueGame", {}, id);
   }
 
-//WEBSOCKET SUBSCRIPTION
+  //WEBSOCKET SUBSCRIPTION
   useEffect(() => {
     const connectAndSubscribeUserToSocket = async () => {
       const sock = new SockJS(getDomain() + "/ws");

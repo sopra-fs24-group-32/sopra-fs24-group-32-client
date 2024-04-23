@@ -26,7 +26,7 @@ const LobbyDetailHost = () => {
     timeLimit: 60,
   });
 
-  
+
   const fetchLobby = async () => {
     try {
       const response = await api.get(`/lobby/${id}`);
@@ -66,7 +66,7 @@ const LobbyDetailHost = () => {
 
         // Subscribe to join messages
         const subJoin = stompClient.subscribe("/game/join", joinMessage);
-        
+
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);        
         const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
 
@@ -101,16 +101,18 @@ const LobbyDetailHost = () => {
     const joinMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-    
+
       // Update the state to include the new user
       setLobby(prevLobby => {
 
         // Check if the user is already in the list
         if (prevLobby.users.some(user => user.id === data.id)) {
           console.log("User already in lobby:", data.username);
+
           return prevLobby;
         }
         const newUsersList = [...prevLobby.users, data];
+
         return { ...prevLobby, users: newUsersList };
       });
     };
@@ -118,10 +120,11 @@ const LobbyDetailHost = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-    
+
       // Update the state to include the new user
       setLobby(prevLobby => {
         const newUsersList = prevLobby.users.filter(user => user.id !== data.id);
+        
         return { ...prevLobby, users: newUsersList };
       });
     };

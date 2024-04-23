@@ -34,7 +34,7 @@ const LobbyDetailJoined = () => {
 
   const [lobby, setLobby] = useState(new Lobby());
   const [stompClient, setStompClient] = useState(null);
-  const {getStompClient} = useWebSocket();
+  const { getStompClient } = useWebSocket();
 
   const fetchData = async () => {
     try {
@@ -80,7 +80,7 @@ const LobbyDetailJoined = () => {
 
         // Subscribe to join messages
         const subJoin = stompClient.subscribe("/game/join", joinMessage);
-        
+
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);        
         const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
 
@@ -119,7 +119,7 @@ const LobbyDetailJoined = () => {
     const joinMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-    
+
       // Update the state to include the new user
       setLobby(prevLobby => {
 
@@ -136,14 +136,14 @@ const LobbyDetailJoined = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-    
+
       // Update the state to include the new user
       setLobby(prevLobby => {
         const newUsersList = prevLobby.users.filter(user => user.id !== data.id);
         return { ...prevLobby, users: newUsersList };
       });
     };
-    
+
 
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
@@ -155,11 +155,11 @@ const LobbyDetailJoined = () => {
     fetchData();
   }, []);
 
-//  useEffect(() => {
-//    const interval = setInterval(fetchData, 1000);
-//
-//    return () => clearInterval(interval);
-//  }, []);
+  //  useEffect(() => {
+  //    const interval = setInterval(fetchData, 1000);
+  //
+  //    return () => clearInterval(interval);
+  //  }, []);
 
   let content = <Spinner />;
 

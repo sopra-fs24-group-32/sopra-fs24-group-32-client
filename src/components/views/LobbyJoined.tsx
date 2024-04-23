@@ -199,41 +199,38 @@ const LobbyDetailJoined = () => {
               </div>
             </div>
           </li>
-          {lobby.users &&
-            lobby.users.map((player, index) => (
-              <li
-                key={`player-${index}`}
+          {lobby.users && lobby.users.map((player, index) => (
+            <li
+              key={`player-${index}`}
+              style={{
+                backgroundColor: "#f0f0f0",
+                marginBottom: "10px",
+                borderRadius: "5px",
+                padding: "10px",
+              }}
+            >
+              <div className="player container tooltip"
                 style={{
-                  backgroundColor: "#f0f0f0",
-                  marginBottom: "10px",
-                  borderRadius: "5px",
-                  padding: "10px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <div
-                  className="player container"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    className="player-username"
-                    style={{
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      marginBottom: "5px",
-                    }}
-                    onClick={() => navigate(`/game/${player.id}`)} // Navigate to user profile
-                  >
-                    {player.username}
-                  </div>
-                  <div className="player-score">Score: {player.score}</div>
+                <div className="player-username" style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                  {player.username}
                 </div>
-              </li>
-            ))}
+                <div className="player-score">Score: {player.score}</div>
+                <span className="tooltip-text">
+                  ID: {player.id}<br />
+                  Username: {player.username}<br />
+                  Birthdate: {player.birthdate}<br />
+                  Status: {player.status}<br />
+                  Created At: {player.createdAt}
+                </span>
+              </div>
+            </li>
+          ))}
         </ul>
 
         <Button

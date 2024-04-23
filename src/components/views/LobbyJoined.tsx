@@ -126,9 +126,11 @@ const LobbyDetailJoined = () => {
         // Check if the user is already in the list
         if (prevLobby.users.some(user => user.id === data.id)) {
           console.log("User already in lobby:", data.username);
+
           return prevLobby;
         }
         const newUsersList = [...prevLobby.users, data];
+
         return { ...prevLobby, users: newUsersList };
       });
     };
@@ -140,6 +142,7 @@ const LobbyDetailJoined = () => {
       // Update the state to include the new user
       setLobby(prevLobby => {
         const newUsersList = prevLobby.users.filter(user => user.id !== data.id);
+        
         return { ...prevLobby, users: newUsersList };
       });
     };

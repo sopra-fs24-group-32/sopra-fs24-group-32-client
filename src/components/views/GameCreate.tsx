@@ -37,8 +37,9 @@ const GameCreate = () => {
   // Fetch timer settings and initialize the game timer
   const fetchGameSettings = async () => {
     try {
-      const gameSettings = await api.get(`/lobby/${id}`);
-      setTimer(gameSettings.data.timerDuration || 30);
+      const response = await api.get(`/lobby/${id}`);
+      console.log("-----------------------settings response", response);
+      setTimer(response.data.timeLimit || 30);
     } catch (error) {
       console.error("Failed to fetch lobby details:", handleError(error));
       setTimer(30);
@@ -64,8 +65,7 @@ const GameCreate = () => {
 
   useEffect(() => {
     if (timer === 0 || allGuessesSubmitted === true) {
-      alert("time is up or all players guessed!");
-      //navigate(`/results`);
+      navigate(`/game/scoreboard/${id}`);
     }
   }, [timer, allGuessesSubmitted, navigate]);
 
@@ -114,7 +114,7 @@ const GameCreate = () => {
             {generatedImage ? (
               <>
                 <h2>Your created Image:</h2>
-                <img src={generatedImage} width="70%" alt="Generated" />
+                <img src={generatedImage} width="80%" alt="Generated" />
                 <p>Waiting for all players to submit their guesses...</p>
                 <p>Time remaining: {timer} seconds</p>
               </>

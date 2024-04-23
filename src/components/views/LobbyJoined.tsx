@@ -27,7 +27,6 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
-//let stompClient = null;
 
 const LobbyDetailJoined = () => {
   const navigate = useNavigate();
@@ -127,7 +126,6 @@ const LobbyDetailJoined = () => {
     };
 
     if (stompClient) {
-      console.log(stompClient);
       stompClient.connect({}, onConnect, onError);
     }
   }, [stompClient]);
@@ -135,6 +133,12 @@ const LobbyDetailJoined = () => {
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(fetchData, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   let content = <Spinner />;

@@ -1,0 +1,43 @@
+@import "../theme";
+
+.createLobbyButton {
+  width: 50%;
+  margin-top: -13em;
+}
+
+.join {
+  &.container {
+    margin-top: 1em;
+    /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
+    @include center;
+    flex-direction: column;
+  }
+  &.form {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  &.field {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    width: 67%;
+  }
+  &.input {
+    background-color: white;
+    color: $textInputColor;
+  }
+  &.label {
+    color: $textColor;
+    margin-bottom: 10px;
+    font-weight: 300;
+    text-transform: none;
+  }
+  &.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+  }
+}

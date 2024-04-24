@@ -3,7 +3,7 @@ import { api, handleError } from "helpers/api";
 import Lobby from "models/Lobby";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "components/ui/Button";
-import "styles/views/Login.scss";
+import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
@@ -27,15 +27,20 @@ const LobbyJoin = () => {
         `Something went wrong while joining the lobby: \n${handleError(error)}`
       );
       console.error("Details:", error);
-      const errorMessage = error.response?.data?.message || error.message || "An unknown error occurred";
-      alert(`Something went wrong while joining the lobby. Reason: ${errorMessage}`);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `Something went wrong while joining the lobby. Reason: ${errorMessage}`
+      );
     }
   };
 
   const FormField = (props) => {
     return (
-      <div className="register field">
-        <label className="register label">{props.label}</label>
+      <div className="join field">
+        <label className="join label">{props.label}</label>
         <input
           type={props?.type || "text"}
           className="register input"
@@ -59,14 +64,14 @@ const LobbyJoin = () => {
       <div className="join container">
         <div className="join form">
           <FormField
-            label="Invitation Code"
+            label="Enter the Game Code"
             value={invitationCode}
             onChange={(un: string) => setInvitationCode(un)}
           />
-          <div className="register button-container">
+          <div className="join button-container">
             <Button
               disabled={!invitationCode}
-              width="100%"
+              width="50%"
               onClick={() => joinLobby()}
             >
               Join Game

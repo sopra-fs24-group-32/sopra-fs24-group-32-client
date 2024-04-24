@@ -3,10 +3,9 @@ import Lobby from "models/Lobby";
 import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import { api, handleError } from "helpers/api";
-import "styles/views/Login.scss";
+import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-
 
 const LobbyCreate = () => {
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ const LobbyCreate = () => {
       const response = await api.post("/lobby/create", requestBody);
 
       const lobby = new Lobby(response.data);
-      
+
       navigate(`/lobby/host/${lobby.id}`);
     } catch (error) {
       alert(
@@ -29,8 +28,8 @@ const LobbyCreate = () => {
   };
 
   return (
-    <BaseContainer>
-      <Button width="100%" onClick={createLobby}>
+    <BaseContainer className="home container">
+      <Button className="createLobbyButton" onClick={createLobby}>
         Create Lobby
       </Button>
     </BaseContainer>

@@ -1,0 +1,25 @@
+@import "../theme";
+
+.home {
+  &.container {
+    margin-top: 2em;
+    min-height: 200px;
+    /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
+    @include center;
+    flex-direction: column;
+  }
+}
+
+.homeButton {
+  margin-bottom: 2em;
+  width: 50%;
+}
+
+.joinButton {
+  background-color: rgb(190, 190, 190);
+}
+
+.logoutButton {
+  margin-top: 4em;
+  background-color: rgb(254, 101, 101);
+}

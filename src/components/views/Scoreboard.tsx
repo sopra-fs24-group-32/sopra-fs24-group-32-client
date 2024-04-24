@@ -75,27 +75,9 @@ const Scoreboard = () => {
     return () => clearInterval(interval);
   }, [timer]);
 
-  // function need to be changed
-  const continueGame = async () => {
-    try {
-      const timeGuessSubmitted = 10.0; // to be replaced with the actual time the guess was submitted
-      const requestBody = JSON.stringify({ playerGuessed, timeGuessSubmitted });
-      const userTokenJson = JSON.stringify({ userToken });
-      const response = await api.put(`/game/chatgpt/${id}`, requestBody, {
-        headers: {
-          "Content-Type": "application/json",
-          userToken: userTokenJson,
-        },
-      }); //commented out since api not available atm
-      navigate("/results");
-    } catch (error) {
-      alert(`Something went wrong: \n${handleError(error)}`);
-    }
-  };
-
   const nextRound = () => {
     stompClient.send("/game/continueGame", {}, id);
-  }
+  };
 
   //WEBSOCKET SUBSCRIPTION
   useEffect(() => {
@@ -163,9 +145,6 @@ const Scoreboard = () => {
         </ul>
         {currentUser === lobbyOwner ? (
           <>
-            <Button width="100%" onClick={continueGame}>
-              Continue Game
-            </Button>
             <Button width="100%" onClick={nextRound}>
               Next Round
             </Button>

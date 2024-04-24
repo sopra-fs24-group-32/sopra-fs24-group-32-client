@@ -130,12 +130,12 @@ const Scoreboard = () => {
 
       if (username === nextPictureGenerator) {
         console.log("YOUR TURN TO GENERATE A PICTURE");
-        //stompClient.disconnect();
-        //navigate(`/game/create/${id}`);
+        stompClient.disconnect();
+        navigate(`/game/create/${id}`);
       } else {
         console.log("YOUR TURN TO GUESS THE INPUT");
-        //stompClient.disconnect();
-        //navigate(`/game/guess/${id}`);
+        stompClient.disconnect();
+        navigate(`/game/guess/${id}`);
       }
     };
     if (stompClient) {

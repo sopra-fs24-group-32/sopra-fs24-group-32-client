@@ -125,7 +125,7 @@ const GameGuess = () => {
         playerGuessed
       );
       setTimeSubmitted(elapsed);
-      const requestBody = JSON.stringify({ playerGuessed, elapsed });
+      const requestBody = JSON.stringify({ playerGuessed:playerGuessed, timeGuessSubmitted:elapsed });
       const userTokenJson = JSON.stringify({ userToken });
       const response = await api.put(`/game/chatgpt/${id}`, requestBody, {
         headers: {

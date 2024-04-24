@@ -67,6 +67,7 @@ const Login = () => {
   return (
     <BaseContainer>
       <div className="login container">
+        <h2>Login</h2>
         <div className="login form">
           <FormField
             label="Username"
@@ -82,14 +83,14 @@ const Login = () => {
           <div className="login button-container">
             <Button
               disabled={!username || !password}
-              width="100%"
+              width="50%"
               onClick={() => doLogin()}
             >
               Login
             </Button>
           </div>
           <div className="register button-container">
-            <Button width="100%" onClick={navigateToRegister}>
+            <Button width="50%" onClick={navigateToRegister}>
               Register
             </Button>
           </div>

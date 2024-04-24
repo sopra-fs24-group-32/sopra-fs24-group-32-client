@@ -66,6 +66,7 @@ const Register = () => {
   return (
     <BaseContainer>
       <div className="register container">
+        <h2>Sign Up</h2>
         <div className="register form">
           <FormField
             label="Username"
@@ -81,10 +82,10 @@ const Register = () => {
           <div className="register button-container">
             <Button
               disabled={!username || !password}
-              width="100%"
+              width="50%"
               onClick={() => doRegister()}
             >
-              Register
+              Sign Up
             </Button>
           </div>
         </div>

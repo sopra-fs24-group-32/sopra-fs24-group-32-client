@@ -100,7 +100,7 @@ const GameGuess = () => {
         timeAvailable,
         emptyString
       );
-      const requestBody = JSON.stringify({ emptyString, timeAvailable });
+      const requestBody = JSON.stringify({ playerGuessed:emptyString, timeGuessSubmitted:timeAvailable });
       const userTokenJson = JSON.stringify({ userToken });
       const response = await api.put(`/game/chatgpt/${id}`, requestBody, {
         headers: {

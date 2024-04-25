@@ -1,39 +1,54 @@
 import React from "react";
 import { ReactLogo } from "../ui/ReactLogo";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../styles/views/Header.scss";
 
 const Header = (props) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const navigateToUser = () => {
     const id = localStorage.getItem("id");
     navigate(`/game/${id}`);
   };
 
+  const shouldShowBackButton = [
+    "/lobby/join",
+    "/lobby/create",
+    "/game/:id",
+  ].some(
+    (path) =>
+      path === location.pathname ||
+      (path.includes(":id") && location.pathname.includes("/game/"))
+  );
+
   return (
     <div className="header container" style={{ height: props.height }}>
-      <button
-        className="header-button back-button"
-        onClick={() => navigate(-1)}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth="1.5"
-          stroke="currentColor"
-          className="w-6 h-6 back-arrow"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M15.75 19.5 8.25 12l7.5-7.5"
-          />
-        </svg>
-        Back
-      </button>
+      <div className="back-button-container">
+        {shouldShowBackButton && (
+          <button
+            className="header-button back-button"
+            onClick={() => navigate(-1)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6 back-arrow"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15.75 19.5 8.25 12l7.5-7.5"
+              />
+            </svg>
+            Back
+          </button>
+        )}
+      </div>
       <h1 onClick={() => navigate("/home")} className="header title">
         GPTuesser
       </h1>

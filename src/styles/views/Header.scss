@@ -41,10 +41,15 @@
   }
 
   .back-button {
-    margin-left: auto; // Moves it to the left
+  }
+
+  .back-button-container {
+    margin-left: auto;
+    width: 75px;
   }
 
   .profile-button {
     margin-right: auto; // Moves it to the right
+    width: 75px;
   }
 }

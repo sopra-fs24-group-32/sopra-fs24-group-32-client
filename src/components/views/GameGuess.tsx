@@ -51,6 +51,7 @@ const GameGuess = () => {
       fetchImage();
     }
     // Cleanup function
+
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);

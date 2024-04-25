@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { api, handleError } from "helpers/api";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button } from "components/ui/Button";
@@ -18,7 +18,46 @@ const GameGuess = () => {
   const [isWaitingForImage, setIsWaitingForImage] = useState(true);
   const [creatorName, setCreatorName] = useState("");
   const [playerSubmitted, setPlayerSubmitted] = useState(false);
+  const timeoutRef = useRef(null);
 
+  useEffect(() => {
+    const fetchImage = async () => {
+      clearTimeout(timeoutRef.current); // Clear existing timeout
+      try {
+        const response = await api.get(`/game/image/${id}`);
+        console.log(response.data);
+        if (response.data) {
+          await fetchSettings();
+          setImage(response.data);
+          setIsWaitingForImage(false); // Stop further fetching
+          setStartTime(Date.now());
+        } else {
+          // Re-run the fetchImage after a delay if the image isn't ready
+          timeoutRef.current = setTimeout(fetchImage, 1000);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.log("--------------rerun--------------");
+          // Try again after a delay if 404 (not found)
+          timeoutRef.current = setTimeout(fetchImage, 1000);
+        } else {
+          alert(`Failed to retrieve image: ${handleError(error)}`);
+          setIsWaitingForImage(false); // Stop further fetching on critical error
+        }
+      }
+    };
+
+    if (isWaitingForImage) {
+      fetchImage();
+    }
+    // Cleanup function
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [id, isWaitingForImage]);
+  /*
   useEffect(() => {
     const fetchImage = async () => {
       try {
@@ -47,6 +86,7 @@ const GameGuess = () => {
       fetchImage();
     }
   }, [id, isWaitingForImage]);
+  */
 
   // Fetch lobby settings
   const fetchSettings = async () => {

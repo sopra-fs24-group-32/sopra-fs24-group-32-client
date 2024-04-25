@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { api, handleError } from "helpers/api";
 import Lobby from "models/Lobby";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,6 +6,23 @@ import { Button } from "components/ui/Button";
 import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
+
+const FormField = React.memo((props) => {
+  return (
+    <div className="join field">
+      <label className="join label">{props.label}</label>
+      <input
+        type={props.type || "text"}
+        className="register input"
+        placeholder="enter here.."
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+      />
+    </div>
+  );
+});
+
+FormField.displayName = "FormField";
 
 const LobbyJoin = () => {
   const navigate = useNavigate();
@@ -37,27 +54,16 @@ const LobbyJoin = () => {
     }
   };
 
-  const FormField = (props) => {
-    return (
-      <div className="join field">
-        <label className="join label">{props.label}</label>
-        <input
-          type={props?.type || "text"}
-          className="register input"
-          placeholder="enter here.."
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
-        />
-      </div>
-    );
-  };
-
   FormField.propTypes = {
     label: PropTypes.string,
     value: PropTypes.string,
     onChange: PropTypes.func,
     type: PropTypes.string,
   };
+
+  const handleInvitationCodeChange = useCallback((value: string) => {
+    setInvitationCode(value);
+  }, []);
 
   return (
     <BaseContainer>
@@ -66,7 +72,7 @@ const LobbyJoin = () => {
           <FormField
             label="Enter the Game Code"
             value={invitationCode}
-            onChange={(un: string) => setInvitationCode(un)}
+            onChange={handleInvitationCodeChange}
           />
           <div className="join button-container">
             <Button

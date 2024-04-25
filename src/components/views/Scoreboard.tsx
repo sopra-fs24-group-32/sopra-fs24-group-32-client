@@ -67,7 +67,7 @@ const Scoreboard = () => {
     } else {
       // When the timer reaches 0, clear the interval and call continueGame
       clearInterval(interval);
-      //continueGame();
+      nextRound();
     }
 
     // Clear the interval when the component unmounts

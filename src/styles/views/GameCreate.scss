@@ -1,0 +1,51 @@
+@import "../theme";
+
+.create {
+  &.container {
+    /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
+    @include center;
+    flex-direction: column;
+  }
+  &.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    &.img {
+      width: 10%;
+    }
+  }
+  &.field {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    align-self: center;
+  }
+  &.input {
+    height: 35px;
+    padding-left: 15px;
+    margin-left: -4px;
+    border: none;
+    border-radius: 0.75em;
+    margin-bottom: 20px;
+    width: 100%;
+    //background: transparentize(white, 0.85);
+    background-color: white;
+    //color: $textColor;
+    color: $textInputColor;
+  }
+  &.label {
+    color: $textColor;
+    margin-bottom: 10px;
+    text-transform: lowercase;
+    font-weight: 300;
+  }
+  &.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2em;
+    margin-bottom: -1em;
+    width: 100%;
+  }
+}

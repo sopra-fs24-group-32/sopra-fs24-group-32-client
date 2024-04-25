@@ -8,11 +8,10 @@ import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import PropTypes from "prop-types";
-import "styles/views/Game.scss";
 import "styles/views/Scoreboard.scss";
 
 const Player = ({ rank, username, score }) => (
-  <div className="player container">
+  <div className={`player container rank-${rank}`}>
     <div className="player rank">{rank}.</div>
     <div className="player username">{username}</div>
     <div className="player score">Points: {score}</div>
@@ -131,8 +130,8 @@ const Scoreboard = () => {
 
   if (users.length > 0) {
     content = (
-      <div className="game">
-        <ul className="game user-list">
+      <div className="score">
+        <ul className="score user-list">
           {users.map((user, index) => (
             <li key={user.id}>
               <Player
@@ -143,23 +142,25 @@ const Scoreboard = () => {
             </li>
           ))}
         </ul>
-        {currentUser === lobbyOwner ? (
-          <>
-            <Button width="100%" onClick={nextRound}>
-              Next Round
-            </Button>
-          </>
-        ) : (
-          <>
-            <h3>Waiting for next round to start..</h3>
-          </>
-        )}
+        <div className="score button">
+          {currentUser === lobbyOwner ? (
+            <>
+              <Button className="nextButton" onClick={nextRound}>
+                Next Round
+              </Button>
+            </>
+          ) : (
+            <>
+              <h3>Waiting for next round to start..</h3>
+            </>
+          )}
+        </div>
       </div>
     );
   }
 
   return (
-    <BaseContainer className="game container">
+    <BaseContainer className="score container">
       <h2>Scoreboard</h2>
       {content}
       <div className="timer">{timer} seconds remaining</div>

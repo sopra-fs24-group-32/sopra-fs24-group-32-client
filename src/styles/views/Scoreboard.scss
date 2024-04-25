@@ -1,21 +1,169 @@
-// CSS changes (add these to your stylesheet)
+.score.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto; // This will center the list if it has a set width
+  width: max-content; // This will make the width of the list fit its contents
+  max-width: 100%; // To ensure the list does not exceed the parent's width
+}
+
 .player.container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: transform 0.2s ease-in-out; // Smooth transition for hover effect
+
+  // Define styles for the first three ranks and the rest
+  &.rank-1 {
+    background-color: gold; // Gold for first place
+    font-size: 1.2em; // Larger text for the winner
+    transform: scale(1.1); // Make the container slightly larger
+  }
+  &.rank-2 {
+    background-color: silver; // Silver for second place
+    font-size: 1.15em; // Slightly smaller text than first place
+    transform: scale(1.05); // Slightly smaller container than first place
+  }
+  &.rank-3 {
+    background-color: #cd7f32; // Bronze color for third place
+    font-size: 1.1em; // Slightly smaller text than second place
+    transform: scale(1.03); // Slightly smaller container than second place
+  }
+  &:not(.rank-1):not(.rank-2):not(.rank-3) {
+    background-color: #7679ba;
+    font-size: 1em; // Standard text size
+    transform: scale(1); // Standard container size
+  }
+
+  // Hover effect to scale up the containers a bit
+  &:hover {
+    transform: scale(1.02);
+  }
 }
 
 .player.rank {
   /* styles for the rank, for example, width or color */
   margin-right: 1em; // Adjust spacing as needed
+  color: black;
 }
 
 .player.username {
   /* styles to make sure it doesn't take the whole width, for example */
   flex-grow: 1;
+  color: black;
 }
 
 .player.score {
   /* styles for the score */
   margin-left: auto; // This will push the score to the far right
+  color: black;
+}
+
+.timer {
+  margin-top: 1.5em;
+}
+
+.nextButton {
+  margin-top: 1em;
+  width: 50%;
+}
+
+@import "../theme";
+
+/* The '&' is a shorthand for the containing element,
+  so for example a '&.user-list' inside .game will compile to
+  .game.user-list
+
+  for more information visit https://sass-lang.com/guide
+ */
+
+.score {
+  &.container {
+    padding: 1.5em;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; // This will center the scoreboard vertically
+  }
+  &.user-list {
+    list-style: none;
+    padding-left: 0;
+    width: 100%; // Use 100% width for full-width or set a specific width to center
+    display: flex;
+    flex-direction: column;
+    align-items: center; // This will center the list items horizontally
+    justify-content: center;
+  }
+  &.user-item {
+    display: flex;
+    justify-content: center; // Center align the items horizontally
+    align-items: center;
+  }
+  &.button {
+    display: flex;
+    justify-content: center;
+    align-items: center; // if you also want to vertically center it inside the container
+  }
+  & p,
+  h2 {
+    margin: 0.5em 0;
+  }
+}
+
+.player {
+  &.container {
+    margin: 0.5em 0;
+    width: 20em;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+  }
+  &.name,
+  &.username,
+  &.id {
+    font-weight: 300;
+    margin-left: 5px;
+    color: $textInputColor;
+  }
+  &.username {
+    font-weight: 500;
+    color: $textInputColor;
+  }
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 160px; // Increased width for better legibility
+  color: $textInputColor;
+  text-align: left;
+  border-radius: $borderRadius;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 105%; // Positions the tooltip to the right of the username
+  margin-left: 5px;
+  opacity: 0;
+}
+
+.tooltip .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 10px; // Adjusted to better align with the top of the tooltip
+  right: 100%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }

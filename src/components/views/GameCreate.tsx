@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "components/ui/Button";
-import "styles/views/Login.scss";
+import "styles/views/GameCreate.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import { useWebSocket } from "../../helpers/WebSocketContext";
 
@@ -108,13 +108,13 @@ const GameCreate = () => {
 
   return (
     <BaseContainer>
-      <div className="join container">
+      <div className="create container">
         {isSubmitting ? (
-          <div className="join form">
+          <div className="create form">
             {generatedImage ? (
               <>
                 <h2>Your created Image:</h2>
-                <img src={generatedImage} width="80%" alt="Generated" />
+                <img src={generatedImage} width="60%" alt="Generated" />
                 <p>Waiting for all players to submit their guesses...</p>
                 <p>Time remaining: {timer} seconds</p>
               </>
@@ -127,24 +127,24 @@ const GameCreate = () => {
             <h3>Description: {imageDescription}</h3>
           </div>
         ) : (
-          <div className="join form">
+          <div className="create form">
             <h3>It is your turn to draw an image!</h3>
-            <div className="register field">
-              <label className="register label">
+            <div className="create field">
+              <label className="create label">
                 Type in a text description of what you want DALL-E to draw
               </label>
               <input
                 type="text"
-                className="register input"
+                className="create input"
                 placeholder="enter here.."
                 value={imageDescription}
                 onChange={(e) => setImageDescription(e.target.value)}
               />
             </div>
-            <div className="register button-container">
+            <div className="create button-container">
               <Button
                 disabled={!imageDescription}
-                width="100%"
+                width="50%"
                 onClick={sendDalle}
               >
                 Send to DALL-E

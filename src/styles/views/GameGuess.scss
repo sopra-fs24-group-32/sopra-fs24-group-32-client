@@ -1,0 +1,51 @@
+@import "../theme";
+
+.guess {
+  &.container {
+    /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
+    @include center;
+    flex-direction: column;
+    margin-top: -3em;
+  }
+  &.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3em;
+  }
+  &.field {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+  }
+  &.input {
+    height: 35px;
+    padding-left: 15px;
+    margin-left: -4px;
+    border: none;
+    border-radius: 0.75em;
+    margin-bottom: 20px;
+
+    background-color: white;
+    color: $textInputColor;
+  }
+  &.label {
+    color: $textColor;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    text-transform: lowercase;
+    font-weight: 300;
+  }
+  &.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5em;
+    margin-bottom: -1em;
+    width: 50%;
+  }
+}
+.guessTime {
+  margin-top: 2em;
+}

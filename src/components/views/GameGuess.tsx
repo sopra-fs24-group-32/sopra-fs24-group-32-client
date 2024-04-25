@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button } from "components/ui/Button";
-import "styles/views/Login.scss";
+import "styles/views/GameGuess.scss";
 import BaseContainer from "components/ui/BaseContainer";
 
 const GameGuess = () => {
@@ -100,7 +100,10 @@ const GameGuess = () => {
         timeAvailable,
         emptyString
       );
-      const requestBody = JSON.stringify({ playerGuessed:emptyString, timeGuessSubmitted:timeAvailable });
+      const requestBody = JSON.stringify({
+        playerGuessed: emptyString,
+        timeGuessSubmitted: timeAvailable,
+      });
       const userTokenJson = JSON.stringify({ userToken });
       const response = await api.put(`/game/chatgpt/${id}`, requestBody, {
         headers: {
@@ -125,7 +128,10 @@ const GameGuess = () => {
         playerGuessed
       );
       setTimeSubmitted(elapsed);
-      const requestBody = JSON.stringify({ playerGuessed:playerGuessed, timeGuessSubmitted:elapsed });
+      const requestBody = JSON.stringify({
+        playerGuessed: playerGuessed,
+        timeGuessSubmitted: elapsed,
+      });
       const userTokenJson = JSON.stringify({ userToken });
       const response = await api.put(`/game/chatgpt/${id}`, requestBody, {
         headers: {
@@ -142,15 +148,16 @@ const GameGuess = () => {
 
   return (
     <BaseContainer>
-      <div className="join container">
-        <div className="join form">
+      <div className="guess container">
+        <div className="guess form">
           {isWaitingForImage ? (
             <>
               <h2>Waiting for the image generation by DALL-E...</h2>
               <h3>
-                {creatorName
+                {/*}{creatorName
                   ? `Image being created by ${creatorName}`
                   : "Fetching creator's name..."}
+                {*/}
               </h3>
             </>
           ) : (
@@ -158,25 +165,25 @@ const GameGuess = () => {
               <h3>Remaining time: {timer} seconds</h3>
               <h3>Image drawn by DALL-E</h3>
               {image && (
-                <img src={image} width="80%" alt="Generated from DALL-E" />
+                <img src={image} width="60%" alt="Generated from DALL-E" />
               )}
-              <div className="register field">
-                <label className="register label">
+              <div className="guess field">
+                <label className="guess label">
                   Type in your guess for the image description
                 </label>
                 <input
                   disabled={playerSubmitted}
                   type="text"
-                  className="register input"
+                  className="guess input"
                   placeholder="enter here.."
                   value={playerGuessed}
                   onChange={(e) => setPlayerGuessed(e.target.value)}
                 />
               </div>
-              <div className="register button-container">
+              <div className="guess button-container">
                 <Button
                   disabled={!playerGuessed || timer === 0 || playerSubmitted}
-                  width="100%"
+                  width="50%"
                   onClick={sendGuess}
                 >
                   Submit Guess
@@ -186,7 +193,9 @@ const GameGuess = () => {
           )}
           {playerSubmitted ? (
             <>
-              <h3>You submitted in {timeSubmitted} seconds!</h3>
+              <h3 className="guessTime">
+                You submitted in {timeSubmitted} seconds!
+              </h3>
             </>
           ) : (
             <></>

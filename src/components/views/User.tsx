@@ -39,6 +39,8 @@ const UserDetail = () => {
     // eslint-disable-next-line
     await api.post(`/logoutByToken`, requestBody);
     localStorage.removeItem("userToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("id");
     navigate("/login");
   }
 
@@ -137,17 +139,17 @@ const UserDetail = () => {
         <Button
           width="100%"
           style={{ marginBottom: "10px" }}
-          onClick={() => navigate("/game")}
-        >
-          Back
-        </Button>
-        <Button
-          width="100%"
-          style={{ marginBottom: "10px" }}
           onClick={() => navigate(`/game/${id}/change`)}
           disabled={isAuthenticated === false}
         >
           Edit
+        </Button>
+        <Button
+          width="100%"
+          style={{ marginBottom: "10px" }}
+          onClick={() => navigate("/home")}
+        >
+          Home Screen
         </Button>
       </div>
     );

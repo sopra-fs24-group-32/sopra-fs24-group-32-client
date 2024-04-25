@@ -1,28 +1,67 @@
 import React from "react";
 import { ReactLogo } from "../ui/ReactLogo";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import "../../styles/views/Header.scss";
 
-/**
- * This is an example of a Functional and stateless component (View) in React. Functional components are not classes and thus don't handle internal state changes.
- * Conceptually, components are like JavaScript functions. They accept arbitrary inputs (called “props”) and return React elements describing what should appear on the screen.
- * They are reusable pieces, and think about each piece in isolation.
- * Functional components have to return always something. However, they don't need a "render()" method.
- * https://react.dev/learn/your-first-component and https://react.dev/learn/passing-props-to-a-component
- * @FunctionalComponent
- */
-const Header = (props) => (
-  <div className="header container" style={{ height: props.height }}>
-    <h1 className="header title">GPTuesser</h1>
-    <ReactLogo width="60px" height="60px" />
-  </div>
-);
+const Header = (props) => {
+  const navigate = useNavigate();
+
+  const navigateToUser = () => {
+    const id = localStorage.getItem("id");
+    navigate(`/game/${id}`);
+  };
+
+  return (
+    <div className="header container" style={{ height: props.height }}>
+      <button
+        className="header-button back-button"
+        onClick={() => navigate(-1)}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="w-6 h-6 back-arrow"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5 8.25 12l7.5-7.5"
+          />
+        </svg>
+        Back
+      </button>
+      <h1 onClick={() => navigate("/home")} className="header title">
+        GPTuesser
+      </h1>
+      <button
+        className="header-button profile-button"
+        onClick={() => navigateToUser()}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="w-6 h-6 user-icon"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+          />
+        </svg>
+      </button>
+    </div>
+  );
+};
 
 Header.propTypes = {
   height: PropTypes.string,
 };
 
-/**
- * Don't forget to export your component!
- */
 export default Header;

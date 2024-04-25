@@ -1,14 +1,50 @@
 @import "../theme";
 
 .header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   &.container {
     @include center;
   }
 
   &.title {
     font-weight: bold;
-    //color: $background;
     color: white;
     text-align: center;
+    width: 400px;
+    cursor: pointer;
+  }
+
+  .header-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .back-arrow {
+    width: 24px;
+    height: 24px;
+  }
+
+  .user-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .back-button {
+    margin-left: auto; // Moves it to the left
+  }
+
+  .profile-button {
+    margin-right: auto; // Moves it to the right
   }
 }

@@ -14,6 +14,7 @@ import LobbyJoined from "../../views/LobbyJoined";
 import GameCreate from "../../views/GameCreate";
 import GameGuess from "../../views/GameGuess";
 import Scoreboard from "../../views/Scoreboard";
+import Header from "../../views/Header";
 
 /**
  * Main router of your application.
@@ -27,6 +28,7 @@ import Scoreboard from "../../views/Scoreboard";
 const AppRouter = () => {
   return (
     <BrowserRouter>
+      <Header height="100" />
       <Routes>
         <Route path="/game/*" element={<GameGuard />}>
           {/* <Route index element={<Navigate to="" replace />} /> */}

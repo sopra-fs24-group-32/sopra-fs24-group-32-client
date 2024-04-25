@@ -3,7 +3,6 @@ import Header from "./components/views/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
 import { WebSocketProvider } from "./helpers/WebSocketContext";
 
-
 /**
  * Happy coding!
  * React Template by Lucas Pelloni
@@ -14,7 +13,6 @@ const App = () => {
   return (
     <WebSocketProvider>
       <div>
-        <Header height="100" />
         <AppRouter />
       </div>
     </WebSocketProvider>
@@ -22,4 +20,3 @@ const App = () => {
 };
 
 export default App;
-

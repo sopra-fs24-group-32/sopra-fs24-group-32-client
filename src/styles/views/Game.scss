@@ -27,7 +27,8 @@
     align-items: center;
     justify-content: center;
   }
-  & p,h2 {
+  & p,
+  h2 {
     margin: 0.5em 0;
   }
 }
@@ -42,14 +43,15 @@
     align-items: center;
     background: lighten($background, 5);
   }
-  &.name, &.username, &.id {
+  &.name,
+  &.username,
+  &.id {
     font-weight: 300;
     margin-left: 5px;
     color: $textColor;
   }
   &.username {
     font-weight: 500;
-    color: $accent;
   }
   &.id {
     margin-left: auto;

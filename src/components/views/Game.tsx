@@ -38,6 +38,8 @@ const Game = () => {
     // eslint-disable-next-line
     await api.post(`/logoutByToken`, requestBody);
     localStorage.removeItem("userToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("id");
     navigate("/login");
   }
 

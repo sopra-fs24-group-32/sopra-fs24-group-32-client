@@ -44,11 +44,15 @@ const Scoreboard = () => {
         const response = await api.get(`/lobby/${id}`); // Assuming this endpoint gives user scores
         setLobbyOwner(response.data.lobbyOwner);
         if (response.data.users && Array.isArray(response.data.users)) {
+          const userMap = new Map();
+          response.data.users.forEach(user => {
+            if (!userMap.has(user.username)) {
+              userMap.set(user.username, user);
+            }
+          });
           // Sort users by score in descending order
-          const sortedUsers = response.data.users.sort(
-            (a, b) => b.score - a.score
-          );
-          setUsers(sortedUsers);
+          const uniqueUsers = Array.from(userMap.values()).sort((a, b) => b.score - a.score);
+          setUsers(uniqueUsers);
         }
       } catch (error) {
         console.error(`Failed to fetch users: \n${handleError(error)}`);

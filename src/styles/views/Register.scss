@@ -23,7 +23,6 @@
     //background-color: $background;
     transition: opacity 0.5s ease, transform 0.5s ease;
     //box-shadow: $dropShadow;
-    margin-top: -1.6em;
   }
   &.field {
     display: flex;
@@ -53,4 +52,7 @@
     justify-content: center;
     margin-top: 2em;
   }
+}
+a {
+  color: white;
 }

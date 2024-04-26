@@ -15,6 +15,7 @@ import GameCreate from "../../views/GameCreate";
 import GameGuess from "../../views/GameGuess";
 import Scoreboard from "../../views/Scoreboard";
 import Header from "../../views/Header";
+import HomePage from "../../views/HomePage";
 
 /**
  * Main router of your application.
@@ -53,13 +54,15 @@ const AppRouter = () => {
 
         <Route path="/game/scoreboard/:id" element={<Scoreboard />} />
 
+        <Route path="/home" element={<Home/>} />
+
         <Route path="/login" element={<LoginGuard />}>
           <Route path="/login" element={<Login />} />
         </Route>
 
         <Route path="/register" element={<Register />} />
 
-        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/" element={<HomePage/>}/>
       </Routes>
     </BrowserRouter>
   );

@@ -88,6 +88,14 @@ const Register = () => {
               Sign Up
             </Button>
           </div>
+          <div className="register button-container">
+            <p className="register prompt">
+              Already have an account? <a href="/login" onClick={(e) => {
+                e.preventDefault();
+                navigate("/login");
+              }}>Login</a>
+            </p>
+          </div>
         </div>
       </div>
     </BaseContainer>

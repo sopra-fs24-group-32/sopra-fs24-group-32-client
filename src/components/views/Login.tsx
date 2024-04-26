@@ -91,9 +91,12 @@ const Login = () => {
             </Button>
           </div>
           <div className="register button-container">
-            <Button width="50%" onClick={navigateToRegister}>
-              Register
-            </Button>
+            <p className="register prompt">
+              Do not have an account yet? <a href="/register" onClick={(e) => {
+                e.preventDefault();
+                navigate("/register");
+              }}>Sign up</a>
+            </p>
           </div>
         </div>
       </div>

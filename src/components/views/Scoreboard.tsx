@@ -29,7 +29,7 @@ const Scoreboard = () => {
   const { id } = useParams();
   const userToken = localStorage.getItem("userToken");
   const [playerGuessed, setPlayerGuessed] = useState("");
-  const [timer, setTimer] = useState(10); // Default timer
+  const [timer, setTimer] = useState(30); // Default timer
   const [users, setUsers] = useState([]);
   const [countPlayed, setCountPlayer] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);

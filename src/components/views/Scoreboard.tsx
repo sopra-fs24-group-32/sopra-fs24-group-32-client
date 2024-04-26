@@ -31,6 +31,9 @@ const Scoreboard = () => {
   const [playerGuessed, setPlayerGuessed] = useState("");
   const [timer, setTimer] = useState(10); // Default timer
   const [users, setUsers] = useState([]);
+  const [countPlayed, setCountPlayer] = useState(0);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [amtOfRounds, setAmtOfRounds] = useState(0);
   const [lobbyOwner, setLobbyOwner] = useState("");
   const [currentUser, setCurrentUser] = useState(
     localStorage.getItem("username")
@@ -43,6 +46,7 @@ const Scoreboard = () => {
       try {
         const response = await api.get(`/lobby/${id}`); // Assuming this endpoint gives user scores
         setLobbyOwner(response.data.lobbyOwner);
+        setAmtOfRounds(response.data.amtOfRounds);
         if (response.data.users && Array.isArray(response.data.users)) {
           const userMap = new Map();
           response.data.users.forEach(user => {
@@ -79,7 +83,13 @@ const Scoreboard = () => {
   }, [timer]);
 
   const nextRound = () => {
-    stompClient.send("/game/continueGame", {}, id);
+    if (currentRound < amtOfRounds) {
+      setCountPlayer(prev => prev + 1);
+      if ((countPlayed) % users.length === 0) {
+        setCurrentRound(prev => prev + 1);
+      }
+      stompClient.send("/game/continueGame", {}, id);
+    }
   };
 
   //WEBSOCKET SUBSCRIPTION
@@ -148,15 +158,25 @@ const Scoreboard = () => {
         </ul>
         <div className="score button">
           {currentUser === lobbyOwner ? (
-            <>
-              <Button className="nextButton" onClick={nextRound}>
-                Next Round
+            currentRound >= amtOfRounds ? (
+              <Button className="nextButton" onClick={() => navigate("/home")}>
+                Home
               </Button>
-            </>
+            ) :
+              <>
+                <Button className="nextButton" onClick={nextRound}>
+                  Next Round
+                </Button>
+              </>
           ) : (
-            <>
-              <h3>Waiting for next round to start..</h3>
-            </>
+            currentRound >= amtOfRounds ? (
+              <Button className="nextButton" onClick={() => navigate("/home")}>
+                Home
+              </Button>
+            ) :
+              <>
+                <h3>Waiting for next round to start..</h3>
+              </>
           )}
         </div>
       </div>
@@ -167,7 +187,7 @@ const Scoreboard = () => {
     <BaseContainer className="score container">
       <h2>Scoreboard</h2>
       {content}
-      <div className="timer">{timer} seconds remaining</div>
+      <div className="timer">{timer} seconds remaining and Round played: {currentRound}/{amtOfRounds}</div>
     </BaseContainer>
   );
 };

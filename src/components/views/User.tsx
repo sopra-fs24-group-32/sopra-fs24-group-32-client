@@ -151,14 +151,21 @@ const UserDetail = () => {
         >
           Home Screen
         </Button>
+        <Button 
+          width="100%"
+          style={{ marginBottom: "10px", backgroundColor: "#ff6666"}}
+          onClick={() => logout()}
+        >
+          Logout
+        </Button>
       </div>
     );
   }
 
   return (
     <BaseContainer className="game container">
-      <h2>Happy Coding!</h2>
-      <p className="game paragraph">Get user from secure endpoint:</p>
+      <h2>Your Profile!</h2>
+      <p className="game paragraph">Current Information:</p>
       {content}
     </BaseContainer>
   );

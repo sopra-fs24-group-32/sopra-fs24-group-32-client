@@ -20,17 +20,6 @@ const Home = () => {
     navigate("/lobby/join");
   };
 
-  async function logout() {
-    const userToken = localStorage.getItem("userToken");
-    const requestBody = JSON.stringify({ userToken });
-    // eslint-disable-next-line
-    await api.post(`/logoutByToken`, requestBody);
-    localStorage.removeItem("userToken");
-    localStorage.removeItem("username");
-    localStorage.removeItem("id");
-    navigate("/login");
-  }
-
   return (
     <BaseContainer className="home container">
       <Button
@@ -41,9 +30,6 @@ const Home = () => {
       </Button>
       <Button className="homeButton joinButton" onClick={navigateToJoinLobby}>
         Join Lobby
-      </Button>
-      <Button className="homeButton logoutButton" onClick={() => logout()}>
-        Logout
       </Button>
     </BaseContainer>
   );

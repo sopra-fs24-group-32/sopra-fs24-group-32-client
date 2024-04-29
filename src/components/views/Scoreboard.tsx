@@ -32,7 +32,7 @@ const Scoreboard = () => {
   const [timer, setTimer] = useState(30); // Default timer
   const [users, setUsers] = useState([]);
   const [countPlayed, setCountPlayer] = useState(0);
-  const [currentRound, setCurrentRound] = useState(1);
+  const [currentRound, setCurrentRound] = useState(0);
   const [amtOfRounds, setAmtOfRounds] = useState(0);
   const [lobbyOwner, setLobbyOwner] = useState("");
   const [currentUser, setCurrentUser] = useState(
@@ -187,7 +187,7 @@ const Scoreboard = () => {
     <BaseContainer className="score container">
       <h2>Scoreboard</h2>
       {content}
-      <div className="timer">{timer} seconds remaining and Round played: {currentRound}/{amtOfRounds}</div>
+      <div className="timer">{timer} seconds remaining and Round played: {currentRound+1}/{amtOfRounds}</div>
     </BaseContainer>
   );
 };

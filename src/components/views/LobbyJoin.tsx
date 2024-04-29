@@ -30,7 +30,7 @@ const LobbyJoin = () => {
   const navigate = useNavigate();
   const [invitationCode, setInvitationCode] = useState<string>(null);
   const [showScanner, setShowScanner] = useState(false);
-  const qrReaderRef = useRef<HTMLVideoElement | null>(null);
+  const qrReaderRef = useRef(null);
 
   const joinLobby = async () => {
     try {
@@ -69,7 +69,7 @@ const LobbyJoin = () => {
     setInvitationCode(value);
   }, []);
 
-  const handleScan = data => {
+  const handleScan =(data) => {
     if (data) {
       setInvitationCode(data);
       setShowScanner(false);
@@ -129,7 +129,7 @@ const LobbyJoin = () => {
               style={{ width: "100%", maxWidth: "300px" }}
               constraints={{
                 audio: false,
-                video: { facingMode: { exact: "environment" } },
+                video: { facingMode: "environment" },
               }}
             />
             <p>Scan QR Code to join the game</p>

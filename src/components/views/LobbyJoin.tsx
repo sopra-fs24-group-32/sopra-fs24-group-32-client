@@ -6,7 +6,7 @@ import { Button } from "components/ui/Button";
 import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import {QrReader} from "react-qr-reader";
+// import {QrReader} from "react-qr-reader";
 
 const FormField = React.memo((props) => {
   return (
@@ -119,13 +119,13 @@ const LobbyJoin = () => {
         </div>
         {showScanner && (
           <div className="qr-scanner">
-            <QrReader
+            {/* <QrReader
               delay={300}
               ref={qrReaderRef}
               onError={handleError}
               onScan={handleScan}
               style={{ width: "100%" }}
-            />
+            /> */}
             <p>Scan QR Code to join the game</p>
           </div>
         )}

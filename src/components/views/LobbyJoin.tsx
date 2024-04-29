@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import Lobby from "models/Lobby";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { Button } from "components/ui/Button";
 import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
+import {QrReader} from "react-qr-reader";
 
 const FormField = React.memo((props) => {
   return (
@@ -27,6 +28,8 @@ FormField.displayName = "FormField";
 const LobbyJoin = () => {
   const navigate = useNavigate();
   const [invitationCode, setInvitationCode] = useState<string>(null);
+  const [showScanner, setShowScanner] = useState(false);
+  const qrReaderRef = useRef(null);
 
   const joinLobby = async () => {
     try {
@@ -65,6 +68,31 @@ const LobbyJoin = () => {
     setInvitationCode(value);
   }, []);
 
+  const handleScan = data => {
+    if (data) {
+      setInvitationCode(data);
+      setShowScanner(false);
+      joinLobby();
+    }
+  };
+
+  const handleError = err => {
+    console.error(err);
+    alert("Failed to join the lobby: " + err.message);
+  };
+
+  const toggleScanner = () => {
+    if (showScanner && qrReaderRef.current) {
+      // Stop the camera stream
+      const stream = qrReaderRef.current.getVideoElement().srcObject;
+      const tracks = stream.getTracks();
+
+      tracks.forEach(track => track.stop());
+    }
+    setShowScanner(!showScanner);
+  };
+
+
   return (
     <BaseContainer>
       <div className="join container">
@@ -74,16 +102,33 @@ const LobbyJoin = () => {
             value={invitationCode}
             onChange={handleInvitationCodeChange}
           />
-          <div className="join button-container">
-            <Button
-              disabled={!invitationCode}
-              width="50%"
-              onClick={() => joinLobby()}
-            >
-              Join Game
-            </Button>
-          </div>
+          <Button
+            disabled={!invitationCode}
+            width="100%"
+            onClick={joinLobby}
+          >
+            Join Game
+          </Button>
+          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>or</div> {/* OR separator */}
+          <Button
+            width="100%"
+            onClick={toggleScanner}
+          >
+            {showScanner ? "Hide Scanner" : "Scan QR Code"}
+          </Button>
         </div>
+        {showScanner && (
+          <div className="qr-scanner">
+            <QrReader
+              delay={300}
+              ref={qrReaderRef}
+              onError={handleError}
+              onScan={handleScan}
+              style={{ width: "100%" }}
+            />
+            <p>Scan QR Code to join the game</p>
+          </div>
+        )}
       </div>
     </BaseContainer>
   );

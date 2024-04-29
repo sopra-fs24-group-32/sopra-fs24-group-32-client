@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 import Lobby from "models/Lobby";
+import QRCode from "qrcode.react";
 
 import SockJS from "sockjs-client";
 //import Stomp from "stompjs";
@@ -149,6 +150,13 @@ const LobbyDetailHost = () => {
     stompClient.send("/game/lobby/startgame", {}, id);
   };
 
+  // const qrCode = () => {
+  //   const 
+  //   return (
+      
+  //   );
+  // }
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -204,6 +212,19 @@ const LobbyDetailHost = () => {
               <div className="player invitationCode">
                 Invitation Code: {lobby.lobbyInvitationCode}
               </div>
+            </div>
+          </li>
+          <li key="qrInvitationCode">
+            <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+              <QRCode
+                value={lobby.lobbyInvitationCode}
+                size={128}
+                bgColor={"#ffffff"}
+                fgColor={"#000000"}
+                level={"L"}
+                style={{ margin: "10px" }}
+                renderAs={"svg"}
+              />
             </div>
           </li>
           <li key="maxAmtPlayers">

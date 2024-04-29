@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, Component } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import Lobby from "models/Lobby";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,7 +6,6 @@ import { Button } from "components/ui/Button";
 import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-// import {QrReader} from "react-qr-reader";
 import QrReader from "react-qr-scanner";
 
 
@@ -31,7 +30,7 @@ const LobbyJoin = () => {
   const navigate = useNavigate();
   const [invitationCode, setInvitationCode] = useState<string>(null);
   const [showScanner, setShowScanner] = useState(false);
-  const qrReaderRef = useRef(null);
+  const qrReaderRef = useRef<HTMLVideoElement | null>(null);
 
   const joinLobby = async () => {
     try {
@@ -93,6 +92,18 @@ const LobbyJoin = () => {
     }
     setShowScanner(!showScanner);
   };
+
+  useEffect(() => {
+    if (showScanner) {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+        .then(stream => {
+          if (qrReaderRef.current) {
+            qrReaderRef.current.srcObject = stream;
+          }
+        })
+        .catch(handleError);
+    }
+  }, [showScanner]);
 
 
   return (

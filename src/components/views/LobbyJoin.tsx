@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef, Component } from "react";
 import { api, handleError } from "helpers/api";
 import Lobby from "models/Lobby";
 import { useNavigate, useParams } from "react-router-dom";
@@ -7,6 +7,8 @@ import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 // import {QrReader} from "react-qr-reader";
+import QrReader from 'react-qr-scanner'
+
 
 const FormField = React.memo((props) => {
   return (
@@ -119,13 +121,14 @@ const LobbyJoin = () => {
         </div>
         {showScanner && (
           <div className="qr-scanner">
-            {/* <QrReader
+            <QrReader
               delay={300}
               ref={qrReaderRef}
+              size={128}
               onError={handleError}
               onScan={handleScan}
-              style={{ width: "100%" }}
-            /> */}
+              style={{ width: "100%", maxWidth: "300px" }}
+            />
             <p>Scan QR Code to join the game</p>
           </div>
         )}

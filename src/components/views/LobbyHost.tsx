@@ -230,7 +230,7 @@ const LobbyDetailHost = () => {
                 bgColor={"#ffffff"}
                 fgColor={"#000000"}
                 level={"L"}
-                style={{ margin: "10px" }}
+                style={{ width: "100%", maxWidth: "300px" }}
                 renderAs={"svg"}
               />
             </div>

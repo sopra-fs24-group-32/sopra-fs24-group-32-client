@@ -93,32 +93,6 @@ const LobbyJoin = () => {
     setShowScanner(!showScanner);
   };
 
-  const setupCamera = async () => {
-    try {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const cameras = devices.filter(device => device.kind === "videoinput");
-      const rearCamera = cameras.find(camera => camera.label.toLowerCase().includes("back"));
-      
-      if (rearCamera) {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { deviceId: rearCamera.deviceId }
-        });
-        qrReaderRef.current.srcObject = stream; // You need to adjust this part based on how your QR reader component uses the video stream
-      } else {
-        console.error("Rear camera not found.");
-      }
-    } catch (error) {
-      console.error("Error accessing the camera", error);
-    }
-  };
-  
-  useEffect(() => {
-    if (showScanner) {
-      setupCamera();
-    }
-  }, [showScanner]);
-
-
   return (
     <BaseContainer>
       <div className="join container">
@@ -149,9 +123,14 @@ const LobbyJoin = () => {
               delay={300}
               ref={qrReaderRef}
               size={128}
+              key="environment"
               onError={handleError}
               onScan={handleScan}
               style={{ width: "100%", maxWidth: "300px" }}
+              constraints={{
+                audio: false,
+                video: { facingMode: { exact: "environment" } },
+              }}
             />
             <p>Scan QR Code to join the game</p>
           </div>

@@ -17,6 +17,7 @@ import { getDomain } from "helpers/getDomain";
 
 const LobbyDetailHost = () => {
   const navigate = useNavigate();
+  let amtOfConnectionTries = 0;
   const { id } = useParams();
   const [lobby, setLobby] = useState(new Lobby());
   const [stompClient, setStompClient] = useState(null);
@@ -49,13 +50,14 @@ const LobbyDetailHost = () => {
     }
   };
 
+  const connectAndSubscribeUserToSocket = async () => {
+    const sock = new SockJS(getDomain() + "/ws");
+    const client = over(sock, { websocket: { withCredentials: false } });
+    setStompClient(client);
+  };
+
   //WEBSOCKET SUBSCRIPTION
   useEffect(() => {
-    const connectAndSubscribeUserToSocket = async () => {
-      const sock = new SockJS(getDomain() + "/ws");
-      const client = over(sock, { websocket: { withCredentials: false } });
-      setStompClient(client);
-    };
     connectAndSubscribeUserToSocket();
   }, []);
 
@@ -80,7 +82,13 @@ const LobbyDetailHost = () => {
     };
 
     const onError = (error) => {
-      console.log("Error:", error);
+      if(amtOfConnectionTries<5){
+        amtOfConnectionTries += 1;
+        connectAndSubscribeUserToSocket();
+      }else{
+        console.log("Connection with websocket failed multiple times");
+        console.log("Error:", error);
+      }
     };
 
     const onMessageReceived = (payload) => {

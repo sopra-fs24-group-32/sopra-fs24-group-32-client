@@ -20,6 +20,28 @@ const Home = () => {
     navigate("/lobby/join");
   };
 
+  async function logout() {
+    const userToken = localStorage.getItem("userToken");
+    const requestBody = JSON.stringify({ userToken });
+    // eslint-disable-next-line
+    await api.post(`/logoutByToken`, requestBody);
+    localStorage.removeItem("userToken");
+    localStorage.removeItem("username");
+    localStorage.removeItem("id");
+    navigate("/login");
+  }
+
+  const leaveCurrentLobby = async () => {
+    try {
+      // const userToken = localStorage.getItem("userToken");
+      // const response = await api.post("/lobby/leave", formData, config);
+      // const lobby = new Lobby(response.data);
+      //TODO: leave the current lobby the player is in.
+    } catch (error) {
+      alert(`Something went wrong during the leave: \n${handleError(error)}`);
+    }
+  };
+
   return (
     <BaseContainer className="home container">
       <Button
@@ -30,6 +52,15 @@ const Home = () => {
       </Button>
       <Button className="homeButton joinButton" onClick={navigateToJoinLobby}>
         Join Lobby
+      </Button>
+      <Button
+        className="homeButton logoutButton"
+        onClick={() => leaveCurrentLobby()}
+      >
+        Leave current lobby
+      </Button>
+      <Button className="homeButton logoutButton" onClick={() => logout()}>
+        Logout
       </Button>
     </BaseContainer>
   );

@@ -7,7 +7,7 @@ import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 // import {QrReader} from "react-qr-reader";
-import QrReader from 'react-qr-scanner'
+import QrReader from "react-qr-scanner";
 
 
 const FormField = React.memo((props) => {

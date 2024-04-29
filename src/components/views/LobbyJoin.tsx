@@ -93,15 +93,28 @@ const LobbyJoin = () => {
     setShowScanner(!showScanner);
   };
 
+  const setupCamera = async () => {
+    try {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const cameras = devices.filter(device => device.kind === "videoinput");
+      const rearCamera = cameras.find(camera => camera.label.toLowerCase().includes("back"));
+      
+      if (rearCamera) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { deviceId: rearCamera.deviceId }
+        });
+        qrReaderRef.current.srcObject = stream; // You need to adjust this part based on how your QR reader component uses the video stream
+      } else {
+        console.error("Rear camera not found.");
+      }
+    } catch (error) {
+      console.error("Error accessing the camera", error);
+    }
+  };
+  
   useEffect(() => {
     if (showScanner) {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-        .then(stream => {
-          if (qrReaderRef.current) {
-            qrReaderRef.current.srcObject = stream;
-          }
-        })
-        .catch(handleError);
+      setupCamera();
     }
   }, [showScanner]);
 

@@ -49,20 +49,20 @@ const UserDetail = () => {
   // this can be achieved by leaving the second argument an empty array.
   // for more information on the effect hook, please see https://react.dev/reference/react/useEffect
   useEffect(() => {
-    async function getAuthentication() {
-      try {
-        const userToken = localStorage.getItem("userToken");
-        const requestBody = JSON.stringify({ userToken });
-        // eslint-disable-next-line
-        const response = await api.post(`/authenticate/${id}`, requestBody);
-        setIsAuthenticated(response.data === true);
-      } catch (error) {
-        console.error(
-          `Something went wrong while authenticating: \n${handleError(error)}`
-        );
-        console.error("Details:", error);
-      }
-    }
+    // async function getAuthentication() {
+    //   try {
+    //     const userToken = localStorage.getItem("userToken");
+    //     const requestBody = JSON.stringify({ userToken });
+    //     // eslint-disable-next-line
+    //     const response = await api.post(`/authenticate/${id}`, requestBody);
+    //     setIsAuthenticated(response.data === true);
+    //   } catch (error) {
+    //     console.error(
+    //       `Something went wrong while authenticating: \n${handleError(error)}`
+    //     );
+    //     console.error("Details:", error);
+    //   }
+    // }
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
@@ -97,7 +97,7 @@ const UserDetail = () => {
     }
 
     fetchData();
-    getAuthentication();
+    // getAuthentication();
   }, []);
 
   let content = <Spinner />;
@@ -140,7 +140,6 @@ const UserDetail = () => {
           width="100%"
           style={{ marginBottom: "10px" }}
           onClick={() => navigate(`/game/${id}/change`)}
-          disabled={isAuthenticated === false}
         >
           Edit
         </Button>
@@ -151,9 +150,9 @@ const UserDetail = () => {
         >
           Home Screen
         </Button>
-        <Button 
+        <Button
           width="100%"
-          style={{ marginBottom: "10px", backgroundColor: "#ff6666"}}
+          style={{ marginBottom: "10px", backgroundColor: "#ff6666" }}
           onClick={() => logout()}
         >
           Logout

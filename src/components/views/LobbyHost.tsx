@@ -8,7 +8,8 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 import Lobby from "models/Lobby";
-import QRCode from "qrcode.react";
+// import QRCode from "qrcode.react";
+import {QRCodeCanvas} from "qrcode.react";
 
 import SockJS from "sockjs-client";
 //import Stomp from "stompjs";
@@ -224,15 +225,7 @@ const LobbyDetailHost = () => {
           </li>
           <li key="qrInvitationCode">
             <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-              <QRCode
-                value={lobby.lobbyInvitationCode}
-                size={128}
-                bgColor={"#ffffff"}
-                fgColor={"#000000"}
-                level={"L"}
-                style={{ width: "100%", maxWidth: "300px" }}
-                renderAs={"svg"}
-              />
+              <QRCodeCanvas value={lobby.lobbyInvitationCode} size={300} level="H" />
             </div>
           </li>
           <li key="maxAmtPlayers">

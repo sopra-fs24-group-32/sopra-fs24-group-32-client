@@ -33,10 +33,11 @@ const Home = () => {
 
   const leaveCurrentLobby = async () => {
     try {
-      // const userToken = localStorage.getItem("userToken");
-      // const response = await api.post("/lobby/leave", formData, config);
-      // const lobby = new Lobby(response.data);
-      //TODO: leave the current lobby the player is in.
+      const userToken = localStorage.getItem("userToken");
+      const requestBody = JSON.stringify({ userToken });
+      console.log("Usertoken: " + userToken);
+      const response = await api.post("/lobby/leaveCurrentLobby", requestBody);
+      alert("You have left your lobby!")
     } catch (error) {
       alert(`Something went wrong during the leave: \n${handleError(error)}`);
     }

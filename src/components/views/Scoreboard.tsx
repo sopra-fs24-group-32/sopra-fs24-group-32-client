@@ -29,12 +29,11 @@ const Scoreboard = () => {
   const { id } = useParams();
   const userToken = localStorage.getItem("userToken");
   const [playerGuessed, setPlayerGuessed] = useState("");
-  const [timer, setTimer] = useState(30); // Default timer
+  const [timer, setTimer] = useState(15); // Default timer
   const [users, setUsers] = useState([]);
-  const [countPlayed, setCountPlayer] = useState(0);
   const [currentRound, setCurrentRound] = useState(1);
   const [amtOfRounds, setAmtOfRounds] = useState(0);
-  const [lobbyOwner, setLobbyOwner] = useState("");
+  const [lobbyOwner, setLobbyOwner] = useState(null);
   const [currentUser, setCurrentUser] = useState(
     localStorage.getItem("username")
   );
@@ -47,6 +46,7 @@ const Scoreboard = () => {
         const response = await api.get(`/lobby/${id}`); // Assuming this endpoint gives user scores
         setLobbyOwner(response.data.lobbyOwner);
         setAmtOfRounds(response.data.amtOfRounds);
+        setCurrentRound(response.data.currentRound);
         if (response.data.users && Array.isArray(response.data.users)) {
           const userMap = new Map();
           response.data.users.forEach(user => {
@@ -84,10 +84,6 @@ const Scoreboard = () => {
 
   const nextRound = () => {
     if (currentRound < amtOfRounds) {
-      setCountPlayer(prev => prev + 1);
-      if ((countPlayed) % users.length === 0) {
-        setCurrentRound(prev => prev + 1);
-      }
       stompClient.send("/game/continueGame", {}, id);
     }
   };
@@ -169,10 +165,11 @@ const Scoreboard = () => {
                 </Button>
               </>
           ) : (
-            currentRound > amtOfRounds ? (
+            currentRound >= amtOfRounds ? (
               <Button className="nextButton" onClick={() => navigate("/home")}>
                 Home
               </Button>
+
             ) :
               <>
                 <h3>Waiting for next round to start..</h3>

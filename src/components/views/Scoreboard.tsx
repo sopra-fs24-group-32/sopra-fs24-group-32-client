@@ -194,7 +194,7 @@ const Scoreboard = () => {
         </ul>
         <div className="score button">
           {currentUser === lobbyOwner ? (
-            currentRound >= amtOfRounds ? (
+            currentRound >= amtOfRounds || users.length < 2 ?  (
               <Button className="nextButton" onClick={() => doGoHomeHost()}>
                 Home
               </Button>
@@ -205,7 +205,7 @@ const Scoreboard = () => {
                 </Button>
               </>
           ) : (
-            currentRound >= amtOfRounds ? (
+            currentRound >= amtOfRounds || users.length < 2 ? (
               <Button className="nextButton" onClick={() => doGoHome()}>
                 Home
               </Button>

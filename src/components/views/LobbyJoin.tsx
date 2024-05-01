@@ -31,7 +31,7 @@ const LobbyJoin = () => {
   const [showScanner, setShowScanner] = useState(false);
   const qrReaderRef = useRef(null);
 
-  const joinLobby = async () => {
+  const joinLobby = async (invitationCode) => {
     try {
       const userToken = localStorage.getItem("userToken");
       const requestBody = JSON.stringify({ userToken });
@@ -39,7 +39,7 @@ const LobbyJoin = () => {
         `/lobby/join/${invitationCode}`,
         requestBody
       );
-
+      console.log("invitation code in joining lobby===============: ", invitationCode)
       const lobby = new Lobby(response.data);
       navigate(`/lobby/joined/${lobby.id}`);
     } catch (error) {
@@ -74,7 +74,8 @@ const LobbyJoin = () => {
       console.log("Scanned data---------------------------:", getData)
       setInvitationCode(getData);
       setShowScanner(false);
-      joinLobby();
+      console.log("Invitation code---------------------------:", invitationCode)
+      joinLobby(getData);
     }
   };
 
@@ -106,7 +107,7 @@ const LobbyJoin = () => {
           <Button
             disabled={!invitationCode}
             width="100%"
-            onClick={joinLobby}
+            onClick={joinLobby.bind(null, invitationCode)}
           >
             Join Game
           </Button>

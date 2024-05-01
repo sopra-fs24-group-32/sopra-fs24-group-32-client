@@ -220,7 +220,7 @@ const LobbyDetailHost = () => {
           </li>
           <li key="qrInvitationCode">
             <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-              <img src={imgUrl} alt="QR Code" />
+              <img src={imgUrl} alt="QR Code" width={256} />
             </div>
           </li>
           <li key="maxAmtPlayers">

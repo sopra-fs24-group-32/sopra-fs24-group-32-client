@@ -39,6 +39,37 @@ const Scoreboard = () => {
   );
   const [stompClient, setStompClient] = useState(null);
 
+
+  /*
+  If the host clicks home the lobby gets deleted
+  */
+  const doGoHomeHost = async() =>{
+    try {
+      const userToken = localStorage.getItem("userToken");
+      const requestBody = JSON.stringify({ userToken });
+      const response = await api.post(`/deleteLobby/${id}`, requestBody);
+      navigate("/home");
+      alert("You have left your lobby!");
+    } catch (error) {
+      alert(`Something went wrong during the leave: \n${handleError(error)}`);
+    }
+  }
+
+
+  //If a normal player clicks home he leaves the lobby
+  const doGoHome = async() =>{
+    try {
+      const userToken = localStorage.getItem("userToken");
+      const requestBody = JSON.stringify({ userToken });
+      const response = await api.post(`/finishedGame/leave/${id}`, requestBody);
+      navigate("/home");
+      alert("You have left your lobby!");
+    } catch (error) {
+      alert(`Something went wrong during the leave: \n${handleError(error)}`);
+    }
+  }
+
+
   //fetch score board values needs to be changed
   useEffect(() => {
     async function fetchData() {
@@ -63,6 +94,12 @@ const Scoreboard = () => {
         alert("Failed to load users. Please check the console for details.");
       }
     }
+
+    async function resetDallEImageURL(){
+      api.post("/resetImageURL");
+    }
+
+    resetDallEImageURL();
     fetchData();
   }, [id]);
 
@@ -158,7 +195,7 @@ const Scoreboard = () => {
         <div className="score button">
           {currentUser === lobbyOwner ? (
             currentRound >= amtOfRounds ? (
-              <Button className="nextButton" onClick={() => navigate("/home")}>
+              <Button className="nextButton" onClick={() => doGoHomeHost()}>
                 Home
               </Button>
             ) :
@@ -169,7 +206,7 @@ const Scoreboard = () => {
               </>
           ) : (
             currentRound >= amtOfRounds ? (
-              <Button className="nextButton" onClick={() => navigate("/home")}>
+              <Button className="nextButton" onClick={() => doGoHome()}>
                 Home
               </Button>
 

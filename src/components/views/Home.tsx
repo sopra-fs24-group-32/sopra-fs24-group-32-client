@@ -35,7 +35,6 @@ const Home = () => {
     try {
       const userToken = localStorage.getItem("userToken");
       const requestBody = JSON.stringify({ userToken });
-      console.log("Usertoken: " + userToken);
       const response = await api.post("/lobby/leaveCurrentLobby", requestBody);
       alert("You have left your lobby!")
     } catch (error) {

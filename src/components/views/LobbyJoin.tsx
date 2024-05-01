@@ -70,8 +70,9 @@ const LobbyJoin = () => {
 
   const handleScan =(data) => {
     if (data) {
-      console.log("Scanned data---------------------------:", data)
-      setInvitationCode(data);
+      const getData = data.text
+      console.log("Scanned data---------------------------:", getData)
+      setInvitationCode(getData);
       setShowScanner(false);
       joinLobby();
     }

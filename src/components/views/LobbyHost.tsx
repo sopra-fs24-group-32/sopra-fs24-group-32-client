@@ -8,13 +8,11 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
 import Lobby from "models/Lobby";
-// import QRCode from "qrcode.react";
-import {QRCodeCanvas} from "qrcode.react";
-
 import SockJS from "sockjs-client";
 //import Stomp from "stompjs";
 import { over } from "stompjs";
 import { getDomain } from "helpers/getDomain";
+import QRCode from "qrcode";
 
 const LobbyDetailHost = () => {
   const navigate = useNavigate();
@@ -28,7 +26,7 @@ const LobbyDetailHost = () => {
     amtOfRounds: 0,
     timeLimit: 60,
   });
-
+  const [imgUrl, setImgUrl] = useState("");
 
   const fetchLobby = async () => {
     try {
@@ -39,6 +37,10 @@ const LobbyDetailHost = () => {
         maxAmtUsers: response.data.maxAmtUsers || 50,
         amtOfRounds: response.data.amtOfRounds || 5,
         timeLimit: response.data.timeLimit || 60,
+      });
+      const qrCodeDataUrl = QRCode.toDataURL(response.data.lobbyInvitationCode);
+      qrCodeDataUrl.then((data) => {
+        setImgUrl(data);
       });
     } catch (error) {
       console.error(
@@ -159,13 +161,6 @@ const LobbyDetailHost = () => {
     stompClient.send("/game/lobby/startgame", {}, id);
   };
 
-  // const qrCode = () => {
-  //   const 
-  //   return (
-      
-  //   );
-  // }
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
@@ -225,7 +220,7 @@ const LobbyDetailHost = () => {
           </li>
           <li key="qrInvitationCode">
             <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-              <QRCodeCanvas value={lobby.lobbyInvitationCode} size={300} level="H" />
+              <img src={imgUrl} alt="QR Code" />
             </div>
           </li>
           <li key="maxAmtPlayers">

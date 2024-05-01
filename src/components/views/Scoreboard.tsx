@@ -83,6 +83,9 @@ const Scoreboard = () => {
   }, [timer]);
 
   const nextRound = () => {
+    if (currentRound === 0){
+      setCurrentRound(1);
+    }
     if (currentRound < amtOfRounds) {
       stompClient.send("/game/continueGame", {}, id);
     }

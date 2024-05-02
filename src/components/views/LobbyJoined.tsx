@@ -35,12 +35,18 @@ const LobbyDetailJoined = () => {
   const [lobby, setLobby] = useState(new Lobby());
   const [stompClient, setStompClient] = useState(null);
   const { getStompClient } = useWebSocket();
+  const username = localStorage.getItem("username");
 
   const fetchData = async () => {
     try {
       const response = await api.get(`/lobby/${id}`);
 
       setLobby(response.data);
+      const listOfRemovedPlayers = response.data.listOfRemovedPlayers;
+      if (listOfRemovedPlayers.includes(username)) {
+        // alert("You have been removed from the lobby");
+        navigate("/home");
+      }
     } catch (error) {
       console.error(
         `Something went wrong while fetching the lobby: \n${handleError(error)}`
@@ -138,7 +144,7 @@ const LobbyDetailJoined = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-
+      alert(data.username+ " has left the lobby");
       // Update the state to include the new user
       setLobby(prevLobby => {
         const newUsersList = prevLobby.users.filter(user => user.id !== data.id);

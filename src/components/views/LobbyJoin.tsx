@@ -52,7 +52,7 @@ const LobbyJoin = () => {
         error.message ||
         "An unknown error occurred";
       alert(
-        `Something went wrong while joining the lobby. Reason: ${errorMessage}`
+        `${errorMessage}`
       );
     }
   };
@@ -71,17 +71,14 @@ const LobbyJoin = () => {
   const handleScan =(data) => {
     if (data) {
       const getData = data.text
-      console.log("Scanned data---------------------------:", getData)
       setInvitationCode(getData);
       setShowScanner(false);
-      console.log("Invitation code---------------------------:", invitationCode)
       joinLobby(getData);
     }
   };
 
   const handleError = err => {
     console.error(err);
-    alert("Failed to join the lobby: " + err.message);
   };
 
   const toggleScanner = () => {

@@ -132,6 +132,7 @@ const LobbyDetailHost = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
+      alert(data.username+ " has left the lobby");
 
       // Update the state to include the new user
       setLobby(prevLobby => {
@@ -196,6 +197,34 @@ const LobbyDetailHost = () => {
       );
       alert(
         "Something went wrong while updating the lobby! See the console for details."
+      );
+    }
+  };
+
+  const kickPlayer = async (playerToken: string) => {
+    try {
+      const hostToken = localStorage.getItem("userToken");
+      const playerTokenJson = JSON.stringify({ userToken:playerToken });
+      const hostTokenJson = JSON.stringify({ userToken:hostToken });
+
+      const response = await api.post(`/hostRemovePlayer/${id}`,
+        playerTokenJson, {
+          headers: {
+            "Content-Type": "application/json",
+            userToken: hostTokenJson,
+          },
+        });
+      console.log("Player kicked:", response.data);
+      setLobby(prevLobby => ({
+        ...prevLobby,
+        users: prevLobby.users.filter(user => user.userToken !== playerToken)
+      }));
+    } catch (error) {
+      console.error(
+        `Something went wrong while kicking the player: \n${handleError(error)}`
+      );
+      alert(
+        "Something went wrong while kicking the player: " + handleError(error)
       );
     }
   };
@@ -268,7 +297,17 @@ const LobbyDetailHost = () => {
                 <div className="player-username" style={{ fontWeight: "bold", marginBottom: "5px" }}>
                   {player.username}
                 </div>
-                <div className="player-score">Score: {player.score}</div>
+                {
+                  player.userToken !== localStorage.getItem("userToken") &&
+                  <Button
+                    width="100%"
+                    style={{ marginBottom: "10px", backgroundColor: "#ff6666" }}
+                    onClick={() => kickPlayer(player.userToken)}
+                  >
+                    Kick Out
+                  </Button>
+                }
+                {/* <div className="player-score">Score: {player.score}</div> */}
                 <span className="tooltip-text">
                   ID: {player.id}<br />
                   Username: {player.username}<br />

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
@@ -26,6 +26,8 @@ Player.propTypes = {
 
 const Scoreboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { imageDescription, setImageDescription } = useState("no Description");
   const { id } = useParams();
   const userToken = localStorage.getItem("userToken");
   const [playerGuessed, setPlayerGuessed] = useState("");
@@ -39,11 +41,10 @@ const Scoreboard = () => {
   );
   const [stompClient, setStompClient] = useState(null);
 
-
   /*
   If the host clicks home the lobby gets deleted
   */
-  const doGoHomeHost = async() =>{
+  const doGoHomeHost = async () => {
     try {
       const userToken = localStorage.getItem("userToken");
       const requestBody = JSON.stringify({ userToken });
@@ -53,11 +54,10 @@ const Scoreboard = () => {
     } catch (error) {
       alert(`Something went wrong during the leave: \n${handleError(error)}`);
     }
-  }
-
+  };
 
   //If a normal player clicks home he leaves the lobby
-  const doGoHome = async() =>{
+  const doGoHome = async () => {
     try {
       const userToken = localStorage.getItem("userToken");
       const requestBody = JSON.stringify({ userToken });
@@ -67,26 +67,28 @@ const Scoreboard = () => {
     } catch (error) {
       alert(`Something went wrong during the leave: \n${handleError(error)}`);
     }
-  }
-
+  };
 
   //fetch score board values needs to be changed
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await api.get(`/lobby/${id}`); // Assuming this endpoint gives user scores
+        console.log(response.data);
         setLobbyOwner(response.data.lobbyOwner);
         setAmtOfRounds(response.data.amtOfRounds);
         setCurrentRound(response.data.currentRound);
         if (response.data.users && Array.isArray(response.data.users)) {
           const userMap = new Map();
-          response.data.users.forEach(user => {
+          response.data.users.forEach((user) => {
             if (!userMap.has(user.username)) {
               userMap.set(user.username, user);
             }
           });
           // Sort users by score in descending order
-          const uniqueUsers = Array.from(userMap.values()).sort((a, b) => b.score - a.score);
+          const uniqueUsers = Array.from(userMap.values()).sort(
+            (a, b) => b.score - a.score
+          );
           setUsers(uniqueUsers);
         }
       } catch (error) {
@@ -95,7 +97,7 @@ const Scoreboard = () => {
       }
     }
 
-    async function resetDallEImageURL(){
+    async function resetDallEImageURL() {
       api.post("/resetImageURL");
     }
 
@@ -120,7 +122,7 @@ const Scoreboard = () => {
   }, [timer]);
 
   const nextRound = () => {
-    if (currentRound === 0){
+    if (currentRound === 0) {
       setCurrentRound(1);
     }
     if (currentRound < amtOfRounds) {
@@ -166,7 +168,9 @@ const Scoreboard = () => {
       } else {
         console.log("YOUR TURN TO GUESS THE INPUT");
         stompClient.disconnect();
-        navigate(`/game/guess/${id}`);
+        navigate(`/game/guess/${id}`, {
+          state: { nextPictureGenerator: nextPictureGenerator },
+        });
       }
     };
     if (stompClient) {
@@ -194,28 +198,26 @@ const Scoreboard = () => {
         </ul>
         <div className="score button">
           {currentUser === lobbyOwner ? (
-            currentRound >= amtOfRounds || users.length < 2 ?  (
+            currentRound >= amtOfRounds || users.length < 2 ? (
               <Button className="nextButton" onClick={() => doGoHomeHost()}>
                 Home
               </Button>
-            ) :
-              <>
-                <Button className="nextButton" onClick={nextRound}>
-                  Next Round
-                </Button>
-              </>
-          ) : (
-            currentRound >= amtOfRounds || users.length < 2 ? (
-              <Button className="nextButton" onClick={() => doGoHome()}>
-                Home
-              </Button>
-
-            ) :
+            ) : (
               <>
                 <h3>Waiting for next round to start..</h3>
               </>
+            )
+          ) : currentRound >= amtOfRounds || users.length < 2 ? (
+            <Button className="nextButton" onClick={() => doGoHome()}>
+              Home
+            </Button>
+          ) : (
+            <>
+              <h3>Waiting for next turn to start..</h3>
+            </>
           )}
         </div>
+        <h3>Original Image Description: {imageDescription}</h3>
       </div>
     );
   }
@@ -224,7 +226,12 @@ const Scoreboard = () => {
     <BaseContainer className="score container">
       <h2>Scoreboard</h2>
       {content}
-      <div className="timer">{timer} seconds remaining and Round played: {currentRound}/{amtOfRounds}</div>
+      <div className="timer">
+        <h3>{timer} seconds remaining for next turn</h3>
+        <h3>
+          Rounds played: {currentRound}/{amtOfRounds}
+        </h3>
+      </div>
     </BaseContainer>
   );
 };

@@ -68,12 +68,15 @@ const LobbyDetailHost = () => {
     const onConnect = () => {
       if (stompClient) {
         // Subscribe to public messages
-        const subPublic = stompClient.subscribe("/game/public", onMessageReceived);
+        const subPublic = stompClient.subscribe(
+          "/game/public",
+          onMessageReceived
+        );
 
         // Subscribe to join messages
         const subJoin = stompClient.subscribe("/game/join", joinMessage);
 
-        //const subLeave = client.subscribe("/game/leave", onMessageReceived3);        
+        //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
         const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
 
         // Send the user token to server to register this client
@@ -85,10 +88,10 @@ const LobbyDetailHost = () => {
     };
 
     const onError = (error) => {
-      if(amtOfConnectionTries<5){
+      if (amtOfConnectionTries < 5) {
         amtOfConnectionTries += 1;
         connectAndSubscribeUserToSocket();
-      }else{
+      } else {
         console.log("Connection with websocket failed multiple times");
         console.log("Error:", error);
       }
@@ -106,7 +109,9 @@ const LobbyDetailHost = () => {
         navigate(`/game/create/${id}`);
       } else {
         stompClient.disconnect();
-        navigate(`/game/guess/${id}`);
+        navigate(`/game/guess/${id}`, {
+          state: { nextPictureGenerator: nextPictureGenerator },
+        });
       }
     };
 
@@ -115,10 +120,9 @@ const LobbyDetailHost = () => {
       console.log("Join message received:", data);
 
       // Update the state to include the new user
-      setLobby(prevLobby => {
-
+      setLobby((prevLobby) => {
         // Check if the user is already in the list
-        if (prevLobby.users.some(user => user.id === data.id)) {
+        if (prevLobby.users.some((user) => user.id === data.id)) {
           console.log("User already in lobby:", data.username);
 
           return prevLobby;
@@ -132,12 +136,14 @@ const LobbyDetailHost = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-      alert(data.username+ " has left the lobby");
+      alert(data.username + " has left the lobby");
 
       // Update the state to include the new user
-      setLobby(prevLobby => {
-        const newUsersList = prevLobby.users.filter(user => user.id !== data.id);
-        
+      setLobby((prevLobby) => {
+        const newUsersList = prevLobby.users.filter(
+          (user) => user.id !== data.id
+        );
+
         return { ...prevLobby, users: newUsersList };
       });
     };
@@ -204,20 +210,23 @@ const LobbyDetailHost = () => {
   const kickPlayer = async (playerToken: string) => {
     try {
       const hostToken = localStorage.getItem("userToken");
-      const playerTokenJson = JSON.stringify({ userToken:playerToken });
-      const hostTokenJson = JSON.stringify({ userToken:hostToken });
+      const playerTokenJson = JSON.stringify({ userToken: playerToken });
+      const hostTokenJson = JSON.stringify({ userToken: hostToken });
 
-      const response = await api.post(`/hostRemovePlayer/${id}`,
-        playerTokenJson, {
+      const response = await api.post(
+        `/hostRemovePlayer/${id}`,
+        playerTokenJson,
+        {
           headers: {
             "Content-Type": "application/json",
             userToken: hostTokenJson,
           },
-        });
+        }
+      );
       console.log("Player kicked:", response.data);
-      setLobby(prevLobby => ({
+      setLobby((prevLobby) => ({
         ...prevLobby,
-        users: prevLobby.users.filter(user => user.userToken !== playerToken)
+        users: prevLobby.users.filter((user) => user.userToken !== playerToken),
       }));
     } catch (error) {
       console.error(
@@ -248,7 +257,13 @@ const LobbyDetailHost = () => {
             </div>
           </li>
           <li key="qrInvitationCode">
-            <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <img src={imgUrl} alt="QR Code" width={256} />
             </div>
           </li>
@@ -276,48 +291,59 @@ const LobbyDetailHost = () => {
               </div>
             </div>
           </li>
-          {lobby.users && lobby.users.map((player, index) => (
-            <li
-              key={`player-${index}`}
-              style={{
-                backgroundColor: "#f0f0f0",
-                marginBottom: "10px",
-                borderRadius: "5px",
-                padding: "10px",
-              }}
-            >
-              <div className="player container tooltip"
+          {lobby.users &&
+            lobby.users.map((player, index) => (
+              <li
+                key={`player-${index}`}
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  backgroundColor: "#f0f0f0",
+                  marginBottom: "10px",
+                  borderRadius: "5px",
+                  padding: "10px",
                 }}
               >
-                <div className="player-username" style={{ fontWeight: "bold", marginBottom: "5px" }}>
-                  {player.username}
-                </div>
-                {
-                  player.userToken !== localStorage.getItem("userToken") &&
-                  <Button
-                    width="100%"
-                    style={{ marginBottom: "10px", backgroundColor: "#ff6666" }}
-                    onClick={() => kickPlayer(player.userToken)}
+                <div
+                  className="player container tooltip"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    className="player-username"
+                    style={{ fontWeight: "bold", marginBottom: "5px" }}
                   >
-                    Kick Out
-                  </Button>
-                }
-                {/* <div className="player-score">Score: {player.score}</div> */}
-                <span className="tooltip-text">
-                  ID: {player.id}<br />
-                  Username: {player.username}<br />
-                  Birthdate: {player.birthdate}<br />
-                  Status: {player.status}<br />
-                  Created At: {player.createdAt}
-                </span>
-              </div>
-            </li>
-          ))}
+                    {player.username}
+                  </div>
+                  {player.userToken !== localStorage.getItem("userToken") && (
+                    <Button
+                      width="100%"
+                      style={{
+                        marginBottom: "10px",
+                        backgroundColor: "#ff6666",
+                      }}
+                      onClick={() => kickPlayer(player.userToken)}
+                    >
+                      Kick Out
+                    </Button>
+                  )}
+                  {/* <div className="player-score">Score: {player.score}</div> */}
+                  <span className="tooltip-text">
+                    ID: {player.id}
+                    <br />
+                    Username: {player.username}
+                    <br />
+                    Birthdate: {player.birthdate}
+                    <br />
+                    Status: {player.status}
+                    <br />
+                    Created At: {player.createdAt}
+                  </span>
+                </div>
+              </li>
+            ))}
         </ul>
 
         <Button

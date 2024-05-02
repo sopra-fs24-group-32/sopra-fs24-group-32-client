@@ -27,7 +27,6 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
-
 const LobbyDetailJoined = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -82,12 +81,15 @@ const LobbyDetailJoined = () => {
     const onConnect = () => {
       if (stompClient) {
         // Subscribe to public messages
-        const subPublic = stompClient.subscribe("/game/public", onMessageReceived);
+        const subPublic = stompClient.subscribe(
+          "/game/public",
+          onMessageReceived
+        );
 
         // Subscribe to join messages
         const subJoin = stompClient.subscribe("/game/join", joinMessage);
 
-        //const subLeave = client.subscribe("/game/leave", onMessageReceived3);        
+        //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
         const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
 
         // Send the user token to server to register this client
@@ -118,7 +120,9 @@ const LobbyDetailJoined = () => {
         navigate(`/game/create/${id}`);
       } else {
         stompClient.disconnect();
-        navigate(`/game/guess/${id}`);
+        navigate(`/game/guess/${id}`, {
+          state: { nextPictureGenerator: nextPictureGenerator },
+        });
       }
     };
 
@@ -127,10 +131,9 @@ const LobbyDetailJoined = () => {
       console.log("Join message received:", data);
 
       // Update the state to include the new user
-      setLobby(prevLobby => {
-
+      setLobby((prevLobby) => {
         // Check if the user is already in the list
-        if (prevLobby.users.some(user => user.id === data.id)) {
+        if (prevLobby.users.some((user) => user.id === data.id)) {
           console.log("User already in lobby:", data.username);
 
           return prevLobby;
@@ -144,15 +147,16 @@ const LobbyDetailJoined = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Join message received:", data);
-      alert(data.username+ " has left the lobby");
+      alert(data.username + " has left the lobby");
       // Update the state to include the new user
-      setLobby(prevLobby => {
-        const newUsersList = prevLobby.users.filter(user => user.id !== data.id);
-        
+      setLobby((prevLobby) => {
+        const newUsersList = prevLobby.users.filter(
+          (user) => user.id !== data.id
+        );
+
         return { ...prevLobby, users: newUsersList };
       });
     };
-
 
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
@@ -205,38 +209,47 @@ const LobbyDetailJoined = () => {
               </div>
             </div>
           </li>
-          {lobby.users && lobby.users.map((player, index) => (
-            <li
-              key={`player-${index}`}
-              style={{
-                backgroundColor: "#f0f0f0",
-                marginBottom: "10px",
-                borderRadius: "5px",
-                padding: "10px",
-              }}
-            >
-              <div className="player container tooltip"
+          {lobby.users &&
+            lobby.users.map((player, index) => (
+              <li
+                key={`player-${index}`}
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  backgroundColor: "#f0f0f0",
+                  marginBottom: "10px",
+                  borderRadius: "5px",
+                  padding: "10px",
                 }}
               >
-                <div className="player-username" style={{ fontWeight: "bold", marginBottom: "5px" }}>
-                  {player.username}
+                <div
+                  className="player container tooltip"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <div
+                    className="player-username"
+                    style={{ fontWeight: "bold", marginBottom: "5px" }}
+                  >
+                    {player.username}
+                  </div>
+                  <div className="player-score">Score: {player.score}</div>
+                  <span className="tooltip-text">
+                    ID: {player.id}
+                    <br />
+                    Username: {player.username}
+                    <br />
+                    Birthdate: {player.birthdate}
+                    <br />
+                    Status: {player.status}
+                    <br />
+                    Created At: {player.createdAt}
+                  </span>
                 </div>
-                <div className="player-score">Score: {player.score}</div>
-                <span className="tooltip-text">
-                  ID: {player.id}<br />
-                  Username: {player.username}<br />
-                  Birthdate: {player.birthdate}<br />
-                  Status: {player.status}<br />
-                  Created At: {player.createdAt}
-                </span>
-              </div>
-            </li>
-          ))}
+              </li>
+            ))}
         </ul>
 
         <Button

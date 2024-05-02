@@ -16,7 +16,10 @@ const GameGuess = () => {
   const [timeSubmitted, setTimeSubmitted] = useState(0);
   const [image, setImage] = useState("");
   const [isWaitingForImage, setIsWaitingForImage] = useState(true);
-  const [creatorName, setCreatorName] = useState("");
+  const location = useLocation();
+  const { nextPictureGenerator } = location.state ?? {
+    nextPictureGenerator: "No description provided",
+  };
   const [playerSubmitted, setPlayerSubmitted] = useState(false);
   const timeoutRef = useRef(null);
 
@@ -102,17 +105,6 @@ const GameGuess = () => {
     }
   };
 
-  // Fetch roles and determine creator
-  const fetchRoles = async () => {
-    try {
-      const response = await api.get(`/game/roles/${id}`); //should be added in the REST Doc so we can see all users with their roles
-      const creator = response.data.find((role) => role.type === "creator");
-      setCreatorName(creator.name);
-    } catch (error) {
-      console.error(`Failed to fetch roles: ${handleError(error)}`);
-    }
-  };
-
   useEffect(() => {
     if (!isWaitingForImage && timer > 0) {
       const countdown = setInterval(() => {
@@ -194,12 +186,7 @@ const GameGuess = () => {
           {isWaitingForImage ? (
             <>
               <h2>Waiting for the image generation by DALL-E...</h2>
-              <h3>
-                {/*}{creatorName
-                  ? `Image being created by ${creatorName}`
-                  : "Fetching creator's name..."}
-                {*/}
-              </h3>
+              <h3>Image being created by: {nextPictureGenerator}</h3>
             </>
           ) : (
             <>

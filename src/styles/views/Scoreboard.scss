@@ -155,3 +155,17 @@
   visibility: visible;
   opacity: 1;
 }
+
+@keyframes winnerAnimation {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.player.container.rank-1 {
+  animation: winnerAnimation 2s infinite ease-in-out;
+}

@@ -167,6 +167,7 @@ const LobbyDetailHost = () => {
     } else {
       setLobby((prevLobby) => {
         const newUsersList = prevLobby.users.filter(user => user.userToken !== data.userToken);
+        
         return { ...prevLobby, users: newUsersList };
       });
     }

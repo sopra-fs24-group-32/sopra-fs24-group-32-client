@@ -92,6 +92,9 @@ const LobbyDetailJoined = () => {
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
         const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
 
+        //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
+        const subKick = stompClient.subscribe("/game/kick", kickMessage);
+
         // Send the user token to server to register this client
         const userToken = localStorage.getItem("userToken");
         if (userToken) {
@@ -162,6 +165,24 @@ const LobbyDetailJoined = () => {
       stompClient.connect({}, onConnect, onError);
     }
   }, [stompClient]);
+
+  const kickMessage = (payload) => {
+    const data = JSON.parse(payload.body);
+    console.log("Kick message received:", data);
+    alert(`${data.username} has been kicked out of the lobby`);
+  
+    const currentUserToken = localStorage.getItem("userToken");
+    
+    if (data.userToken === currentUserToken) {
+      navigate("/home");
+    } else {
+      setLobby((prevLobby) => {
+        const newUsersList = prevLobby.users.filter(user => user.userToken !== data.userToken);
+        
+        return { ...prevLobby, users: newUsersList };
+      });
+    }
+  }
 
   useEffect(() => {
     console.log("Successfully fetched lobby details!");

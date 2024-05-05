@@ -27,7 +27,7 @@ Player.propTypes = {
 const Scoreboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { imageDescription, setImageDescription } = useState("no Description");
+  const [imageDescription, setImageDescription] = useState("");
   const { id } = useParams();
   const userToken = localStorage.getItem("userToken");
   const [playerGuessed, setPlayerGuessed] = useState("");
@@ -78,6 +78,11 @@ const Scoreboard = () => {
         setLobbyOwner(response.data.lobbyOwner);
         setAmtOfRounds(response.data.amtOfRounds);
         setCurrentRound(response.data.currentRound);
+        const descriptionResponse = await api.get(
+          `/game/lastDescription/${id}`
+        );
+        console.log(descriptionResponse.data);
+        setImageDescription(descriptionResponse.data);
         if (response.data.users && Array.isArray(response.data.users)) {
           const userMap = new Map();
           response.data.users.forEach((user) => {
@@ -224,10 +229,18 @@ const Scoreboard = () => {
 
   return (
     <BaseContainer className="score container">
-      <h2>Scoreboard</h2>
+      {currentRound >= amtOfRounds ? (
+        <h2>Final Scoreboard</h2>
+      ) : (
+        <h2>Scoreboard</h2>
+      )}
       {content}
       <div className="timer">
-        <h3>{timer} seconds remaining for next turn</h3>
+        {currentRound >= amtOfRounds ? (
+          <></>
+        ) : (
+          <h3>{timer} seconds remaining for next turn</h3>
+        )}
         <h3>
           Rounds played: {currentRound}/{amtOfRounds}
         </h3>

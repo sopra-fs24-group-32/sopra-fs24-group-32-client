@@ -235,7 +235,6 @@ const LobbyDetailJoined = () => {
                   >
                     {player.username}
                   </div>
-                  <div className="player-score">Score: {player.score}</div>
                   <span className="tooltip-text">
                     ID: {player.id}
                     <br />

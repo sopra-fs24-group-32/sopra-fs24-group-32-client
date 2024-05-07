@@ -61,6 +61,9 @@ const LobbyDetailJoined = () => {
     try {
       const userToken = localStorage.getItem("userToken");
       await api.post(`/lobby/leave/${id}`, { userToken });
+      if (stompClient) {
+        stompClient.disconnect();
+      }
       navigate("/home");
     } catch (error) {
       alert(`Failed to leave the lobby: ${error.message}`);
@@ -149,7 +152,7 @@ const LobbyDetailJoined = () => {
 
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
-      console.log("Join message received:", data);
+      console.log("Leave message received:", data);
       alert(data.username + " has left the lobby");
       // Update the state to include the new user
       setLobby((prevLobby) => {
@@ -174,6 +177,9 @@ const LobbyDetailJoined = () => {
     const currentUserToken = localStorage.getItem("userToken");
     
     if (data.userToken === currentUserToken) {
+      if (stompClient) {
+        stompClient.disconnect();
+      }
       navigate("/home");
     } else {
       setLobby((prevLobby) => {

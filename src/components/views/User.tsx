@@ -37,10 +37,10 @@ const UserDetail = () => {
     const userToken = localStorage.getItem("userToken");
     const requestBody = JSON.stringify({ userToken });
     // eslint-disable-next-line
-    await api.post(`/logoutByToken`, requestBody);
     localStorage.removeItem("userToken");
     localStorage.removeItem("username");
     localStorage.removeItem("id");
+    await api.post(`/logoutByToken`, requestBody);
     navigate("/login");
   }
 

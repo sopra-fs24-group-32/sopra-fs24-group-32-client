@@ -24,11 +24,11 @@ const Home = () => {
     const userToken = localStorage.getItem("userToken");
     const requestBody = JSON.stringify({ userToken });
     // eslint-disable-next-line
-    await api.post(`/logoutByToken`, requestBody);
     localStorage.removeItem("userToken");
     localStorage.removeItem("username");
     localStorage.removeItem("id");
     navigate("/login");
+    await api.post(`/logoutByToken`, requestBody);
   }
 
   const leaveCurrentLobby = async () => {
@@ -36,7 +36,7 @@ const Home = () => {
       const userToken = localStorage.getItem("userToken");
       const requestBody = JSON.stringify({ userToken });
       const response = await api.post("/lobby/leaveCurrentLobby", requestBody);
-      alert("You have left your lobby!")
+      alert("You have left your lobby!");
     } catch (error) {
       alert(`Something went wrong during the leave: \n${handleError(error)}`);
     }

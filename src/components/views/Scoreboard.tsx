@@ -131,7 +131,7 @@ const Scoreboard = () => {
       setCurrentRound(1);
     }
     if (currentRound < amtOfRounds) {
-      stompClient.send("/game/continueGame", {}, id);
+      stompClient.send(`/game/continueGame/${id}`, {}, id);
     }
   };
 
@@ -149,7 +149,7 @@ const Scoreboard = () => {
     const onConnect = () => {
       if (stompClient) {
         const subscription = stompClient.subscribe(
-          "/game/public",
+          `/game/public/${id}`,
           onMessageReceived
         );
       }

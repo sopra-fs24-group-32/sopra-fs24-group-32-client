@@ -82,23 +82,23 @@ const LobbyDetailJoined = () => {
       if (stompClient) {
         // Subscribe to public messages
         const subPublic = stompClient.subscribe(
-          "/game/public",
+          `/game/public/${id}`,
           onMessageReceived
         );
 
         // Subscribe to join messages
-        const subJoin = stompClient.subscribe("/game/join", joinMessage);
+        const subJoin = stompClient.subscribe(`/game/join/${id}`, joinMessage);
 
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
-        const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
+        const subLeave = stompClient.subscribe(`/game/leave/${id}`, leaveMessage);
 
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
-        const subKick = stompClient.subscribe("/game/kick", kickMessage);
+        const subKick = stompClient.subscribe(`/game/kick/${id}`, kickMessage);
 
         // Send the user token to server to register this client
         const userToken = localStorage.getItem("userToken");
         if (userToken) {
-          stompClient.send("/game/lobby/join", {}, userToken);
+          stompClient.send(`/game/lobby/join/${id}`, {}, userToken);
         }
       }
     };

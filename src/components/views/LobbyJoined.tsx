@@ -61,6 +61,9 @@ const LobbyDetailJoined = () => {
     try {
       const userToken = localStorage.getItem("userToken");
       await api.post(`/lobby/leave/${id}`, { userToken });
+      if (stompClient) {
+        stompClient.disconnect();
+      }
       navigate("/home");
     } catch (error) {
       alert(`Failed to leave the lobby: ${error.message}`);
@@ -82,23 +85,23 @@ const LobbyDetailJoined = () => {
       if (stompClient) {
         // Subscribe to public messages
         const subPublic = stompClient.subscribe(
-          "/game/public",
+          `/game/public/${id}`,
           onMessageReceived
         );
 
         // Subscribe to join messages
-        const subJoin = stompClient.subscribe("/game/join", joinMessage);
+        const subJoin = stompClient.subscribe(`/game/join/${id}`, joinMessage);
 
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
-        const subLeave = stompClient.subscribe("/game/leave", leaveMessage);
+        const subLeave = stompClient.subscribe(`/game/leave/${id}`, leaveMessage);
 
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
-        const subKick = stompClient.subscribe("/game/kick", kickMessage);
+        const subKick = stompClient.subscribe(`/game/kick/${id}`, kickMessage);
 
         // Send the user token to server to register this client
         const userToken = localStorage.getItem("userToken");
         if (userToken) {
-          stompClient.send("/game/lobby/join", {}, userToken);
+          stompClient.send(`/game/lobby/join/${id}`, {}, userToken);
         }
       }
     };
@@ -149,7 +152,7 @@ const LobbyDetailJoined = () => {
 
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
-      console.log("Join message received:", data);
+      console.log("Leave message received:", data);
       alert(data.username + " has left the lobby");
       // Update the state to include the new user
       setLobby((prevLobby) => {
@@ -174,6 +177,9 @@ const LobbyDetailJoined = () => {
     const currentUserToken = localStorage.getItem("userToken");
     
     if (data.userToken === currentUserToken) {
+      if (stompClient) {
+        stompClient.disconnect();
+      }
       navigate("/home");
     } else {
       setLobby((prevLobby) => {

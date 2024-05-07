@@ -23,11 +23,11 @@ const Home = () => {
   async function logout() {
     const userToken = localStorage.getItem("userToken");
     const requestBody = JSON.stringify({ userToken });
-    // eslint-disable-next-line
     localStorage.removeItem("userToken");
     localStorage.removeItem("username");
     localStorage.removeItem("id");
     navigate("/login");
+    // eslint-disable-next-line
     await api.post(`/logoutByToken`, requestBody);
   }
 

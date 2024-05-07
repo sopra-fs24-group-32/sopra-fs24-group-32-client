@@ -26,6 +26,7 @@ const UserChange = () => {
     id: "",
     username: "",
     birthdate: "",
+    //email: "",
     status: "",
     createdAt: "",
   });
@@ -41,6 +42,7 @@ const UserChange = () => {
           id: response.data.id,
           username: response.data.username || "",
           birthdate: response.data.birthdate || "",
+          //email: response.data.email || "",
           status: response.data.status || "",
           createdAt: response.data.createdAt || "",
         });
@@ -111,6 +113,15 @@ const UserChange = () => {
             type="date"
             name="birthdate"
             value={formData.birthdate}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
             onChange={handleChange}
           />
         </label>

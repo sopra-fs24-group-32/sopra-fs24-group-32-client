@@ -25,7 +25,8 @@ const UserChange = () => {
   const [formData, setFormData] = useState({
     id: "",
     username: "",
-    birthdate: "",
+    birthDay: "",
+    email: "",
     status: "",
     createdAt: "",
   });
@@ -40,7 +41,8 @@ const UserChange = () => {
         setFormData({
           id: response.data.id,
           username: response.data.username || "",
-          birthdate: response.data.birthdate || "",
+          birthDay: response.data.birthDay || "",
+          email: response.data.email || "",
           status: response.data.status || "",
           createdAt: response.data.createdAt || "",
         });
@@ -106,11 +108,20 @@ const UserChange = () => {
           />
         </label>
         <label>
-          Birthdate:
+          Birth Date:
           <input
             type="date"
-            name="birthdate"
-            value={formData.birthdate}
+            name="birthDay"
+            value={formData.birthDay}
+            onChange={handleChange}
+          />
+        </label>
+        <label>
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
             onChange={handleChange}
           />
         </label>

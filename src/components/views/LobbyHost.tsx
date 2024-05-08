@@ -22,9 +22,9 @@ const LobbyDetailHost = () => {
   const [stompClient, setStompClient] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
-    maxAmtUsers: 50,
-    amtOfRounds: 0,
-    timeLimit: 60,
+    maxAmtUsers: 5,
+    amtOfRounds: 2,
+    timeLimit: 30,
   });
   const [imgUrl, setImgUrl] = useState("");
 
@@ -77,7 +77,10 @@ const LobbyDetailHost = () => {
         const subJoin = stompClient.subscribe(`/game/join/${id}`, joinMessage);
 
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
-        const subLeave = stompClient.subscribe(`/game/leave/${id}`, leaveMessage);
+        const subLeave = stompClient.subscribe(
+          `/game/leave/${id}`,
+          leaveMessage
+        );
 
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
         const subKick = stompClient.subscribe(`/game/kick/${id}`, kickMessage);
@@ -159,20 +162,22 @@ const LobbyDetailHost = () => {
     const data = JSON.parse(payload.body);
     console.log("Kick message received:", data);
     alert(`${data.username} has been kicked out of the lobby`);
-  
+
     const currentUserToken = localStorage.getItem("userToken");
-    
+
     if (data.userToken === currentUserToken) {
       navigate("/home");
     } else {
       setLobby((prevLobby) => {
-        const newUsersList = prevLobby.users.filter(user => user.userToken !== data.userToken);
-        
+        const newUsersList = prevLobby.users.filter(
+          (user) => user.userToken !== data.userToken
+        );
+
         return { ...prevLobby, users: newUsersList };
       });
     }
-  }
-  
+  };
+
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
     fetchLobby();

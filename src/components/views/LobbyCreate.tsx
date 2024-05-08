@@ -39,9 +39,9 @@ FormField.propTypes = {
 const LobbyCreate = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    maxAmtUsers: 50,
-    amtOfRounds: 1,
-    timeLimit: 60,
+    maxAmtUsers: 5,
+    amtOfRounds: 2,
+    timeLimit: 30,
   });
 
   const createLobby = async () => {

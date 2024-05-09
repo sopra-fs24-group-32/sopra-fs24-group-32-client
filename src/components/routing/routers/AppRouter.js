@@ -31,7 +31,7 @@ const AppRouter = () => {
     <BrowserRouter>
       <Header height="100" />
       <Routes>
-        <Route path="/game/*" element={<GameGuard />}>
+        <Route path="/user/*" element={<GameGuard />}>
           {/* <Route index element={<Navigate to="" replace />} /> */}
           <Route path="*" element={<GameRouter />} />
         </Route>
@@ -54,7 +54,7 @@ const AppRouter = () => {
 
         <Route path="/game/scoreboard/:id" element={<Scoreboard />} />
 
-        <Route path="/home" element={<Home/>} />
+        <Route path="/home" element={<Home />} />
 
         <Route path="/login" element={<LoginGuard />}>
           <Route path="/login" element={<Login />} />
@@ -62,7 +62,7 @@ const AppRouter = () => {
 
         <Route path="/register" element={<Register />} />
 
-        <Route path="/" element={<HomePage/>}/>
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </BrowserRouter>
   );

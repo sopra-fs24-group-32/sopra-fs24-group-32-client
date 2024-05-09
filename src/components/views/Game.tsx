@@ -44,7 +44,7 @@ const Game = () => {
   }
 
   const navigateToUser = (id: Number) => {
-    navigate(`/game/${id}`);
+    navigate(`/user/${id}`);
   };
 
   // the effect hook can be used to react to change in your component.

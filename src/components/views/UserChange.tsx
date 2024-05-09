@@ -76,7 +76,7 @@ const UserChange = () => {
       // eslint-disable-next-line
       const updatedUser = await api.put(`/users/${id}`, formData);
       console.log("User updated:", updatedUser.data);
-      navigate(`/game/${id}`);
+      navigate(`/user/${id}`);
     } catch (error) {
       console.error(
         `Something went wrong while updating the user: \n${handleError(error)}`
@@ -127,7 +127,7 @@ const UserChange = () => {
         </label>
         <Button type="submit">Update User</Button>
       </form>
-      <Button onClick={() => navigate(`/game/${id}`)}>Cancel</Button>
+      <Button onClick={() => navigate(`/user/${id}`)}>Cancel</Button>
     </div>
   );
 };

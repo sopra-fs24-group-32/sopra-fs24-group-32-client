@@ -139,7 +139,7 @@ const UserDetail = () => {
         <Button
           width="100%"
           style={{ marginBottom: "10px" }}
-          onClick={() => navigate(`/game/${id}/change`)}
+          onClick={() => navigate(`/user/${id}/change`)}
         >
           Edit
         </Button>

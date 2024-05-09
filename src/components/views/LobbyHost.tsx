@@ -30,7 +30,6 @@ const LobbyDetailHost = () => {
 
   const fetchLobby = async () => {
     try {
-      alert("fetching lobby with id: " + id);
       const response = await api.get(`/lobby/${id}`);
       setLobby(response.data);
 

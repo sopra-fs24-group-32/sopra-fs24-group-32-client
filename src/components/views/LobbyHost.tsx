@@ -231,11 +231,12 @@ const LobbyDetailHost = () => {
       setEditMode(false);
     } catch (error) {
       console.error(
-        `Something went wrong while joining the lobby: \n${handleError(error)}`
+        `Something went wrong while updating the lobby: \n${handleError(error)}`
       );
       console.error("Details:", error);
       const errorMessage =
         error.response?.data?.message ||
+        error.response?.data ||
         error.message ||
         "An unknown error occurred";
       alert(
@@ -267,11 +268,12 @@ const LobbyDetailHost = () => {
       }));
     } catch (error) {
       console.error(
-        `Something went wrong while joining the lobby: \n${handleError(error)}`
+        `Something went wrong while kicking the player: \n${handleError(error)}`
       );
       console.error("Details:", error);
       const errorMessage =
         error.response?.data?.message ||
+        error.response?.data ||
         error.message ||
         "An unknown error occurred";
       alert(
@@ -377,11 +379,11 @@ const LobbyDetailHost = () => {
                     <br />
                     Username: {player.username}
                     <br />
-                    Birthdate: {player.birthdate}
+                    Birthdate: {player.birthDay}
                     <br />
                     Status: {player.status}
                     <br />
-                    Created At: {player.createdAt}
+                    Created At: {player.createDate}
                   </span>
                 </div>
               </li>

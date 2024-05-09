@@ -6,6 +6,37 @@ import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/Game.scss";
 import { User } from "types";
+import PropTypes from "prop-types";
+
+
+const FormField = React.memo((props) => {
+  return (
+    <div className="join field">
+      <label className="join label">{props.label}</label>
+      <input
+        type={props.type || "text"}
+        className="register input"
+        placeholder={props.placeholder || "enter here.."}
+        name={props.name}
+        key={props.key}
+        value={props.value}
+        onChange={props.onChange}
+      />
+    </div>
+  );
+});
+
+FormField.displayName = "FormField";
+
+FormField.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.number.isRequired,
+  onChange: PropTypes.func.isRequired,
+  type: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  key: PropTypes.string,
+  placeholder: PropTypes.string,
+};
 
 const UserChange = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +53,8 @@ const UserChange = () => {
   }
 
   const [user, setUser] = useState<User | null>(null);
+  const [profilePic, setProfilePic] = useState(null);
+  const [imageData, setImageData] = useState(null);
   const [formData, setFormData] = useState({
     id: "",
     username: "",
@@ -44,7 +77,8 @@ const UserChange = () => {
           birthDay: response.data.birthDay || "",
           email: response.data.email || "",
           status: response.data.status || "",
-          createdAt: response.data.createdAt || "",
+          createdAt: response.data.createDate || "",
+          picture: response.data.picture || null,
         });
       } catch (error) {
         console.error(
@@ -52,8 +86,14 @@ const UserChange = () => {
             error
           )}`
         );
+        console.error("Details:", error);
+        const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
         alert(
-          "Something went wrong while fetching the user! See the console for details."
+          `${errorMessage}`
         );
       }
     }
@@ -72,19 +112,64 @@ const UserChange = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log(formData, "formData");
+      console.log(formData, "--------------------formData");
       // eslint-disable-next-line
-      const updatedUser = await api.put(`/users/${id}`, formData);
+      const updatedUser = await api.put(`/users/update/${id}`, formData);
       console.log("User updated:", updatedUser.data);
       navigate(`/game/${id}`);
     } catch (error) {
       console.error(
         `Something went wrong while updating the user: \n${handleError(error)}`
       );
+      console.error("Details:", error);
+      const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data ||
+      error.message ||
+        "An unknown error occurred";
       alert(
-        "Something went wrong while updating the user! See the console for details."
+        `${errorMessage}`
       );
     }
+  };
+
+  const handleFileChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setProfilePic(URL.createObjectURL(file));
+      convertToBase64(file);
+    } else {
+      console.error("No file chosen or file input is not recognized");
+    }
+  };
+
+  const convertToBase64 = (file) => {
+    if (!(file instanceof Blob)) {
+      console.error("The provided file is not a Blob or File.");
+
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setImageData(reader.result.toString().split(",")[1]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        picture: reader.result.toString().split(",")[1],
+      }));
+    };
+    reader.onerror = (error) => {
+      console.error("Error reading file:", error);
+    };
+  };
+
+  const formatBase64Image = (base64) => {
+    if (!base64.startsWith("data:image/")) {
+      return `data:image/jpeg;base64,${base64}`;
+    }
+
+    return base64;
   };
 
   // Check if user data is still loading
@@ -93,42 +178,68 @@ const UserChange = () => {
   }
 
   return (
-    <div className="user-change-page">
-      <h2>Edit User Details</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Assuming id is not editable but shown for reference */}
-        <p>User ID: {formData.id}</p>
-        <label>
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Birth Date:
-          <input
-            type="date"
-            name="birthDay"
-            value={formData.birthDay}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </label>
-        <Button type="submit">Update User</Button>
-      </form>
-      <Button onClick={() => navigate(`/game/${id}`)}>Cancel</Button>
-    </div>
+    <BaseContainer>
+      <div className="join container">
+        <h2>Edit User Details</h2>
+        <div className="join form">
+          {profilePic && (
+            <div style={{ marginTop: "10px", textAlign: "center" }}>
+              <img src={profilePic} alt="Profile Preview" style={{ borderRadius: "50%", width: "150px", height: "150px" }} />
+            </div>
+          )}
+          
+          <form onSubmit={handleSubmit}>
+            {/* Assuming id is not editable but shown for reference */}
+            <input type="file" accept="image/*" onChange={handleFileChange} />
+            <p>User ID: {formData.id}</p>
+            <FormField
+              label="Username"
+              type="text"
+              name="username"
+              key="username"
+              placeholder= "enter new username.."
+              value={formData.username}
+              onChange={handleChange}
+            />
+            <FormField
+              label="Birth Date"
+              type="date"
+              name="birthDay"
+              key="birthDay"
+              placeholder= "enter new username.."
+              value={formData.birthDay}
+              onChange={handleChange}
+            />
+            <FormField
+              label="Email"
+              type="text"
+              name="email"
+              key="email"
+              placeholder= "enter your email.."
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <Button type="submit"
+              width="50%"
+              style={{ marginBottom: "10px" }}
+              disabled={!formData.username && !formData.birthDay && !formData.email}
+            >
+              Update User
+            </Button>
+            <br></br>
+            <Button
+              width="50%" 
+              style={{ marginBottom: "10px" }}
+              onClick={() => navigate(`/game/${id}`)}
+            >
+              Cancel
+            </Button>
+          </form>
+        
+        </div>
+      </div>
+    </BaseContainer>
+    
   );
 };
 

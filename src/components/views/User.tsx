@@ -32,6 +32,7 @@ const UserDetail = () => {
   // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
   const [user, setUser] = useState<User>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [profilePic, setProfilePic] = useState(null);
 
   async function logout() {
     const userToken = localStorage.getItem("userToken");
@@ -72,7 +73,7 @@ const UserDetail = () => {
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
         // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Get the returned users and update the state.
         setUser(response.data);
@@ -90,8 +91,13 @@ const UserDetail = () => {
           )}`
         );
         console.error("Details:", error);
+        const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
         alert(
-          "Something went wrong while fetching the user! See the console for details."
+          `${errorMessage}`
         );
       }
     }
@@ -100,11 +106,28 @@ const UserDetail = () => {
     // getAuthentication();
   }, []);
 
+  const formatBase64Image = (base64) => {
+    if (!base64.startsWith("data:image/")) {
+      return `data:image/jpeg;base64,${base64}`;
+    }
+
+    return base64;
+  };
+
   let content = <Spinner />;
 
   if (user) {
     content = (
       <div className="game">
+        {user.picture && (
+          <div className="picture" style={{ marginTop: "10px", textAlign: "center" }}>
+            <img
+              src={formatBase64Image(user.picture)}
+              alt="Profile Pic"
+              style={{ borderRadius: "50%", width: "150px", height: "150px", align: "auto"}}
+            />
+          </div>
+        )}
         <ul className="game user-list">
           <li key={user.id}>
             <div className="player container">
@@ -119,7 +142,7 @@ const UserDetail = () => {
           <li key={user?.birthdate}>
             <div className="player container">
               <div className="player birthdate">
-                birthdate: {user.birthdate}
+                birthdate: {user.birthDay}
               </div>
             </div>
           </li>
@@ -131,7 +154,7 @@ const UserDetail = () => {
           <li key={user.createdAt}>
             <div className="player container">
               <div className="player createdAt">
-                createdAt: {user.createdAt}
+                createdAt: {user.createDate}
               </div>
             </div>
           </li>

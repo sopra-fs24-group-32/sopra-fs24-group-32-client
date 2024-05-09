@@ -59,7 +59,7 @@ const LobbyCreate = () => {
       navigate(`/lobby/host/${lobby.id}`);
     } catch (error) {
       console.error(
-        `Something went wrong while joining the lobby: \n${handleError(error)}`
+        `Something went wrong while creating the lobby: \n${handleError(error)}`
       );
       console.error("Details:", error);
       const errorMessage =

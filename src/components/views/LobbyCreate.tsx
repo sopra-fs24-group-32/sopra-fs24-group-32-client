@@ -63,8 +63,7 @@ const LobbyCreate = () => {
       );
       console.error("Details:", error);
       const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
+        error.response?.data ||
         "An unknown error occurred";
       alert(
         `${errorMessage}`

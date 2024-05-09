@@ -55,6 +55,7 @@ const LobbyJoin = () => {
       alert(
         `${errorMessage}`
       );
+      navigate("/home")
     }
   };
 

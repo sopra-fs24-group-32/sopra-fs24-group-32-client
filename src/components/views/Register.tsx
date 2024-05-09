@@ -57,8 +57,17 @@ const Register = () => {
 
       navigate("/home");
     } catch (error) {
+      console.error(
+        `Something went wrong while joining the lobby: \n${handleError(error)}`
+      );
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
       alert(
-        `Something went wrong during the register: \n${handleError(error)}`
+        `${errorMessage}`
       );
     }
   };

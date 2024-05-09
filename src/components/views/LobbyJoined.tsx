@@ -51,8 +51,13 @@ const LobbyDetailJoined = () => {
         `Something went wrong while fetching the lobby: \n${handleError(error)}`
       );
       console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
       alert(
-        "Something went wrong while fetching the lobby! See the console for details."
+        `${errorMessage}`
       );
     }
   };
@@ -66,7 +71,18 @@ const LobbyDetailJoined = () => {
       }
       navigate("/home");
     } catch (error) {
-      alert(`Failed to leave the lobby: ${error.message}`);
+      console.error(
+        `Something went wrong while leaving the lobby: \n${handleError(error)}`
+      );
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
     }
   };
 
@@ -262,7 +278,6 @@ const LobbyDetailJoined = () => {
                   >
                     {player.username}
                   </div>
-                  <div className="player-score">Score: {player.score}</div>
                   <span className="tooltip-text">
                     ID: {player.id}
                     <br />

@@ -47,9 +47,15 @@ const LobbyDetailHost = () => {
         `Something went wrong while fetching the lobby: \n${handleError(error)}`
       );
       console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
       alert(
-        "Something went wrong while fetching the lobby! See the console for details."
+        `${errorMessage}`
       );
+      navigate("/home");
     }
   };
 
@@ -227,8 +233,14 @@ const LobbyDetailHost = () => {
       console.error(
         `Something went wrong while updating the lobby: \n${handleError(error)}`
       );
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
       alert(
-        "Something went wrong while updating the lobby! See the console for details."
+        `${errorMessage}`
       );
     }
   };
@@ -258,8 +270,14 @@ const LobbyDetailHost = () => {
       console.error(
         `Something went wrong while kicking the player: \n${handleError(error)}`
       );
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
       alert(
-        "Something went wrong while kicking the player: " + handleError(error)
+        `${errorMessage}`
       );
     }
   };
@@ -361,11 +379,11 @@ const LobbyDetailHost = () => {
                     <br />
                     Username: {player.username}
                     <br />
-                    Birthdate: {player.birthdate}
+                    Birthdate: {player.birthDay}
                     <br />
                     Status: {player.status}
                     <br />
-                    Created At: {player.createdAt}
+                    Created At: {player.createDate}
                   </span>
                 </div>
               </li>

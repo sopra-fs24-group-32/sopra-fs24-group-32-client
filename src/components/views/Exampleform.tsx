@@ -61,15 +61,18 @@ const Profile = () => {
 
         console.log(response);
       } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
+        console.log(
+          `Something went wrong when fetching the user: \n${handleError(error)}`
         );
         console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
+          const errorMessage =
+          error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "An unknown error occurred";
+          alert(
+            `${errorMessage}`
+          );
       }
     }
 
@@ -89,7 +92,7 @@ const Profile = () => {
       }
 
       const requestBody = JSON.stringify({ username, birthDate });
-      const response = await api.put(`/users/${userId}`, requestBody);
+      const response = await api.put(`/users/update/${userId}`, requestBody);
       const updatedUser = new User(response.data);
 
       setUser(updatedUser);
@@ -97,9 +100,18 @@ const Profile = () => {
       setBirthDate(updatedUser.birthDate);
       setIsEditable(false);
     } catch (error) {
-      alert(
+      console.log(
         `Something went wrong during the user update: \n${handleError(error)}`
       );
+      console.error("Details:", error);
+        const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+        alert(
+          `${errorMessage}`
+        );
     }
   };
 
@@ -143,7 +155,7 @@ const Profile = () => {
               label="Creation date"
               type="date"
               disabled={true}
-              value={user.creationDate}
+              value={user.createDate}
             />
 
             {isEditable ? (

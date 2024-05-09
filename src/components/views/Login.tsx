@@ -57,7 +57,17 @@ const Login = () => {
       // Login successfully worked --> navigate to the route /game in the GameRouter
       navigate("/home");
     } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+      console.error(
+        `Something went wrong while joining the lobby: \n${handleError(error)}`
+      );
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
     }
   };
 

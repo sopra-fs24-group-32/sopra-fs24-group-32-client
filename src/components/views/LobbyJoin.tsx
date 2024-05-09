@@ -49,6 +49,7 @@ const LobbyJoin = () => {
       console.error("Details:", error);
       const errorMessage =
         error.response?.data?.message ||
+        error.response?.data ||
         error.message ||
         "An unknown error occurred";
       alert(

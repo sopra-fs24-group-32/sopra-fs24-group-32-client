@@ -4,6 +4,7 @@ import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
 import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
+import { ClockLoader } from "react-spinners";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 import { User } from "types";
@@ -243,6 +244,13 @@ const LobbyDetailJoined = () => {
               </div>
             </div>
           </li>
+          <li key="maxAmtPlayers">
+            <div className="player container">
+              <div className="player timeLimit">
+                Guess Time Limit: {lobby.timeLimit} sec
+              </div>
+            </div>
+          </li>
           <li key="lobbyOwner">
             <div className="player container">
               <div className="player lobbyOwner">
@@ -330,6 +338,7 @@ const LobbyDetailJoined = () => {
     <BaseContainer className="game container">
       <h2>Happy Coding!</h2>
       <p className="game paragraph">Waiting for the Host to start the game</p>
+      <ClockLoader color="#36d7b7" size={75} speedMultiplier={lobby.users && lobby.users.length > 0 ? lobby.users.length : 1} />
       {content}
     </BaseContainer>
   );

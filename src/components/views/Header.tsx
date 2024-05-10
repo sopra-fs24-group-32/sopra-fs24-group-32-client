@@ -35,6 +35,7 @@ const Header = (props) => {
           location.pathname.split("/").length === 3
         );
       }
+      
       return false;
     }
   );

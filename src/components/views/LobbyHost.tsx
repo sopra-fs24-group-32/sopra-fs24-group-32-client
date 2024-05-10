@@ -245,6 +245,14 @@ const LobbyDetailHost = () => {
     }
   };
 
+  const formatBase64Image = (base64) => {
+    if (!base64.startsWith("data:image/")) {
+      return `data:image/jpeg;base64,${base64}`;
+    }
+
+    return base64;
+  };
+
   const kickPlayer = async (playerToken: string) => {
     try {
       const hostToken = localStorage.getItem("userToken");
@@ -375,15 +383,28 @@ const LobbyDetailHost = () => {
                   )}
                   {/* <div className="player-score">Score: {player.score}</div> */}
                   <span className="tooltip-text">
-                    ID: {player.id}
-                    <br />
-                    Username: {player.username}
-                    <br />
-                    Birthdate: {player.birthDay}
-                    <br />
-                    Status: {player.status}
-                    <br />
-                    Created At: {player.createDate}
+                    {player.picture ? (
+                      <img
+                        src={formatBase64Image(player.picture)}
+                        alt={`${player.username}'s Profile`}
+                        style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+                      />
+                    ) : (
+                      <div
+                        className="player-username"
+                        style={{ fontWeight: "bold", marginBottom: "5px" }}
+                      >
+                        ID: {player.id}
+                        <br />
+                        Username: {player.username}
+                        <br />
+                        Birthdate: {player.birthDay}
+                        <br />
+                        Status: {player.status}
+                        <br />
+                        Created At: {player.createDate}
+                      </div>
+                    )}  
                   </span>
                 </div>
               </li>

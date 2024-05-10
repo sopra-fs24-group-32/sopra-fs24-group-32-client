@@ -211,6 +211,14 @@ const LobbyDetailJoined = () => {
     fetchData();
   }, []);
 
+  const formatBase64Image = (base64) => {
+    if (!base64.startsWith("data:image/")) {
+      return `data:image/jpeg;base64,${base64}`;
+    }
+
+    return base64;
+  };
+
   //  useEffect(() => {
   //    const interval = setInterval(fetchData, 1000);
   //
@@ -279,15 +287,28 @@ const LobbyDetailJoined = () => {
                     {player.username}
                   </div>
                   <span className="tooltip-text">
-                    ID: {player.id}
-                    <br />
-                    Username: {player.username}
-                    <br />
-                    Birthdate: {player.birthdate}
-                    <br />
-                    Status: {player.status}
-                    <br />
-                    Created At: {player.createdAt}
+                    {player.picture ? (
+                      <img
+                        src={formatBase64Image(player.picture)}
+                        alt={`${player.username}'s Profile`}
+                        style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+                      />
+                    ) : (
+                      <div
+                        className="player-username"
+                        style={{ fontWeight: "bold", marginBottom: "5px" }}
+                      >
+                        ID: {player.id}
+                        <br />
+                        Username: {player.username}
+                        <br />
+                        Birthdate: {player.birthDay}
+                        <br />
+                        Status: {player.status}
+                        <br />
+                        Created At: {player.createDate}
+                      </div>
+                    )}  
                   </span>
                 </div>
               </li>

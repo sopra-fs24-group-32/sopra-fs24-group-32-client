@@ -52,7 +52,18 @@ const Scoreboard = () => {
       navigate("/home");
       alert("You have left your lobby!");
     } catch (error) {
-      alert(`Something went wrong during the leave: \n${handleError(error)}`);
+      console.error(
+        `Something went wrong while leaving/deleting the lobby: \n${handleError(error)}`
+      );
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
     }
   };
 
@@ -65,7 +76,18 @@ const Scoreboard = () => {
       navigate("/home");
       alert("You have left your lobby!");
     } catch (error) {
-      alert(`Something went wrong during the leave: \n${handleError(error)}`);
+      console.error(
+        `Something went wrong during the leave: \n${handleError(error)}`
+      );
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
     }
   };
 
@@ -97,8 +119,18 @@ const Scoreboard = () => {
           setUsers(uniqueUsers);
         }
       } catch (error) {
-        console.error(`Failed to fetch users: \n${handleError(error)}`);
-        alert("Failed to load users. Please check the console for details.");
+        console.error(
+          `Failed to fetch users: \n${handleError(error)}`
+        );
+        console.error("Details:", error);
+        const errorMessage =
+          error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "An unknown error occurred";
+        alert(
+          `${errorMessage}`
+        );
       }
     }
 

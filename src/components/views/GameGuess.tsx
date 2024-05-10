@@ -44,7 +44,15 @@ const GameGuess = () => {
           // Try again after a delay if 404 (not found)
           timeoutRef.current = setTimeout(fetchImage, 1000);
         } else {
-          alert(`Failed to retrieve image: ${handleError(error)}`);
+          // alert(`Failed to retrieve image: ${handleError(error)}`);
+          const errorMessage =
+            error.response?.data?.message ||
+            error.response?.data ||
+            error.message ||
+            "An unknown error occurred";
+          alert(
+            `${errorMessage}`
+          );
           setIsWaitingForImage(false); // Stop further fetching on critical error
         }
       }
@@ -102,6 +110,15 @@ const GameGuess = () => {
       setTimeAvailable(response.data.timeLimit || 30);
     } catch (error) {
       console.error(`Failed to fetch lobby settings: ${handleError(error)}`);
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
     }
   };
 
@@ -146,7 +163,16 @@ const GameGuess = () => {
       }); //commented out since api not available atm
       console.log("response ---------------------", playerGuessed, response);
     } catch (error) {
-      alert(`Something went wrong: \n${handleError(error)}`);
+      console.log(`Something went wrong: \n${handleError(error)}`);
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
     }
   };
 
@@ -175,7 +201,16 @@ const GameGuess = () => {
       console.log("response ---------------------", playerGuessed, response);
       //navigate("/results");
     } catch (error) {
-      alert(`Something went wrong: \n${handleError(error)}`);
+      console.log(`Something went wrong: \n${handleError(error)}`);
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
     }
   };
 

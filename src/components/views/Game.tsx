@@ -81,8 +81,13 @@ const Game = () => {
           )}`
         );
         console.error("Details:", error);
+        const errorMessage =
+          error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "An unknown error occurred";
         alert(
-          "Something went wrong while fetching the users! See the console for details."
+          `${errorMessage}`
         );
       }
     }

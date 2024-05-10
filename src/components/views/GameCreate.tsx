@@ -29,7 +29,16 @@ const GameCreate = () => {
 
       await fetchGameSettings(); // Fetch or set the timer immediately after image is set
     } catch (error) {
-      alert(`Something went wrong: \n${handleError(error)}`);
+      console.log(`Something went wrong: \n${handleError(error)}`);
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
       //setIsSubmitting(false);
     }
   };
@@ -42,6 +51,15 @@ const GameCreate = () => {
       setTimer(response.data.timeLimit || 30);
     } catch (error) {
       console.error("Failed to fetch lobby details:", handleError(error));
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert(
+        `${errorMessage}`
+      );
       setTimer(30);
     }
   };

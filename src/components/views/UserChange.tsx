@@ -135,6 +135,7 @@ const UserChange = () => {
       convertToBase64(file);
     } else {
       console.error("No file chosen or file input is not recognized");
+      alert("No file chosen or file input is not recognized");
     }
   };
 

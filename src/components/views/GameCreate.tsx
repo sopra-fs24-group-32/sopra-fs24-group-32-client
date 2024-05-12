@@ -4,10 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/GameCreate.scss";
 import BaseContainer from "components/ui/BaseContainer";
-import { useWebSocket } from "../../helpers/WebSocketContext";
 
 import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+import { over } from "stompjs";
 import { getDomain } from "helpers/getDomain";
 
 const GameCreate = () => {
@@ -18,7 +17,7 @@ const GameCreate = () => {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [timer, setTimer] = useState(30); // Default timer
   const [allGuessesSubmitted, setAllGuessesSubmitted] = useState(false);
-  const { stompClient } = useWebSocket();
+  const [stompClient, setStompClient] = useState(null);
 
   const sendDalle = async () => {
     setIsSubmitting(true);
@@ -26,8 +25,10 @@ const GameCreate = () => {
       const requestBody = JSON.stringify({ description: imageDescription });
       const response = await api.post(`/game/image/${id}`, requestBody);
       setGeneratedImage(response.data);
-
-      await fetchGameSettings(); // Fetch or set the timer immediately after image is set
+      
+      connectAndSubscribeUserToSocket();
+      //await fetchGameSettings(); // Fetch or set the timer immediately after image is set
+      
     } catch (error) {
       console.log(`Something went wrong: \n${handleError(error)}`);
       console.error("Details:", error);
@@ -81,11 +82,13 @@ const GameCreate = () => {
     }
   }, [generatedImage]);
 
+  /*
   useEffect(() => {
     if (timer === 0 || allGuessesSubmitted === true) {
       navigate(`/game/scoreboard/${id}`);
     }
   }, [timer, allGuessesSubmitted, navigate]);
+  */
 
   // Check if all guesses have been submitted
   const checkAllGuessesSubmitted = async () => {
@@ -99,30 +102,40 @@ const GameCreate = () => {
     }
   };
 
-  /*
+
+  //WEBSOCKET SUBSCRIPTION
+  const connectAndSubscribeUserToSocket = async () => {
+    const sock = new SockJS(getDomain() + "/ws");
+    const client = over(sock, { websocket: { withCredentials: false } });
+    setStompClient(client);
+  };
+
   useEffect(() => {
-    const Socket = new SockJS(getDomain() + "/websocket");
-    const stompClient = Stomp.over(Socket);
-    let subscription;
-
-    stompClient.connect({}, (frame) => {
-      subscription = stompClient.subscribe(
-        `/topic/lobby/${id}`,
-        async (message) => {
-          fetchGameSettings();
-        }
-      );
-    });
-
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe();
+    const onConnect = () => {
+      if (stompClient) {
+        const subscription = stompClient.subscribe(`/game/everybodyGuessed/${id}`,onMessageReceived);
       }
-      stompClient.disconnect();
     };
-  }, []);
 
-  */
+    const onError = (error) => {
+      console.log("Error:", error);
+    };
+
+    //Everytime a player guesses or the timer runs out we receive the amount of players that have already guessed/timer has run out here
+    //If it corresponds to the total amount of players we navigate to scoreboards
+    const onMessageReceived = (payload) => {
+      const allPlayersGuessed = JSON.parse(payload.body);
+      if(allPlayersGuessed === true){
+        stompClient.disconnect();
+        navigate(`/game/scoreboard/${id}`);
+      }
+    };
+    if (stompClient) {
+      stompClient.connect({}, onConnect, onError);
+    }
+  }, [stompClient]);
+
+  //WEBSOCKET SUBSCRIPTION
 
   return (
     <BaseContainer>

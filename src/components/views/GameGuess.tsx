@@ -4,6 +4,9 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/GameGuess.scss";
 import BaseContainer from "components/ui/BaseContainer";
+import SockJS from "sockjs-client";
+import { over } from "stompjs";
+import { getDomain } from "helpers/getDomain";
 
 const GameGuess = () => {
   const navigate = useNavigate();
@@ -17,6 +20,7 @@ const GameGuess = () => {
   const [image, setImage] = useState("");
   const [isWaitingForImage, setIsWaitingForImage] = useState(true);
   const location = useLocation();
+  const [stompClient, setStompClient] = useState(null);
   const { nextPictureGenerator } = location.state ?? {
     nextPictureGenerator: "No description provided",
   };
@@ -69,7 +73,6 @@ const GameGuess = () => {
       }
     };
   }, [id, isWaitingForImage]);
-  /*
   useEffect(() => {
     const fetchImage = async () => {
       try {
@@ -98,7 +101,6 @@ const GameGuess = () => {
       fetchImage();
     }
   }, [id, isWaitingForImage]);
-  */
 
   // Fetch lobby settings
   const fetchSettings = async () => {
@@ -108,6 +110,7 @@ const GameGuess = () => {
       console.log("timelimit ------------------", response.data.timeLimit);
       setTimer(response.data.timeLimit || 30);
       setTimeAvailable(response.data.timeLimit || 30);
+      connectAndSubscribeUserToSocket();
     } catch (error) {
       console.error(`Failed to fetch lobby settings: ${handleError(error)}`);
       console.error("Details:", error);
@@ -138,7 +141,7 @@ const GameGuess = () => {
         console.log("--------------------------empty");
         sendEmptyGuess();
       }
-      navigate(`/game/scoreboard/${id}`);
+      //navigate(`/game/scoreboard/${id}`);
     }
   }, [timer, navigate]);
 
@@ -162,6 +165,8 @@ const GameGuess = () => {
         },
       }); //commented out since api not available atm
       console.log("response ---------------------", playerGuessed, response);
+      //notify the server and other players that time has run out for this player -> onMessageReceived in WEBSOCKET SUBSCRIPTION gets triggered
+      stompClient.send(`/game/guessSubmitted/${id}`);
     } catch (error) {
       console.log(`Something went wrong: \n${handleError(error)}`);
       console.error("Details:", error);
@@ -199,6 +204,8 @@ const GameGuess = () => {
         },
       }); //commented out since api not available atm
       console.log("response ---------------------", playerGuessed, response);
+      //notify server and other players that this player has guessed -> onMessageReceived in WEBSOCKET SUBSCRIPTION gets triggered
+      stompClient.send(`/game/guessSubmitted/${id}`);
       //navigate("/results");
     } catch (error) {
       console.log(`Something went wrong: \n${handleError(error)}`);
@@ -213,6 +220,40 @@ const GameGuess = () => {
       );
     }
   };
+
+  //WEBSOCKET SUBSCRIPTION
+  const connectAndSubscribeUserToSocket = async () => {
+    const sock = new SockJS(getDomain() + "/ws");
+    const client = over(sock, { websocket: { withCredentials: false } });
+    setStompClient(client);
+  };
+
+  useEffect(() => {
+    const onConnect = () => {
+      if (stompClient) {
+        const subscription = stompClient.subscribe(`/game/everybodyGuessed/${id}`,onMessageReceived);
+      }
+    };
+
+    const onError = (error) => {
+      console.log("Error:", error);
+    };
+
+    //Everytime a player guesses or the timer runs out we receive the amount of players that have already guessed/timer has run out here
+    //If it corresponds to the total amount of players we navigate to scoreboard
+    const onMessageReceived = (payload) => {
+      const allPlayersGuessed = JSON.parse(payload.body);
+      if(allPlayersGuessed === true){
+        stompClient.disconnect();
+        navigate(`/game/scoreboard/${id}`);
+      }
+    };
+    if (stompClient) {
+      stompClient.connect({}, onConnect, onError);
+    }
+  }, [stompClient]);
+
+  //WEBSOCKET SUBSCRIPTION
 
   return (
     <BaseContainer>

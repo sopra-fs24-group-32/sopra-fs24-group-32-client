@@ -57,9 +57,7 @@ const LobbyDetailJoined = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
 
@@ -81,9 +79,7 @@ const LobbyDetailJoined = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
 
@@ -110,7 +106,10 @@ const LobbyDetailJoined = () => {
         const subJoin = stompClient.subscribe(`/game/join/${id}`, joinMessage);
 
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
-        const subLeave = stompClient.subscribe(`/game/leave/${id}`, leaveMessage);
+        const subLeave = stompClient.subscribe(
+          `/game/leave/${id}`,
+          leaveMessage
+        );
 
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
         const subKick = stompClient.subscribe(`/game/kick/${id}`, kickMessage);
@@ -190,9 +189,9 @@ const LobbyDetailJoined = () => {
     const data = JSON.parse(payload.body);
     console.log("Kick message received:", data);
     alert(`${data.username} has been kicked out of the lobby`);
-  
+
     const currentUserToken = localStorage.getItem("userToken");
-    
+
     if (data.userToken === currentUserToken) {
       if (stompClient) {
         stompClient.disconnect();
@@ -200,12 +199,14 @@ const LobbyDetailJoined = () => {
       navigate("/home");
     } else {
       setLobby((prevLobby) => {
-        const newUsersList = prevLobby.users.filter(user => user.userToken !== data.userToken);
-        
+        const newUsersList = prevLobby.users.filter(
+          (user) => user.userToken !== data.userToken
+        );
+
         return { ...prevLobby, users: newUsersList };
       });
     }
-  }
+  };
 
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
@@ -299,7 +300,11 @@ const LobbyDetailJoined = () => {
                       <img
                         src={formatBase64Image(player.picture)}
                         alt={`${player.username}'s Profile`}
-                        style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          borderRadius: "50%",
+                        }}
                       />
                     ) : (
                       <div
@@ -316,7 +321,7 @@ const LobbyDetailJoined = () => {
                         <br />
                         Created At: {player.createDate}
                       </div>
-                    )}  
+                    )}
                   </span>
                 </div>
               </li>
@@ -336,9 +341,13 @@ const LobbyDetailJoined = () => {
 
   return (
     <BaseContainer className="game container">
-      <h2>Happy Coding!</h2>
-      <p className="game paragraph">Waiting for the Host to start the game</p>
-      <ClockLoader color="#36d7b7" size={75} speedMultiplier={lobby.users && lobby.users.length > 0 ? lobby.users.length : 1} />
+      <ClockLoader
+        color="#36d7b7"
+        size={75}
+        speedMultiplier={
+          lobby.users && lobby.users.length > 0 ? lobby.users.length : 1
+        }
+      />
       {content}
     </BaseContainer>
   );

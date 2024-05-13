@@ -52,9 +52,7 @@ const LobbyDetailHost = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
       navigate("/home");
     }
   };
@@ -239,9 +237,7 @@ const LobbyDetailHost = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
 
@@ -284,10 +280,22 @@ const LobbyDetailHost = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
+  };
+
+  const [copySuccess, setCopySuccess] = useState("");
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(lobby.lobbyInvitationCode).then(
+      () => {
+        setCopySuccess("Copied!");
+        setTimeout(() => setCopySuccess(""), 2000);
+      },
+      (err) => {
+        console.error("Could not copy text: ", err);
+      }
+    );
   };
 
   let content = <Spinner />;
@@ -303,8 +311,31 @@ const LobbyDetailHost = () => {
           </li>
           <li key="lobbyInvitationCode">
             <div className="player container">
-              <div className="player invitationCode">
-                Invitation Code: {lobby.lobbyInvitationCode}
+              <div className="player invitation-code-container">
+                <div className="player invitation-code">
+                  Invitation Code: {lobby.lobbyInvitationCode}
+                  <button
+                    onClick={copyToClipboard}
+                    style={{
+                      marginLeft: "10px",
+                      cursor: "pointer",
+                      border: "none",
+                      background: "none",
+                      display: "flex",
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                      fill="#e8eaed"
+                    >
+                      <path d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h480v80H200Z" />
+                    </svg>
+                  </button>
+                </div>
+                {copySuccess && <span>{copySuccess}</span>}
               </div>
             </div>
           </li>
@@ -387,7 +418,11 @@ const LobbyDetailHost = () => {
                       <img
                         src={formatBase64Image(player.picture)}
                         alt={`${player.username}'s Profile`}
-                        style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          borderRadius: "50%",
+                        }}
                       />
                     ) : (
                       <div
@@ -404,7 +439,7 @@ const LobbyDetailHost = () => {
                         <br />
                         Created At: {player.createDate}
                       </div>
-                    )}  
+                    )}
                   </span>
                 </div>
               </li>
@@ -470,13 +505,7 @@ const LobbyDetailHost = () => {
     );
   }
 
-  return (
-    <BaseContainer className="game container">
-      <h2>Happy Coding!</h2>
-      <p className="game paragraph">Get user from secure endpoint:</p>
-      {content}
-    </BaseContainer>
-  );
+  return <BaseContainer className="game container">{content}</BaseContainer>;
 };
 
 export default LobbyDetailHost;

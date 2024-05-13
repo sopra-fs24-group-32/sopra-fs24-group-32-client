@@ -121,9 +121,7 @@ const GameGuess = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
 
@@ -177,9 +175,7 @@ const GameGuess = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
 
@@ -217,9 +213,7 @@ const GameGuess = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
 
@@ -236,42 +230,61 @@ const GameGuess = () => {
   useEffect(() => {
     const onConnect = () => {
       if (stompClient) {
-        const subscription = stompClient.subscribe(`/game/everybodyGuessed/${id}`,onMessageReceived);
+        // Existing subscriptions
+        const everybodyGuessedSubscription = stompClient.subscribe(
+          `/game/everybodyGuessed/${id}`,
+          onMessageReceived
+        );
+        const receiveGeneratedPictureSubscription = stompClient.subscribe(
+          `/game/receiveGeneratedPicture/${id}`,
+          onPictureReceived
+        );
 
-        stompClient.subscribe(`/game/receiveGeneratedPicture/${id}`, onPictureReceived);
+        // New subscription for skip round messages
+        const skipRoundSubscription = stompClient.subscribe(
+          `/game/skipRound/${id}`,
+          onSkipRoundReceived
+        );
+
+        return () => {
+          everybodyGuessedSubscription.unsubscribe();
+          receiveGeneratedPictureSubscription.unsubscribe();
+          skipRoundSubscription.unsubscribe();
+        };
       }
     };
 
-    const onError = (error) => {
-      console.log("Error:", error);
-    };
-
-    //Everytime a player guesses or the timer runs out we receive the amount of players that have already guessed/timer has run out here
-    //If it corresponds to the total amount of players we navigate to scoreboard
     const onMessageReceived = (payload) => {
       const allPlayersGuessed = JSON.parse(payload.body);
-      if(allPlayersGuessed === true){
+      if (allPlayersGuessed === true) {
         stompClient.disconnect();
         navigate(`/game/scoreboard/${id}`);
       }
     };
 
-
-    //This gets triggered when the client receives the imageURL from the server
-    const onPictureReceived = async (payload) =>{
+    const onPictureReceived = async (payload) => {
       const parsedBody = JSON.parse(payload.body);
-      const URL = parsedBody.body;
-      setImage(URL);
+      setImage(parsedBody.body);
       setIsWaitingForImage(false);
       await fetchSettings();
       setStartTime(Date.now());
     };
 
+    const onSkipRoundReceived = (payload) => {
+      const skipInfo = JSON.parse(payload.body);
+      if (skipInfo.skip) {
+        navigate(`/game/scoreboard/${id}`);
+      }
+    };
+
+    const onError = (error) => {
+      console.error("Error:", error);
+    };
+
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
     }
-  }, [stompClient]);
-
+  }, [stompClient, id, navigate]);
   //WEBSOCKET SUBSCRIPTION
 
   return (

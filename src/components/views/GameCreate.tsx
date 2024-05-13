@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/GameCreate.scss";
 import BaseContainer from "components/ui/BaseContainer";
+import { ScaleLoader } from "react-spinners";
 
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
@@ -154,7 +155,13 @@ const GameCreate = () => {
             ) : (
               <>
                 <h2>Your image is being created...</h2>
-                <p>Loading image...</p>
+                <ScaleLoader
+                  color="#36d7b7"
+                  height={75}
+                  margin={4}
+                  radius={2}
+                  width={6}
+                />
               </>
             )}
             <h3>Description: {imageDescription}</h3>

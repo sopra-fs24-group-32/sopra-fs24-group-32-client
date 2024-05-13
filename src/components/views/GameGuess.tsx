@@ -4,6 +4,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/GameGuess.scss";
 import BaseContainer from "components/ui/BaseContainer";
+import { ScaleLoader } from "react-spinners";
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { getDomain } from "helpers/getDomain";
@@ -280,6 +281,13 @@ const GameGuess = () => {
           {isWaitingForImage ? (
             <>
               <h2>Waiting for the image generation by DALL-E...</h2>
+              <ScaleLoader
+                color="#36d7b7"
+                height={75}
+                margin={4}
+                radius={2}
+                width={6}
+              />
               <h3>Image being created by: {nextPictureGenerator}</h3>
             </>
           ) : (

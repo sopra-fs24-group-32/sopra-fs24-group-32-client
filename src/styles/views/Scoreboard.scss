@@ -169,3 +169,19 @@
 .player.container.rank-1 {
   animation: winnerAnimation 2s infinite ease-in-out;
 }
+
+.score-table-summary {
+  width: 100%;
+  border-collapse: collapse; // Ensures borders between cells are merged
+  
+  th, td {
+    border: 1px solid #ccc; // Sets a grey border for each cell
+    text-align: left;
+    padding: 8px; // Adds some padding inside cells for better readability
+  }
+
+  th {
+    background-color: hsl(326, 5%, 72%); // Gives a slight grey background to header cells
+  }
+}
+

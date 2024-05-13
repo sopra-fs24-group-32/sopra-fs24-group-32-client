@@ -36,6 +36,7 @@ const Scoreboard = () => {
   const [currentRound, setCurrentRound] = useState(1);
   const [amtOfRounds, setAmtOfRounds] = useState(0);
   const [lobbyOwner, setLobbyOwner] = useState(null);
+  const [currentPictureGenerator, setCurrentPictureGenerator] = useState("");
   const [currentUser, setCurrentUser] = useState(
     localStorage.getItem("username")
   );
@@ -100,6 +101,7 @@ const Scoreboard = () => {
         setLobbyOwner(response.data.lobbyOwner);
         setAmtOfRounds(response.data.amtOfRounds);
         setCurrentRound(response.data.currentRound);
+        setCurrentPictureGenerator(response.data.currentPictureGenerator);
         const descriptionResponse = await api.get(
           `/game/lastDescription/${id}`
         );
@@ -255,6 +257,37 @@ const Scoreboard = () => {
           )}
         </div>
         <h3>Original Image Description: {imageDescription}</h3>
+        <h3>
+          Round Summary 
+        </h3>
+        <table className="score-table-summary">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Player Guess</th>
+              <th>ChatGPT Similarity</th>
+              <th>Point Obtained</th>
+              <th>Bonus</th>
+              <th>Points + Bonus</th>
+              <th>Time Guess Submitted</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user, index) => (
+              currentPictureGenerator !== user.username && (
+                <tr key={index}>
+                  <td>{user.username}</td>
+                  <td>{user.playerGuess || "No submittion"}</td>
+                  <td>{user.similarityScore}</td>
+                  <td>{user.pointsAwardedFromChatGPT}</td>
+                  <td>{user.bonusPoints}</td>
+                  <td>{user.totalPoints}</td>
+                  <td>{user.timeGuessSubmitted}</td>
+                </tr>
+              )
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   }
@@ -271,7 +304,9 @@ const Scoreboard = () => {
         {currentRound >= amtOfRounds ? (
           <></>
         ) : (
-          <h3>{timer} seconds remaining for next turn</h3>
+          <div>            
+            <h3>{timer} seconds remaining for next turn</h3>
+          </div>
         )}
         <h3>
           Rounds played: {currentRound}/{amtOfRounds}

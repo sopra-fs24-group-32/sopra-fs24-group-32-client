@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/GameCreate.scss";
 import BaseContainer from "components/ui/BaseContainer";
-import { ScaleLoader } from "react-spinners";
+import { ScaleLoader, PropagateLoader } from "react-spinners";
 
 import SockJS from "sockjs-client";
 import { over } from "stompjs";
@@ -23,8 +23,16 @@ const GameCreate = () => {
   const sendDalle = async () => {
     setIsSubmitting(true);
     try {
+      const userToken = localStorage.getItem("userToken");
+      const userTokenJson = JSON.stringify({ userToken });
       const requestBody = JSON.stringify({ description: imageDescription });
-      const response = await api.post(`/game/image/${id}`, requestBody);
+      const response = await api.post(`/game/image/${id}`, requestBody, 
+        {
+          headers: {
+            userToken: userTokenJson,
+          },
+        }
+      );
       setGeneratedImage(response.data);
     } catch (error) {
       console.error(`Something went wrong: \n${handleError(error)}`);
@@ -141,6 +149,7 @@ const GameCreate = () => {
                 <h2>Your created Image:</h2>
                 <img src={generatedImage} width="60%" alt="Generated" />
                 <p>Waiting for all players to submit their guesses...</p>
+                <PropagateLoader color="#36d7b7" size={15} />
                 <p>Time remaining: {timer} seconds</p>
               </>
             ) : (

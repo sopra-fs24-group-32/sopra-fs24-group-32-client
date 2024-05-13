@@ -26,21 +26,12 @@ const GameCreate = () => {
       const requestBody = JSON.stringify({ description: imageDescription });
       const response = await api.post(`/game/image/${id}`, requestBody);
       setGeneratedImage(response.data);
-      
-      //await fetchGameSettings(); // Fetch or set the timer immediately after image is set
-      
     } catch (error) {
-      console.log(`Something went wrong: \n${handleError(error)}`);
+      console.error(`Something went wrong: \n${handleError(error)}`);
       console.error("Details:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data ||
-        error.message ||
-        "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
-      //setIsSubmitting(false);
+      const errorMessage = error.response?.data?.message || error.response?.data || error.message || "An unknown error occurred";
+      alert(`${errorMessage}\nClick OK to retry.`);
+      setIsSubmitting(false); // Allow retry by resetting the state
     }
   };
 
@@ -155,12 +146,7 @@ const GameCreate = () => {
             ) : (
               <>
                 <h2>Your image is being created...</h2>
-                <ScaleLoader
-                  color="#36d7b7"
-                  height={75}
-                  margin={4}
-                  radius={2}
-                  width={6}
+                <ScaleLoader color="#36d7b7" height={75} margin={4} radius={2} width={6}
                 />
               </>
             )}

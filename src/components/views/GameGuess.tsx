@@ -27,6 +27,7 @@ const GameGuess = () => {
   const [playerSubmitted, setPlayerSubmitted] = useState(false);
   const timeoutRef = useRef(null);
 
+  /*
   useEffect(() => {
     const fetchImage = async () => {
       clearTimeout(timeoutRef.current); // Clear existing timeout
@@ -73,6 +74,7 @@ const GameGuess = () => {
       }
     };
   }, [id, isWaitingForImage]);
+  
   useEffect(() => {
     const fetchImage = async () => {
       try {
@@ -101,7 +103,7 @@ const GameGuess = () => {
       fetchImage();
     }
   }, [id, isWaitingForImage]);
-
+  */
   // Fetch lobby settings
   const fetchSettings = async () => {
     try {
@@ -110,7 +112,6 @@ const GameGuess = () => {
       console.log("timelimit ------------------", response.data.timeLimit);
       setTimer(response.data.timeLimit || 30);
       setTimeAvailable(response.data.timeLimit || 30);
-      connectAndSubscribeUserToSocket();
     } catch (error) {
       console.error(`Failed to fetch lobby settings: ${handleError(error)}`);
       console.error("Details:", error);
@@ -222,16 +223,21 @@ const GameGuess = () => {
   };
 
   //WEBSOCKET SUBSCRIPTION
-  const connectAndSubscribeUserToSocket = async () => {
-    const sock = new SockJS(getDomain() + "/ws");
-    const client = over(sock, { websocket: { withCredentials: false } });
-    setStompClient(client);
-  };
+  useEffect(() => {
+    const connectAndSubscribeUserToSocket = async () => {
+      const sock = new SockJS(getDomain() + "/ws");
+      const client = over(sock, { websocket: { withCredentials: false } });
+      setStompClient(client);
+    };
+    connectAndSubscribeUserToSocket();
+  }, []);
 
   useEffect(() => {
     const onConnect = () => {
       if (stompClient) {
         const subscription = stompClient.subscribe(`/game/everybodyGuessed/${id}`,onMessageReceived);
+
+        stompClient.subscribe(`/game/receiveGeneratedPicture/${id}`, onPictureReceived);
       }
     };
 
@@ -248,6 +254,18 @@ const GameGuess = () => {
         navigate(`/game/scoreboard/${id}`);
       }
     };
+
+
+    //This gets triggered when the client receives the imageURL from the server
+    const onPictureReceived = async (payload) =>{
+      const parsedBody = JSON.parse(payload.body);
+      const URL = parsedBody.body;
+      setImage(URL);
+      setIsWaitingForImage(false);
+      await fetchSettings();
+      setStartTime(Date.now());
+    };
+
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
     }

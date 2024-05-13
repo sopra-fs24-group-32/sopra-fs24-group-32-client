@@ -26,7 +26,6 @@ const GameCreate = () => {
       const response = await api.post(`/game/image/${id}`, requestBody);
       setGeneratedImage(response.data);
       
-      connectAndSubscribeUserToSocket();
       //await fetchGameSettings(); // Fetch or set the timer immediately after image is set
       
     } catch (error) {
@@ -104,11 +103,14 @@ const GameCreate = () => {
 
 
   //WEBSOCKET SUBSCRIPTION
-  const connectAndSubscribeUserToSocket = async () => {
-    const sock = new SockJS(getDomain() + "/ws");
-    const client = over(sock, { websocket: { withCredentials: false } });
-    setStompClient(client);
-  };
+  useEffect(() => {
+    const connectAndSubscribeUserToSocket = async () => {
+      const sock = new SockJS(getDomain() + "/ws");
+      const client = over(sock, { websocket: { withCredentials: false } });
+      setStompClient(client);
+    };
+    connectAndSubscribeUserToSocket();
+  }, []);
 
   useEffect(() => {
     const onConnect = () => {

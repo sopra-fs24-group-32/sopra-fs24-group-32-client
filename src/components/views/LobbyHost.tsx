@@ -298,6 +298,16 @@ const LobbyDetailHost = () => {
     );
   };
 
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+
+    return date.toLocaleDateString("de-CH", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
+  };
+
   let content = <Spinner />;
 
   if (lobby && !editMode) {
@@ -461,7 +471,7 @@ const LobbyDetailHost = () => {
                         <br />
                         Status: {player.status}
                         <br />
-                        Created At: {player.createDate}
+                        Created At: {formatDate(player.createDate)}
                       </div>
                     )}
                   </span>

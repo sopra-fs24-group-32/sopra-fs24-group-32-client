@@ -208,6 +208,16 @@ const LobbyDetailJoined = () => {
     }
   };
 
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+
+    return date.toLocaleDateString("de-CH", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
+  };
+
   useEffect(() => {
     console.log("Successfully fetched lobby details!");
     fetchData();
@@ -319,7 +329,7 @@ const LobbyDetailJoined = () => {
                         <br />
                         Status: {player.status}
                         <br />
-                        Created At: {player.createDate}
+                        Created At: {formatDate(player.createDate)}
                       </div>
                     )}
                   </span>

@@ -92,13 +92,11 @@ const UserDetail = () => {
         );
         console.error("Details:", error);
         const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data ||
-        error.message ||
-        "An unknown error occurred";
-        alert(
-          `${errorMessage}`
-        );
+          error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "An unknown error occurred";
+        alert(`${errorMessage}`);
       }
     }
 
@@ -114,17 +112,35 @@ const UserDetail = () => {
     return base64;
   };
 
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+
+    return date.toLocaleDateString("de-CH", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
+  };
+
   let content = <Spinner />;
 
   if (user) {
     content = (
       <div className="game">
         {user.picture && (
-          <div className="picture" style={{ marginTop: "10px", textAlign: "center" }}>
+          <div
+            className="picture"
+            style={{ marginTop: "10px", textAlign: "center" }}
+          >
             <img
               src={formatBase64Image(user.picture)}
               alt="Profile Pic"
-              style={{ borderRadius: "50%", width: "150px", height: "150px", align: "auto"}}
+              style={{
+                borderRadius: "50%",
+                width: "150px",
+                height: "150px",
+                align: "auto",
+              }}
             />
           </div>
         )}
@@ -141,9 +157,7 @@ const UserDetail = () => {
           </li>
           <li key={user?.birthdate}>
             <div className="player container">
-              <div className="player birthdate">
-                birthdate: {user.birthDay}
-              </div>
+              <div className="player birthdate">birthdate: {user.birthDay}</div>
             </div>
           </li>
           <li key={user?.status}>
@@ -154,7 +168,7 @@ const UserDetail = () => {
           <li key={user.createdAt}>
             <div className="player container">
               <div className="player createdAt">
-                createdAt: {user.createDate}
+                createdAt: {formatDate(user.createDate)}
               </div>
             </div>
           </li>

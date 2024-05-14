@@ -219,7 +219,12 @@ const UserChange = () => {
               onChange={handleChange}
             />
             <p>Upload Profile Picture</p>
-            <input type="file" accept="image/*" label="upload" onChange={handleFileChange} />
+            <input
+              type="file"
+              accept="image/*"
+              label="upload"
+              onChange={handleFileChange}
+            />
             <br></br>
             <br></br>
             <Button
@@ -236,7 +241,7 @@ const UserChange = () => {
             <Button
               width="50%"
               style={{ marginBottom: "10px" }}
-              onClick={() => navigate(`/game/${id}`)}
+              onClick={() => navigate(`/user/${id}`)}
             >
               Cancel
             </Button>

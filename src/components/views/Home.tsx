@@ -33,7 +33,7 @@ const Home = () => {
         setCurrentLobbyActive(response.data);
       } catch (error) {
         console.error(
-          `Something went wrong while fetching the user: \n${handleError(
+          `Something went wrong while fetching if the user is in a lobby: \n${handleError(
             error
           )}`
         );
@@ -66,6 +66,7 @@ const Home = () => {
       const userToken = localStorage.getItem("userToken");
       const requestBody = JSON.stringify({ userToken });
       const response = await api.post("/lobby/leaveCurrentLobby", requestBody);
+      setCurrentLobbyActive(false);
       alert("You have left your lobby!");
     } catch (error) {
       console.log(

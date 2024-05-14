@@ -76,7 +76,7 @@
   border-radius: $borderRadius;
   padding: 10px;
   position: absolute;
-  z-index: 1;
+  z-index: 9999;
   top: 0;
   left: 105%; // Positions the tooltip to the right of the username
   margin-left: 5px;

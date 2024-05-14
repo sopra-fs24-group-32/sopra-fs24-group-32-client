@@ -26,6 +26,7 @@ const Home = () => {
       try {
         const userToken = localStorage.getItem("userToken");
         const requestBody = JSON.stringify({ userToken });
+        // eslint-disable-next-line
         const response = await api.post(
           `/lobby/showLeaveCurrentLobby`,
           requestBody

@@ -48,7 +48,8 @@ const Header = (props) => {
     location.pathname.includes("host") ||
     location.pathname.includes("joined") ||
     location.pathname === "/login" ||
-    location.pathname === "/register"
+    location.pathname === "/register" ||
+    location.pathname === "/"
   );
 
   useEffect(() => {
@@ -82,7 +83,7 @@ const Header = (props) => {
 
     // Clean up interval on component unmount
     return () => clearInterval(interval);
-  }, [id, picture]);
+  }, [id]);
 
   const formatBase64Image = (base64) => {
     if (!base64.startsWith("data:image/")) {

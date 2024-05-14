@@ -236,7 +236,7 @@ const UserChange = () => {
             <Button
               width="50%"
               style={{ marginBottom: "10px" }}
-              onClick={() => navigate(`/game/${id}`)}
+              onClick={() => navigate(`/user/${id}`)}
             >
               Cancel
             </Button>

@@ -28,7 +28,7 @@ const Home = () => {
         const requestBody = JSON.stringify({ userToken });
         // eslint-disable-next-line
         const response = await api.post(
-          `/lobby/showLeaveCurrentLobby`,
+          "/lobby/showLeaveCurrentLobby",
           requestBody
         );
         setCurrentLobbyActive(response.data);

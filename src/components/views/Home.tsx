@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
+  const [currentLobbyActive, setCurrentLobbyActive] = useState<boolean>(false);
 
   const navigateToCreateLobby = () => {
     navigate("/lobby/create");
@@ -19,6 +20,35 @@ const Home = () => {
   const navigateToJoinLobby = () => {
     navigate("/lobby/join");
   };
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const userToken = localStorage.getItem("userToken");
+        const requestBody = JSON.stringify({ userToken });
+        const response = await api.post(
+          `/lobby/showLeaveCurrentLobby`,
+          requestBody
+        );
+        setCurrentLobbyActive(response.data);
+      } catch (error) {
+        console.error(
+          `Something went wrong while fetching the user: \n${handleError(
+            error
+          )}`
+        );
+        console.error("Details:", error);
+        const errorMessage =
+          error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "An unknown error occurred";
+        alert(`${errorMessage}`);
+      }
+    }
+
+    fetchData();
+  }, []);
 
   async function logout() {
     const userToken = localStorage.getItem("userToken");
@@ -38,16 +68,16 @@ const Home = () => {
       const response = await api.post("/lobby/leaveCurrentLobby", requestBody);
       alert("You have left your lobby!");
     } catch (error) {
-      console.log(`Something went wrong during the leave: \n${handleError(error)}`);
+      console.log(
+        `Something went wrong during the leave: \n${handleError(error)}`
+      );
       console.error("Details:", error);
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
 
@@ -65,6 +95,7 @@ const Home = () => {
       <Button
         className="homeButton logoutButton"
         onClick={() => leaveCurrentLobby()}
+        disabled={!currentLobbyActive}
       >
         Leave current lobby
       </Button>

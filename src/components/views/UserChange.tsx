@@ -190,7 +190,6 @@ const UserChange = () => {
 
           <form onSubmit={handleSubmit}>
             {/* Assuming id is not editable but shown for reference */}
-            <input type="file" accept="image/*" onChange={handleFileChange} />
             <p>User ID: {formData.id}</p>
             <FormField
               label="Username"
@@ -219,6 +218,10 @@ const UserChange = () => {
               value={formData.email}
               onChange={handleChange}
             />
+            <p>Upload Profile Picture</p>
+            <input type="file" accept="image/*" label="upload" onChange={handleFileChange} />
+            <br></br>
+            <br></br>
             <Button
               type="submit"
               width="50%"

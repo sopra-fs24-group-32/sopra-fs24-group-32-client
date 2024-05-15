@@ -55,7 +55,7 @@ const Home = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("id");
     navigate("/login");
-    await api.post(`/logoutByToken`, requestBody);
+    await api.post("/logoutByToken", requestBody);
   }
 
   const leaveCurrentLobby = async () => {
@@ -85,7 +85,10 @@ const Home = () => {
         <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
         <ReactTooltip id="rulesTooltip" place="right" effect="solid">
           <div>
-            <p>1) Per round, every user is once the prompt writer that creates an image.</p>
+            <p>
+              1) Per round, every user is once the prompt writer that creates an
+              image.
+            </p>
             <p>2) Every other user has to guess the prompt.</p>
             <p>3) The closer you are to the guess, the more points you get.</p>
             <p>4) The user with the most points at the end of the game wins.</p>

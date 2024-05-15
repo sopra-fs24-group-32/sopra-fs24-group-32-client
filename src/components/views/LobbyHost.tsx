@@ -13,6 +13,8 @@ import SockJS from "sockjs-client";
 import { over } from "stompjs";
 import { getDomain } from "helpers/getDomain";
 import QRCode from "qrcode";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 
 const LobbyDetailHost = () => {
   const navigate = useNavigate();
@@ -496,6 +498,17 @@ const LobbyDetailHost = () => {
         >
           Start Game
         </Button>
+        <div className="tooltip-container">
+          <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
+          <ReactTooltip id="rulesTooltip" place="right" effect="solid">
+            <div>
+              <p>1) Per round, every user is once the prompt writer that creates an image.</p>
+              <p>2) Every other user has to guess the prompt.</p>
+              <p>3) The closer you are to the guess, the more points you get.</p>
+              <p>4) The user with the most points at the end of the game wins.</p>
+            </div>
+          </ReactTooltip>
+        </div>
       </div>
     );
   }

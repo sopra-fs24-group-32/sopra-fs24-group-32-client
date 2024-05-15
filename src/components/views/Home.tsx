@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
-import User from "models/User";
 import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Home.scss";
 import BaseContainer from "components/ui/BaseContainer";
-import PropTypes from "prop-types";
+import { Tooltip as ReactTooltip } from "react-tooltip";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [password, setPassword] = useState<string>(null);
-  const [username, setUsername] = useState<string>(null);
   const [currentLobbyActive, setCurrentLobbyActive] = useState<boolean>(false);
 
   const navigateToCreateLobby = () => {
@@ -26,7 +24,6 @@ const Home = () => {
       try {
         const userToken = localStorage.getItem("userToken");
         const requestBody = JSON.stringify({ userToken });
-        // eslint-disable-next-line
         const response = await api.post(
           "/lobby/showLeaveCurrentLobby",
           requestBody
@@ -58,7 +55,6 @@ const Home = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("id");
     navigate("/login");
-    // eslint-disable-next-line
     await api.post(`/logoutByToken`, requestBody);
   }
 
@@ -66,7 +62,7 @@ const Home = () => {
     try {
       const userToken = localStorage.getItem("userToken");
       const requestBody = JSON.stringify({ userToken });
-      const response = await api.post("/lobby/leaveCurrentLobby", requestBody);
+      await api.post("/lobby/leaveCurrentLobby", requestBody);
       setCurrentLobbyActive(false);
       alert("You have left your lobby!");
     } catch (error) {
@@ -85,6 +81,17 @@ const Home = () => {
 
   return (
     <BaseContainer className="home container">
+      <div className="tooltip-container">
+        <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
+        <ReactTooltip id="rulesTooltip" place="right" effect="solid">
+          <div>
+            <p>1) Per round, every user is once the prompt writer that creates an image.</p>
+            <p>2) Every other user has to guess the prompt.</p>
+            <p>3) The closer you are to the guess, the more points you get.</p>
+            <p>4) The user with the most points at the end of the game wins.</p>
+          </div>
+        </ReactTooltip>
+      </div>
       <Button
         className="homeButton createButton"
         onClick={navigateToCreateLobby}

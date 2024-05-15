@@ -50,12 +50,9 @@ const GameCreate = () => {
       const userToken = localStorage.getItem("userToken");
       const userTokenJson = JSON.stringify({ userToken });
       const requestBody = JSON.stringify({ description: imageDescription });
-      const response = await api.post(`/game/image/${id}`, requestBody,
-        {
-          headers: {userToken: userTokenJson
-          }
-        }
-      );
+      const response = await api.post(`/game/image/${id}`, requestBody, {
+        headers: { userToken: userTokenJson },
+      });
       console.log("________________-image from dalle", response.data);
       setGeneratedImage(response.data);
 
@@ -250,6 +247,7 @@ const GameCreate = () => {
                 className="create input"
                 placeholder="enter here.."
                 value={imageDescription}
+                maxLength={40}
                 onChange={(e) => setImageDescription(e.target.value)}
               />
             </div>

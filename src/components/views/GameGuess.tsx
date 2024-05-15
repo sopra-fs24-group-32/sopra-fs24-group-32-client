@@ -320,6 +320,7 @@ const GameGuess = () => {
                   className="guess input"
                   placeholder="enter here.."
                   value={playerGuessed}
+                  maxLength={40}
                   onChange={(e) => setPlayerGuessed(e.target.value)}
                 />
               </div>

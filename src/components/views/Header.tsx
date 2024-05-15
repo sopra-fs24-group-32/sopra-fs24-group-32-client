@@ -53,7 +53,8 @@ const Header = (props) => {
   );
 
   useEffect(() => {
-    if (!shouldShowProfileButton) { // This condition prevents the API call on login/register pages.
+    if (!shouldShowProfileButton) {
+      // This condition prevents the API call on login/register pages.
       return;
     }
     async function fetchData() {
@@ -68,21 +69,19 @@ const Header = (props) => {
         );
         console.error("Details:", error);
         const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data ||
-        error.message ||
-        "An unknown error occurred";
-        alert(
-          `${errorMessage}`
-        );
+          error.response?.data?.message ||
+          error.response?.data ||
+          error.message ||
+          "An unknown error occurred";
+        alert(`${errorMessage}`);
       }
     }
 
     fetchData();
-    const interval = setInterval(fetchData, 1000); // Poll every 1 seconds
+    // const interval = setInterval(fetchData, 1000); // Poll every 1 seconds
 
     // Clean up interval on component unmount
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, [id]);
 
   const formatBase64Image = (base64) => {
@@ -129,14 +128,22 @@ const Header = (props) => {
             onClick={() => navigateToUser()}
           >
             {picture ? (
-              <div className="picture" style={{ marginTop: "10px", textAlign: "center" }}>
+              <div
+                className="picture"
+                style={{ marginTop: "10px", textAlign: "center" }}
+              >
                 <img
                   src={formatBase64Image(picture)}
                   alt="Profile Pic"
-                  style={{ borderRadius: "50%", width: "90px", height: "90px", align: "auto"}}
+                  style={{
+                    borderRadius: "50%",
+                    width: "90px",
+                    height: "90px",
+                    align: "auto",
+                  }}
                 />
               </div>
-            ):(
+            ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -151,8 +158,7 @@ const Header = (props) => {
                   d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
                 />
               </svg>
-            )
-            }            
+            )}
           </button>
         )}
       </div>

@@ -251,9 +251,7 @@ const Scoreboard = () => {
           )}
         </div>
         <h3>Original Image Description: {imageDescription}</h3>
-        <h3>
-          Round Summary 
-        </h3>
+        <h3>Round Summary</h3>
         <table className="score-table-summary">
           <thead>
             <tr>
@@ -267,19 +265,20 @@ const Scoreboard = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
-              currentPictureGenerator !== user.username && (
-                <tr key={index}>
-                  <td>{user.username}</td>
-                  <td>{user.playerGuess || "No submittion"}</td>
-                  <td>{user.similarityScore}</td>
-                  <td>{user.pointsAwardedFromChatGPT}</td>
-                  <td>{user.bonusPoints}</td>
-                  <td>{user.totalPoints}</td>
-                  <td>{user.timeGuessSubmitted}</td>
-                </tr>
-              )
-            ))}
+            {users.map(
+              (user, index) =>
+                currentPictureGenerator !== user.username && (
+                  <tr key={index}>
+                    <td>{user.username}</td>
+                    <td>{user.playerGuess || "No submission"}</td>
+                    <td>{user.similarityScore}</td>
+                    <td>{user.pointsAwardedFromChatGPT}</td>
+                    <td>{user.bonusPoints}</td>
+                    <td>{user.totalPoints}</td>
+                    <td>{user.timeGuessSubmitted}</td>
+                  </tr>
+                )
+            )}
           </tbody>
         </table>
       </div>
@@ -298,7 +297,7 @@ const Scoreboard = () => {
         {currentRound >= amtOfRounds ? (
           <></>
         ) : (
-          <div>            
+          <div>
             <h3>{timer} seconds remaining for next turn</h3>
           </div>
         )}

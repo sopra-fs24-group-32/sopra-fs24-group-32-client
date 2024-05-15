@@ -155,9 +155,6 @@ const Scoreboard = () => {
   }, [timer]);
 
   const nextRound = () => {
-    if (currentRound === 0) {
-      setCurrentRound(1);
-    }
     if (currentRound < amtOfRounds) {
       stompClient.send(`/game/continueGame/${id}`, {}, id);
     }
@@ -302,7 +299,7 @@ const Scoreboard = () => {
           </div>
         )}
         <h3>
-          Rounds played: {currentRound}/{amtOfRounds}
+        Rounds played: {currentRound === 0 ? `1/${amtOfRounds}` : `${currentRound}/${amtOfRounds}`}
         </h3>
       </div>
     </BaseContainer>

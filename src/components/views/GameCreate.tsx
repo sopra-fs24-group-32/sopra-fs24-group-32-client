@@ -250,6 +250,9 @@ const GameCreate = () => {
                 maxLength={40}
                 onChange={(e) => setImageDescription(e.target.value)}
               />
+              <span className="character-count">
+                {imageDescription.length}/40
+              </span>
             </div>
             <div className="create button-container">
               <Button

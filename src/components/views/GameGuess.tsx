@@ -323,6 +323,9 @@ const GameGuess = () => {
                   maxLength={40}
                   onChange={(e) => setPlayerGuessed(e.target.value)}
                 />
+                <span className="character-count">
+                  {playerGuessed.length}/40
+                </span>
               </div>
               <div className="guess button-container">
                 <Button

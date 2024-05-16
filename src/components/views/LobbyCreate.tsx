@@ -7,6 +7,8 @@ import "styles/views/Lobby.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
+{
+  /*}
 const FormField = React.memo((props) => {
   return (
     <div className="join field">
@@ -34,6 +36,48 @@ FormField.propTypes = {
   name: PropTypes.string.isRequired,
   key: PropTypes.string,
   placeholder: PropTypes.string,
+};
+{*/
+}
+
+const FormField = React.memo(({ label, name, value, onChange, options }) => {
+  return (
+    <div className="join field">
+      <label className="join label">{label}</label>
+      {options ? (
+        <select
+          name={name}
+          className="register input"
+          value={value}
+          onChange={onChange}
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          className="register input"
+          name={name}
+          value={value}
+          onChange={onChange}
+        />
+      )}
+    </div>
+  );
+});
+
+FormField.displayName = "FormField";
+
+FormField.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(PropTypes.number),
+  name: PropTypes.string.isRequired,
 };
 
 const LobbyCreate = () => {
@@ -67,9 +111,7 @@ const LobbyCreate = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
 
@@ -77,7 +119,7 @@ const LobbyCreate = () => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value,
+      [name]: parseInt(value, 10),
     }));
   }, []);
 
@@ -87,35 +129,27 @@ const LobbyCreate = () => {
         <div className="join form">
           <FormField
             label="Amount of rounds"
-            type="number"
             name="amtOfRounds"
-            key="amtOfRounds"
-            placeholder="enter a number.."
             value={formData.amtOfRounds}
             onChange={handleChange}
+            options={[1, 2, 3]}
           />
           <FormField
             label="Time limit to guess in seconds"
-            type="number"
             name="timeLimit"
-            key="timeLimit"
-            placeholder="enter a number.."
             value={formData.timeLimit}
             onChange={handleChange}
+            options={[20, 30, 40, 50]}
           />
           <FormField
-            label="Maxiumum amount of users"
-            type="number"
+            label="Maximum amount of users"
             name="maxAmtUsers"
-            key="maxAmtUsers"
-            placeholder="enter a number.."
             value={formData.maxAmtUsers}
             onChange={handleChange}
+            options={[2, 3, 4, 5]}
           />
           <div className="join button-container">
-            <Button width="50%" onClick={() => createLobby()}>
-              Create Lobby
-            </Button>
+            <Button onClick={createLobby}>Create Lobby</Button>
           </div>
         </div>
       </div>

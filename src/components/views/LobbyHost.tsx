@@ -204,7 +204,7 @@ const LobbyDetailHost = () => {
     const { name, value } = e.target;
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: value,
+      [name]: parseInt(value, 10),
     }));
   };
 
@@ -502,10 +502,17 @@ const LobbyDetailHost = () => {
           <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
           <ReactTooltip id="rulesTooltip" place="right" effect="solid">
             <div>
-              <p>1) Per round, every user is once the prompt writer that creates an image.</p>
+              <p>
+                1) Per round, every user is once the prompt writer that creates
+                an image.
+              </p>
               <p>2) Every other user has to guess the prompt.</p>
-              <p>3) The closer you are to the guess, the more points you get.</p>
-              <p>4) The user with the most points at the end of the game wins.</p>
+              <p>
+                3) The closer you are to the guess, the more points you get.
+              </p>
+              <p>
+                4) The user with the most points at the end of the game wins.
+              </p>
             </div>
           </ReactTooltip>
         </div>
@@ -519,33 +526,48 @@ const LobbyDetailHost = () => {
         <form onSubmit={handleSubmit}>
           {/* Assuming id is not editable but shown for reference */}
           <p>Lobby ID: {id}</p>
-          <label>
-            Amount of Rounds:
-            <input
-              type="number"
+          <div className="game form-field">
+            <label>Amount of Rounds:</label>
+            <select
               name="amtOfRounds"
               value={formData.amtOfRounds}
               onChange={handleChange}
-            />
-          </label>
-          <label>
-            Maxiumum Amount of Users:
-            <input
-              type="number"
+            >
+              {[1, 2, 3].map((round) => (
+                <option key={round} value={round}>
+                  {round}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="game form-field">
+            <label>Maximum Amount of Users:</label>
+            <select
               name="maxAmtUsers"
               value={formData.maxAmtUsers}
               onChange={handleChange}
-            />
-          </label>
-          <label>
-            Time Limit:
-            <input
-              type="number"
+            >
+              {[2, 3, 4, 5].map((user) => (
+                <option key={user} value={user}>
+                  {user}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="game form-field">
+            <label>Time Limit:</label>
+            <select
               name="timeLimit"
               value={formData.timeLimit}
               onChange={handleChange}
-            />
-          </label>
+            >
+              {[20, 30, 40, 50].map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+          </div>
           <Button type="submit">Update Lobby</Button>
           <Button onClick={() => setEditMode(false)}>Cancel</Button>
         </form>

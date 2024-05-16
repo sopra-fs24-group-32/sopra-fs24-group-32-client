@@ -45,7 +45,12 @@
     display: flex;
     justify-content: center;
     margin-top: 2em;
-    margin-bottom: -1em;
+    margin-bottom: 0.5em;
     width: 100%;
+  }
+  &.character-count {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
   }
 }

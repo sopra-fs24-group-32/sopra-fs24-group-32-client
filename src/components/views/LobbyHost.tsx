@@ -65,6 +65,24 @@ const LobbyDetailHost = () => {
     setStompClient(client);
   };
 
+  const leaveLobby = async () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+      await api.post(`/lobby/leave/${id}`, { userToken });
+    } catch (error) {
+      console.error(
+        `Something went wrong while leaving the lobby: \n${handleError(error)}`
+      );
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      alert("");
+    }
+  };
+
   //WEBSOCKET SUBSCRIPTION
   useEffect(() => {
     connectAndSubscribeUserToSocket();
@@ -147,18 +165,29 @@ const LobbyDetailHost = () => {
 
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
-      console.log("Join message received:", data);
-      alert(data.username + " has left the lobby");
-
-      // Update the state to include the new user
-      setLobby((prevLobby) => {
-        const newUsersList = prevLobby.users.filter(
-          (user) => user.id !== data.id
-        );
-
-        return { ...prevLobby, users: newUsersList };
-      });
+      console.log("Leave message received:", data);
+    
+      const userLeft = data.user;
+      const isLobbyOwner = data.isLobbyOwner;
+    
+      if (isLobbyOwner) {
+        if (stompClient) {
+          stompClient.disconnect();
+        }
+        navigate("/home");
+        alert("You have left the lobby and the lobby has been closed!");
+      } else {
+        alert(userLeft.username + " has left the lobby");
+        setLobby((prevLobby) => {
+          const newUsersList = prevLobby.users.filter(
+            (user) => user.id !== userLeft.id
+          );
+    
+          return { ...prevLobby, users: newUsersList };
+        });
+      }
     };
+
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
     }
@@ -497,6 +526,13 @@ const LobbyDetailHost = () => {
           onClick={() => doStartGame()}
         >
           Start Game
+        </Button>
+        <Button
+          width="100%"
+          style={{ marginBottom: "10px" }}
+          onClick={() => leaveLobby()}
+        >
+          Leave and Delete lobby
         </Button>
         <div className="tooltip-container">
           <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />

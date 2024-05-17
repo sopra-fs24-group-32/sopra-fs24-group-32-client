@@ -171,15 +171,26 @@ const LobbyDetailJoined = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Leave message received:", data);
-      alert(data.username + " has left the lobby");
-      // Update the state to include the new user
-      setLobby((prevLobby) => {
-        const newUsersList = prevLobby.users.filter(
-          (user) => user.id !== data.id
-        );
-
-        return { ...prevLobby, users: newUsersList };
-      });
+    
+      const userLeft = data.user;
+      const isLobbyOwner = data.isLobbyOwner;
+    
+      if (isLobbyOwner) {
+        alert("The lobby owner has left the lobby and the lobby has been closed!");
+        if (stompClient) {
+          stompClient.disconnect();
+        }
+        navigate("/home");
+      } else {
+        alert(userLeft.username + " has left the lobby");
+        setLobby((prevLobby) => {
+          const newUsersList = prevLobby.users.filter(
+            (user) => user.id !== userLeft.id
+          );
+    
+          return { ...prevLobby, users: newUsersList };
+        });
+      }
     };
 
     if (stompClient) {

@@ -65,21 +65,24 @@ const LobbyDetailHost = () => {
     setStompClient(client);
   };
 
+
+  //get network error when trying to leave lobby
+  
   const leaveLobby = async () => {
     try {
       const userToken = localStorage.getItem("userToken");
       await api.post(`/lobby/leave/${id}`, { userToken });
     } catch (error) {
-      console.error(
-        `Something went wrong while leaving the lobby: \n${handleError(error)}`
-      );
+      //console.error(
+      //  `Something went wrong while leaving the lobby: \n${handleError(error)}`
+      //);
       console.error("Details:", error);
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert("");
+      //alert(`${errorMessage}`);
     }
   };
 

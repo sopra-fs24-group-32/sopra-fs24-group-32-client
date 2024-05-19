@@ -65,9 +65,8 @@ const LobbyDetailHost = () => {
     setStompClient(client);
   };
 
-
   //get network error when trying to leave lobby
-  
+
   const leaveLobby = async () => {
     try {
       const userToken = localStorage.getItem("userToken");
@@ -169,10 +168,10 @@ const LobbyDetailHost = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Leave message received:", data);
-    
+
       const userLeft = data.user;
       const isLobbyOwner = data.isLobbyOwner;
-    
+
       if (isLobbyOwner) {
         if (stompClient) {
           stompClient.disconnect();
@@ -185,7 +184,7 @@ const LobbyDetailHost = () => {
           const newUsersList = prevLobby.users.filter(
             (user) => user.id !== userLeft.id
           );
-    
+
           return { ...prevLobby, users: newUsersList };
         });
       }
@@ -346,7 +345,7 @@ const LobbyDetailHost = () => {
 
   if (lobby && !editMode) {
     content = (
-      <div className="game">
+      <div className="game lobby-data-container">
         <ul className="game user-list">
           <li key="lobbyId">
             <div className="player container">
@@ -391,7 +390,7 @@ const LobbyDetailHost = () => {
                 justifyContent: "center",
               }}
             >
-              <img src={imgUrl} alt="QR Code" width={256} />
+              <img src={imgUrl} alt="QR Code" width={150} />
             </div>
           </li>
           <li key="maxAmtPlayers">
@@ -421,7 +420,7 @@ const LobbyDetailHost = () => {
           {lobby.users && (
             <li
               style={{
-                backgroundColor: "#f0f0f0",
+                backgroundColor: "#7679ba",
                 marginBottom: "10px",
                 borderRadius: "5px",
                 padding: "10px",
@@ -431,6 +430,23 @@ const LobbyDetailHost = () => {
                 flexWrap: "wrap",
               }}
             >
+              <div
+                className="player container tooltip"
+                style={{
+                  display: "flex",
+                  justifyContent: "start",
+                  alignItems: "center",
+                  width: "fit-content",
+                  margin: "0",
+                  zIndex: "1",
+                  backgroundColor: "transparent",
+                  color: "#f0f0f0",
+                  paddingLeft: "0",
+                  paddingRight: "0",
+                }}
+              >
+                <div className="player joinedPlayers">Players:</div>
+              </div>
               {lobby.users.map((player, index) => (
                 <div
                   key={`player-${index}`}
@@ -442,6 +458,8 @@ const LobbyDetailHost = () => {
                     width: "fit-content",
                     margin: "0",
                     zIndex: "1",
+                    backgroundColor: "#f0f0f0",
+                    color: "#7679ba",
                   }}
                 >
                   <div
@@ -456,6 +474,7 @@ const LobbyDetailHost = () => {
                       style={{
                         backgroundColor: "transparent",
                         border: "none",
+                        height: "24px",
                       }}
                       onClick={() => kickPlayer(player.userToken)}
                     >
@@ -614,7 +633,14 @@ const LobbyDetailHost = () => {
     );
   }
 
-  return <BaseContainer className="game container">{content}</BaseContainer>;
+  return (
+    <BaseContainer
+      className="game container"
+      style={{ background: "transparent", boxShadow: "none", paddingTop: "0" }}
+    >
+      {content}
+    </BaseContainer>
+  );
 };
 
 export default LobbyDetailHost;

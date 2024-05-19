@@ -16,6 +16,46 @@ import QRCode from "qrcode";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 
+const FormField = React.memo(({ label, name, value, onChange, options }) => {
+  return (
+    <div className="user-change field">
+      <label className="join label">{label}</label>
+      {options ? (
+        <select
+          name={name}
+          className="register input"
+          value={value}
+          onChange={onChange}
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          className="register input"
+          name={name}
+          value={value}
+          onChange={onChange}
+        />
+      )}
+    </div>
+  );
+});
+
+FormField.displayName = "FormField";
+
+FormField.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(PropTypes.number),
+  name: PropTypes.string.isRequired,
+};
+
 const LobbyDetailHost = () => {
   const navigate = useNavigate();
   let amtOfConnectionTries = 0;
@@ -580,54 +620,48 @@ const LobbyDetailHost = () => {
 
   if (lobby && editMode) {
     content = (
-      <div className="game">
-        <form onSubmit={handleSubmit}>
+      <div
+        className="join container"
+        style={{ marginTop: "0", width: "320px" }}
+      >
+        <h2>Edit Lobby Settings</h2>
+        <form onSubmit={handleSubmit} style={{ width: "320px" }}>
           {/* Assuming id is not editable but shown for reference */}
           <p>Lobby ID: {id}</p>
-          <div className="game form-field">
-            <label>Amount of Rounds:</label>
-            <select
-              name="amtOfRounds"
-              value={formData.amtOfRounds}
-              onChange={handleChange}
-            >
-              {[1, 2, 3].map((round) => (
-                <option key={round} value={round}>
-                  {round}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="game form-field">
-            <label>Maximum Amount of Users:</label>
-            <select
-              name="maxAmtUsers"
-              value={formData.maxAmtUsers}
-              onChange={handleChange}
-            >
-              {[2, 3, 4, 5].map((user) => (
-                <option key={user} value={user}>
-                  {user}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="game form-field">
-            <label>Time Limit:</label>
-            <select
-              name="timeLimit"
-              value={formData.timeLimit}
-              onChange={handleChange}
-            >
-              {[20, 30, 40, 50].map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-          </div>
-          <Button type="submit">Update Lobby</Button>
-          <Button onClick={() => setEditMode(false)}>Cancel</Button>
+          <FormField
+            label="Amount of rounds"
+            name="amtOfRounds"
+            value={formData.amtOfRounds}
+            onChange={handleChange}
+            options={[1, 2, 3]}
+          />
+          <FormField
+            label="Time limit to guess in seconds"
+            name="timeLimit"
+            value={formData.timeLimit}
+            onChange={handleChange}
+            options={[20, 30, 40, 50]}
+          />
+          <FormField
+            label="Maximum amount of users"
+            name="maxAmtUsers"
+            value={formData.maxAmtUsers}
+            onChange={handleChange}
+            options={[2, 3, 4, 5]}
+          />
+          <br></br>
+          <br></br>
+          <Button type="submit" width="100%" style={{ marginBottom: "10px" }}>
+            Update Lobby
+          </Button>
+          <br></br>
+          <Button
+            width="100%"
+            style={{ marginBottom: "10px" }}
+            onClick={() => setEditMode(false)}
+          >
+            Cancel
+          </Button>
         </form>
       </div>
     );

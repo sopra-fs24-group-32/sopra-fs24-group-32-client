@@ -171,12 +171,14 @@ const LobbyDetailJoined = () => {
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
       console.log("Leave message received:", data);
-    
+
       const userLeft = data.user;
       const isLobbyOwner = data.isLobbyOwner;
-    
+
       if (isLobbyOwner) {
-        alert("The lobby owner has left the lobby and the lobby has been closed!");
+        alert(
+          "The lobby owner has left the lobby and the lobby has been closed!"
+        );
         if (stompClient) {
           stompClient.disconnect();
         }
@@ -187,7 +189,7 @@ const LobbyDetailJoined = () => {
           const newUsersList = prevLobby.users.filter(
             (user) => user.id !== userLeft.id
           );
-    
+
           return { ...prevLobby, users: newUsersList };
         });
       }
@@ -292,32 +294,58 @@ const LobbyDetailJoined = () => {
               </div>
             </div>
           </li>
-          {lobby.users &&
-            lobby.users.map((player, index) => (
-              <li
-                key={`player-${index}`}
+          {lobby.users && (
+            <li
+              style={{
+                backgroundColor: "#7679ba",
+                marginBottom: "10px",
+                borderRadius: "5px",
+                padding: "10px",
+                display: "flex",
+                gap: "10px",
+                maxWidth: "320px",
+                flexWrap: "wrap",
+              }}
+            >
+              <div
+                className="player container tooltip"
                 style={{
-                  backgroundColor: "#f0f0f0",
-                  marginBottom: "10px",
-                  borderRadius: "5px",
-                  padding: "10px",
+                  display: "flex",
+                  justifyContent: "start",
+                  alignItems: "center",
+                  width: "fit-content",
+                  margin: "0",
+                  zIndex: "1",
+                  backgroundColor: "transparent",
+                  color: "#f0f0f0",
+                  paddingLeft: "0",
+                  paddingRight: "0",
                 }}
               >
+                <div className="player joinedPlayers">Players:</div>
+              </div>
+              {lobby.users.map((player, index) => (
                 <div
+                  key={`player-${index}`}
                   className="player container tooltip"
                   style={{
                     display: "flex",
-                    flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
+                    width: "fit-content",
+                    margin: "0",
+                    zIndex: `${100 - index}`,
+                    backgroundColor: "#f0f0f0",
+                    color: "#7679ba",
                   }}
                 >
                   <div
                     className="player-username"
-                    style={{ fontWeight: "bold", marginBottom: "5px" }}
+                    style={{ fontWeight: "bold" }}
                   >
                     {player.username}
                   </div>
+                  {/* <div className="player-score">Score: {player.score}</div> */}
                   <span className="tooltip-text">
                     {player.picture ? (
                       <img
@@ -338,7 +366,7 @@ const LobbyDetailJoined = () => {
                         <br />
                         Username: {player.username}
                         <br />
-                        Birthdate: {player.birthDay}
+                        Birthdate: {player.birthDay || "-"}
                         <br />
                         Status: {player.status}
                         <br />
@@ -347,8 +375,9 @@ const LobbyDetailJoined = () => {
                     )}
                   </span>
                 </div>
-              </li>
-            ))}
+              ))}
+            </li>
+          )}
         </ul>
 
         <Button
@@ -362,10 +391,17 @@ const LobbyDetailJoined = () => {
           <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
           <ReactTooltip id="rulesTooltip" place="right" effect="solid">
             <div>
-              <p>1) Per round, every user is once the prompt writer that creates an image.</p>
+              <p>
+                1) Per round, every user is once the prompt writer that creates
+                an image.
+              </p>
               <p>2) Every other user has to guess the prompt.</p>
-              <p>3) The closer you are to the guess, the more points you get.</p>
-              <p>4) The user with the most points at the end of the game wins.</p>
+              <p>
+                3) The closer you are to the guess, the more points you get.
+              </p>
+              <p>
+                4) The user with the most points at the end of the game wins.
+              </p>
             </div>
           </ReactTooltip>
         </div>
@@ -374,9 +410,12 @@ const LobbyDetailJoined = () => {
   }
 
   return (
-    <BaseContainer className="game container">
+    <BaseContainer
+      className="game container"
+      style={{ background: "transparent", boxShadow: "none", paddingTop: "0" }}
+    >
       <ClockLoader
-        color="#36d7b7"
+        color="#7679ba"
         size={75}
         speedMultiplier={
           lobby.users && lobby.users.length > 0 ? lobby.users.length : 1

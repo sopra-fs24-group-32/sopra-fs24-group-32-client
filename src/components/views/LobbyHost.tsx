@@ -457,7 +457,7 @@ const LobbyDetailHost = () => {
                     alignItems: "center",
                     width: "fit-content",
                     margin: "0",
-                    zIndex: "1",
+                    zIndex: `${100 - index}`,
                     backgroundColor: "#f0f0f0",
                     color: "#7679ba",
                   }}
@@ -520,7 +520,7 @@ const LobbyDetailHost = () => {
                         <br />
                         Username: {player.username}
                         <br />
-                        Birthdate: {player.birthDay}
+                        Birthdate: {player.birthDay || "-"}
                         <br />
                         Status: {player.status}
                         <br />

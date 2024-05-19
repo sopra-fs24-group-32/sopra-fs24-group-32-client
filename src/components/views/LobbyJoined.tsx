@@ -415,7 +415,7 @@ const LobbyDetailJoined = () => {
       style={{ background: "transparent", boxShadow: "none", paddingTop: "0" }}
     >
       <ClockLoader
-        color="#7679ba"
+        color="white"
         size={75}
         speedMultiplier={
           lobby.users && lobby.users.length > 0 ? lobby.users.length : 1

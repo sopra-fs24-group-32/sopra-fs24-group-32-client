@@ -76,35 +76,28 @@ const GameGuess = () => {
     };
   }, [id, isWaitingForImage]);
   
-  useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        //fetchRoles();          //fail since server doesnt work yet
-        const response = await api.get(`/game/image/${id}`);
-        console.log(response.data);
-        if (response.data) {
-          await fetchSettings();
-          setImage(response.data);
-          setIsWaitingForImage(false);
-          setStartTime(Date.now());
-        } else {
-          setTimeout(fetchImage, 1000);
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          console.log("--------------rerun--------------");
-          setTimeout(fetchImage, 1000);
-        } else {
-          alert(`Failed to retrieve image: ${handleError(error)}`);
-          //setIsWaitingForImage(false);
-        }
-      }
-    };
-    if (isWaitingForImage) {
-      fetchImage();
-    }
-  }, [id, isWaitingForImage]);
   */
+  const fetchImage = async () => {
+    try {
+      //fetchRoles();          //fail since server doesnt work yet
+      const response = await api.get(`/game/image/${id}`);
+      console.log(response.data);
+      if (response.data) {
+        await fetchSettings();
+        setImage(response.data);
+        setIsWaitingForImage(false);
+        //  setStartTime(Date.now());
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        console.log("--------------rerun--------------");
+      } else {
+        alert(`Failed to retrieve image: ${handleError(error)}`);
+        //setIsWaitingForImage(false);
+      }
+    }
+  };
+
   // Fetch lobby settings
   const fetchSettings = async () => {
     try {
@@ -135,15 +128,32 @@ const GameGuess = () => {
     }
   }, [timer, isWaitingForImage]);
 
+  // FALLBACK IF WEBSOCKETS FAIL OR COMPONENT IS RELOADED
   useEffect(() => {
-    if (timer === 0) {
-      if (!playerSubmitted) {
-        console.log("--------------------------empty");
-        sendEmptyGuess();
+    fetchImage();
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log("timeout check");
+      if (isWaitingForImage) {
+        console.log("isWaitingForImage is true, fetching image...");
+        fetchImage();
       }
-      //navigate(`/game/scoreboard/${id}`);
-    }
-  }, [timer, navigate]);
+    }, 12000);
+
+    return () => clearTimeout(timer);
+  }, [isWaitingForImage]);
+
+  // useEffect(() => {
+  //   if (timer === 0) {
+  //     if (!playerSubmitted) {
+  //       console.log("--------------------------empty");
+  //       sendEmptyGuess();
+  //     }
+  //     //navigate(`/game/scoreboard/${id}`);
+  //   }
+  // }, [timer, navigate]);
 
   const sendEmptyGuess = async () => {
     try {
@@ -265,9 +275,11 @@ const GameGuess = () => {
     const onPictureReceived = async (payload) => {
       const parsedBody = JSON.parse(payload.body);
       setImage(parsedBody.body);
-      setIsWaitingForImage(false);
       await fetchSettings();
-      setStartTime(Date.now());
+      setIsWaitingForImage(false);
+
+      // this is now done in the img html directly to avoid timer starting before image is displayed
+      // setStartTime(Date.now());
     };
 
     const onSkipRoundReceived = (payload) => {
@@ -305,10 +317,20 @@ const GameGuess = () => {
             </>
           ) : (
             <>
-              <h3>Remaining time: {timer} seconds</h3>
-              <h3>Image drawn by DALL-E</h3>
+              <h3 style={{ marginTop: "10px", marginBottom: "10px" }}>
+                Remaining time: {timer} seconds
+              </h3>
+              <h3 style={{ marginTop: "0" }}>Image drawn by DALL-E</h3>
               {image && (
-                <img src={image} width="60%" alt="Generated from DALL-E" />
+                <img
+                  onLoad={() => {
+                    setStartTime(Date.now());
+                  }}
+                  src={image}
+                  width="60%"
+                  alt="Generated from DALL-E"
+                  style={{ maxHeight: "80vh" }}
+                />
               )}
               <div className="guess field">
                 <label className="guess label">

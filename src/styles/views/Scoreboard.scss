@@ -67,6 +67,7 @@
 .score {
   &.container {
     padding: 1.5em;
+    padding-top: 0;
     border-radius: $borderRadius;
     display: flex;
     flex-direction: column;

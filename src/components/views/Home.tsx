@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { api, handleError } from "helpers/api";
 import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
@@ -9,7 +9,7 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [currentLobbyActive, setCurrentLobbyActive] = useState<boolean>(false);
+
 
   const navigateToCreateLobby = () => {
     navigate("/lobby/create");
@@ -18,35 +18,6 @@ const Home = () => {
   const navigateToJoinLobby = () => {
     navigate("/lobby/join");
   };
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const userToken = localStorage.getItem("userToken");
-        const requestBody = JSON.stringify({ userToken });
-        const response = await api.post(
-          "/lobby/showLeaveCurrentLobby",
-          requestBody
-        );
-        setCurrentLobbyActive(response.data);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching if the user is in a lobby: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        const errorMessage =
-          error.response?.data?.message ||
-          error.response?.data ||
-          error.message ||
-          "An unknown error occurred";
-        alert(`${errorMessage}`);
-      }
-    }
-
-    fetchData();
-  }, []);
 
   async function logout() {
     const userToken = localStorage.getItem("userToken");
@@ -58,43 +29,8 @@ const Home = () => {
     await api.post("/logoutByToken", requestBody);
   }
 
-  const leaveCurrentLobby = async () => {
-    try {
-      const userToken = localStorage.getItem("userToken");
-      const requestBody = JSON.stringify({ userToken });
-      await api.post("/lobby/leaveCurrentLobby", requestBody);
-      setCurrentLobbyActive(false);
-      alert("You have left your lobby!");
-    } catch (error) {
-      console.log(
-        `Something went wrong during the leave: \n${handleError(error)}`
-      );
-      console.error("Details:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.response?.data ||
-        error.message ||
-        "An unknown error occurred";
-      alert(`${errorMessage}`);
-    }
-  };
-
   return (
     <BaseContainer className="home container">
-      <div className="tooltip-container">
-        <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
-        <ReactTooltip id="rulesTooltip" place="right" effect="solid">
-          <div>
-            <p>
-              1) Per round, every user is once the prompt writer that creates an
-              image.
-            </p>
-            <p>2) Every other user has to guess the prompt.</p>
-            <p>3) The closer you are to the guess, the more points you get.</p>
-            <p>4) The user with the most points at the end of the game wins.</p>
-          </div>
-        </ReactTooltip>
-      </div>
       <Button
         className="homeButton createButton"
         onClick={navigateToCreateLobby}
@@ -104,16 +40,47 @@ const Home = () => {
       <Button className="homeButton joinButton" onClick={navigateToJoinLobby}>
         Join Lobby
       </Button>
-      <Button
-        className="homeButton logoutButton"
-        onClick={() => leaveCurrentLobby()}
-        disabled={!currentLobbyActive}
-      >
-        Leave current lobby
-      </Button>
       <Button className="homeButton logoutButton" onClick={() => logout()}>
         Logout
       </Button>
+      <div className="info">
+        <h3>Information</h3>
+        <p>
+          Dive into the world of GPTuessr, where creativity and AI collide to create an unparalleled gaming experience. Inspired by classics like skribbl.io, GPTuessr transcends traditional boundaries by integrating DALL-E, an advanced AI capable of generating vivid images from textual descriptions provided by players.
+        </p>
+        <p>
+          Each round, players take turns to invent descriptions which are then brought to life through stunning AI-generated artwork. Your challenge is to guess what your friends have described to generate the images, pushing the limits of your imagination and deductive reasoning.
+        </p>
+        <h4>How It Works</h4>
+        <p>
+          You earn points based on how closely your guess match the original description. For fairness reason, ChatGPT is used to compute the similarity score. The scoring is precise:
+          <ul>
+            <li><strong>Similarity score (0.75 - 1.0):</strong> You obtain <strong>6 points</strong>.</li>
+            <li><strong>Similarity score (0.50 - 0.74):</strong> You obtain <strong>4 points</strong>.</li>
+            <li><strong>Similarity score (0.25 - 047):</strong> You obtain <strong>2 points</strong> .</li>
+            <li><strong>Similarity score bellow 0.25:</strong> You obtain <strong>0 points</strong>.</li>
+          </ul>
+        </p>
+        <p>
+          <strong>Time</strong> is also of the essence! Bonus points are awarded based on how quickly you submit your guess:
+          <ul>
+            <li><strong>Guess submitted with 25% of the time limit:</strong> +25% of your similarity score as bonus points.</li>
+            <li><strong>Guess submitted between 25% and 50% of the time limit:</strong> +10% of your similarity score as bonus points.</li>
+            <li><strong>Otherwise:</strong> you obtain 0 bonus points.</li>
+            <p><strong>Final point = Points_from_ChatGPT_Score + Bonus_Percentage*Points_from_ChatGPT_Score</strong></p>
+          </ul>
+        </p>
+        <p>
+          <strong>Hint:</strong> The more accurate your description, the higher your score. Be as detailed as possible, but do not give away the answer too easily!
+        </p>
+        <p>
+          The player with the highest score at the end of the game is declared the winner!
+        </p>
+        <p>
+          Embrace the synergy of art and technology at GPTuessr and enjoy a gaming experience like no other. Whether you are here to compete or just to have fun, every game round promises a new adventure in creativity and fun!
+        </p>
+      </div>
+
     </BaseContainer>
   );
 };

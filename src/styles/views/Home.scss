@@ -38,3 +38,27 @@
 .tooltip-container p {
   margin: 0;
 }
+
+.rulesButton {
+  margin-top: 2em;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(152, 155, 12);
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.info {
+  animation: slideInFromLeft 1s ease-out;
+}

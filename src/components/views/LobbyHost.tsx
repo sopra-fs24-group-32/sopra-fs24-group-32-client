@@ -498,7 +498,7 @@ const LobbyDetailHost = () => {
                   paddingRight: "0",
                 }}
               >
-                <div className="player joinedPlayers">Players:</div>
+                <div className="player joinedPlayers">Joined Players:</div>
               </div>
               {lobby.users.map((player, index) => (
                 <div
@@ -609,20 +609,37 @@ const LobbyDetailHost = () => {
         >
           Leave and Delete lobby
         </Button>
-        <div className="tooltip-container">
+        <div className="tooltip-container" style={{ fontWeight: "bold", marginBottom: "5px" }}>
           <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
-          <ReactTooltip id="rulesTooltip" place="right" effect="solid">
+          <ReactTooltip id="rulesTooltip" place="right" effect="solid" className="custom-tooltip">
             <div>
+              <h4>Rules</h4>
               <p>
-                1) Per round, every user is once the prompt writer that creates
+                1) Per round, every player is once the prompt writer that creates
                 an image.
               </p>
-              <p>2) Every other user has to guess the prompt.</p>
+              <p>2) Every other player has to guess the prompt.</p>
               <p>
-                3) The closer you are to the guess, the more points you get.
+                3) The player with the most points at the end of the game wins.
               </p>
+              <h4>Points attribution</h4>
               <p>
-                4) The user with the most points at the end of the game wins.
+                The closer you are to the guess, the more points you get.
+              </p>
+              <ul>
+                <li><strong>Similarity score (0.75 - 1.0):</strong> You obtain <strong>6 points</strong>.</li>
+                <li><strong>Similarity score (0.50 - 0.74):</strong> You obtain <strong>4 points</strong>.</li>
+                <li><strong>Similarity score (0.25 - 047):</strong> You obtain <strong>2 points</strong> .</li>
+                <li><strong>Similarity score bellow 0.25:</strong> You obtain <strong>0 points</strong>.</li>
+              </ul>
+              <p>
+                <strong>Time</strong> is also of the essence! Bonus points are awarded based on how quickly you submit your guess:
+                <ul>
+                  <li><strong>Guess submitted within 25% of the time limit:</strong> +25% of your similarity score as bonus points.</li>
+                  <li><strong>Guess submitted between 26% and 50% of the time limit:</strong> +10% of your similarity score as bonus points.</li>
+                  <li><strong>Otherwise:</strong> you obtain 0 bonus points.</li>
+                  <p><strong>Final point = Points_from_ChatGPT_Score + Bonus_Percentage*Points_from_ChatGPT_Score</strong></p>
+                </ul>
               </p>
             </div>
           </ReactTooltip>

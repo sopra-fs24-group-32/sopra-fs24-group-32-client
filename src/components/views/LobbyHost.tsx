@@ -99,6 +99,19 @@ const LobbyDetailHost = () => {
     }
   };
 
+  const maxAmtOfUsersRange = () => {
+    let maxUsersRange = [];
+    const playersInLobby = lobby.users.length;
+    let minAmtOfUsers = Math.max(playersInLobby, 2);
+
+    for(let i = minAmtOfUsers; i<=5; i++){
+      maxUsersRange.push(i);
+    }
+    
+    return maxUsersRange;
+
+  }
+
   const connectAndSubscribeUserToSocket = async () => {
     const sock = new SockJS(getDomain() + "/ws");
     const client = over(sock, { websocket: { withCredentials: false } });
@@ -647,7 +660,7 @@ const LobbyDetailHost = () => {
             name="maxAmtUsers"
             value={formData.maxAmtUsers}
             onChange={handleChange}
-            options={[2, 3, 4, 5]}
+            options={maxAmtOfUsersRange()}
           />
           <br></br>
           <br></br>

@@ -116,6 +116,8 @@ const LobbyDetailJoined = () => {
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
         const subKick = stompClient.subscribe(`/game/kick/${id}`, kickMessage);
 
+        const subUpdate = stompClient.subscribe(`/game/updateSettings/${id}`, receiveUpdatedSettings);
+
         // Send the user token to server to register this client
         const userToken = localStorage.getItem("userToken");
         if (userToken) {
@@ -149,6 +151,11 @@ const LobbyDetailJoined = () => {
         });
       }
     };
+
+    const receiveUpdatedSettings = (payload) =>{
+      const updatedSettings = JSON.parse(payload.body);
+      setLobby(updatedSettings);
+    }
 
     const joinMessage = (payload) => {
       const data = JSON.parse(payload.body);

@@ -42,7 +42,7 @@ const UserDetail = () => {
     localStorage.removeItem("id");
     // eslint-disable-next-line
     await api.post(`/logoutByToken`, requestBody);
-    navigate("/login");
+    navigate("/");
   }
 
   // the effect hook can be used to react to change in your component.

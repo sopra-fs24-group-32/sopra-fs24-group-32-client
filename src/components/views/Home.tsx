@@ -25,7 +25,7 @@ const Home = () => {
     localStorage.removeItem("userToken");
     localStorage.removeItem("username");
     localStorage.removeItem("id");
-    navigate("/login");
+    navigate("/");
     await api.post("/logoutByToken", requestBody);
   }
 

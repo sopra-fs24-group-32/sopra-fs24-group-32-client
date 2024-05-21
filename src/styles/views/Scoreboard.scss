@@ -67,6 +67,7 @@
 .score {
   &.container {
     padding: 1.5em;
+    padding-top: 0;
     border-radius: $borderRadius;
     display: flex;
     flex-direction: column;
@@ -127,7 +128,7 @@
 
 .tooltip .tooltip-text {
   visibility: hidden;
-  width: 160px;
+  width: 200px;
   color: $textColor;
   text-align: left;
   border-radius: $borderRadius;
@@ -188,4 +189,10 @@
       72%
     ); // Gives a slight grey background to header cells
   }
+}
+.roundDisplay {
+  text-align: center;
+}
+.revealDescription {
+  text-align: center;
 }

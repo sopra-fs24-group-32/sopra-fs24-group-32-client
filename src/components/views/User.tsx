@@ -199,9 +199,11 @@ const UserDetail = () => {
   }
 
   return (
-    <BaseContainer className="game container">
-      <h2>Your Profile!</h2>
-      <p className="game paragraph">Current Information:</p>
+    <BaseContainer
+      className="game container"
+      style={{ background: "transparent", boxShadow: "none", paddingTop: "0" }}
+    >
+      <h2>Your Profile</h2>
       {content}
     </BaseContainer>
   );

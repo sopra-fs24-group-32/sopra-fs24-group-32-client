@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 
 const FormField = React.memo((props) => {
   return (
-    <div className="join field">
+    <div className="user-change field">
       <label className="join label">{props.label}</label>
       <input
         type={props.type || "text"}
@@ -174,10 +174,13 @@ const UserChange = () => {
   }
 
   return (
-    <BaseContainer>
+    <BaseContainer
+      className="game container"
+      style={{ background: "transparent", boxShadow: "none", paddingTop: "0" }}
+    >
+      <h2>Edit User Details</h2>
       <div className="join container">
-        <h2>Edit User Details</h2>
-        <div className="join form">
+        <div className="user-change form">
           {profilePic && (
             <div style={{ marginTop: "10px", textAlign: "center" }}>
               <img
@@ -188,7 +191,7 @@ const UserChange = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} style={{ width: "320px" }}>
             {/* Assuming id is not editable but shown for reference */}
             <p>User ID: {formData.id}</p>
             <FormField
@@ -229,7 +232,7 @@ const UserChange = () => {
             <br></br>
             <Button
               type="submit"
-              width="50%"
+              width="100%"
               style={{ marginBottom: "10px" }}
               disabled={
                 !formData.username && !formData.birthDay && !formData.email
@@ -239,7 +242,7 @@ const UserChange = () => {
             </Button>
             <br></br>
             <Button
-              width="50%"
+              width="100%"
               style={{ marginBottom: "10px" }}
               onClick={() => navigate(`/user/${id}`)}
             >

@@ -36,3 +36,18 @@
     margin-top: 1em;
   }
 }
+
+.user-change.field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-self: center;
+  width: 100%;
+}
+
+.user-change.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

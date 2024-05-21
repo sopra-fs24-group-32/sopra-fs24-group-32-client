@@ -247,7 +247,13 @@ const Scoreboard = () => {
             </>
           )}
         </div>
-        <h3>Original Image Description: {imageDescription}</h3>
+        <div className="revealDescription">
+          {imageDescription ? (
+            <h3>Original Image Description: {imageDescription}</h3>
+          ) : (
+            <h3>No Description was provided!</h3>
+          )}
+        </div>
         <h3>Round Summary</h3>
         <table className="score-table-summary">
           <thead>
@@ -298,7 +304,7 @@ const Scoreboard = () => {
             <h3>{timer} seconds remaining for next turn</h3>
           </div>
         )}
-        <h3>
+        <h3 className="roundDisplay">
           Rounds played:{" "}
           {currentRound === 0
             ? `1/${amtOfRounds}`

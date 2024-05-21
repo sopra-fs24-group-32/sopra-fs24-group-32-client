@@ -16,6 +16,46 @@ import QRCode from "qrcode";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 
+const FormField = React.memo(({ label, name, value, onChange, options }) => {
+  return (
+    <div className="user-change field">
+      <label className="join label">{label}</label>
+      {options ? (
+        <select
+          name={name}
+          className="register input"
+          value={value}
+          onChange={onChange}
+        >
+          {options.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <input
+          type="text"
+          className="register input"
+          name={name}
+          value={value}
+          onChange={onChange}
+        />
+      )}
+    </div>
+  );
+});
+
+FormField.displayName = "FormField";
+
+FormField.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+  onChange: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(PropTypes.number),
+  name: PropTypes.string.isRequired,
+};
+
 const LobbyDetailHost = () => {
   const navigate = useNavigate();
   let amtOfConnectionTries = 0;
@@ -59,10 +99,43 @@ const LobbyDetailHost = () => {
     }
   };
 
+  const maxAmtOfUsersRange = () => {
+    let maxUsersRange = [];
+    const playersInLobby = lobby.users.length;
+    let minAmtOfUsers = Math.max(playersInLobby, 2);
+
+    for(let i = minAmtOfUsers; i<=5; i++){
+      maxUsersRange.push(i);
+    }
+    
+    return maxUsersRange;
+
+  }
+
   const connectAndSubscribeUserToSocket = async () => {
     const sock = new SockJS(getDomain() + "/ws");
     const client = over(sock, { websocket: { withCredentials: false } });
     setStompClient(client);
+  };
+
+  //get network error when trying to leave lobby
+
+  const leaveLobby = async () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+      await api.post(`/lobby/leave/${id}`, { userToken });
+    } catch (error) {
+      //console.error(
+      //  `Something went wrong while leaving the lobby: \n${handleError(error)}`
+      //);
+      console.error("Details:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data ||
+        error.message ||
+        "An unknown error occurred";
+      //alert(`${errorMessage}`);
+    }
   };
 
   //WEBSOCKET SUBSCRIPTION
@@ -147,18 +220,29 @@ const LobbyDetailHost = () => {
 
     const leaveMessage = (payload) => {
       const data = JSON.parse(payload.body);
-      console.log("Join message received:", data);
-      alert(data.username + " has left the lobby");
+      console.log("Leave message received:", data);
 
-      // Update the state to include the new user
-      setLobby((prevLobby) => {
-        const newUsersList = prevLobby.users.filter(
-          (user) => user.id !== data.id
-        );
+      const userLeft = data.user;
+      const isLobbyOwner = data.isLobbyOwner;
 
-        return { ...prevLobby, users: newUsersList };
-      });
+      if (isLobbyOwner) {
+        if (stompClient) {
+          stompClient.disconnect();
+        }
+        navigate("/home");
+        alert("You have left the lobby and the lobby has been closed!");
+      } else {
+        alert(userLeft.username + " has left the lobby");
+        setLobby((prevLobby) => {
+          const newUsersList = prevLobby.users.filter(
+            (user) => user.id !== userLeft.id
+          );
+
+          return { ...prevLobby, users: newUsersList };
+        });
+      }
     };
+
     if (stompClient) {
       stompClient.connect({}, onConnect, onError);
     }
@@ -314,7 +398,7 @@ const LobbyDetailHost = () => {
 
   if (lobby && !editMode) {
     content = (
-      <div className="game">
+      <div className="game lobby-data-container">
         <ul className="game user-list">
           <li key="lobbyId">
             <div className="player container">
@@ -359,7 +443,7 @@ const LobbyDetailHost = () => {
                 justifyContent: "center",
               }}
             >
-              <img src={imgUrl} alt="QR Code" width={256} />
+              <img src={imgUrl} alt="QR Code" width={150} />
             </div>
           </li>
           <li key="maxAmtPlayers">
@@ -389,7 +473,7 @@ const LobbyDetailHost = () => {
           {lobby.users && (
             <li
               style={{
-                backgroundColor: "#f0f0f0",
+                backgroundColor: "#7679ba",
                 marginBottom: "10px",
                 borderRadius: "5px",
                 padding: "10px",
@@ -399,6 +483,23 @@ const LobbyDetailHost = () => {
                 flexWrap: "wrap",
               }}
             >
+              <div
+                className="player container tooltip"
+                style={{
+                  display: "flex",
+                  justifyContent: "start",
+                  alignItems: "center",
+                  width: "fit-content",
+                  margin: "0",
+                  zIndex: "1",
+                  backgroundColor: "transparent",
+                  color: "#f0f0f0",
+                  paddingLeft: "0",
+                  paddingRight: "0",
+                }}
+              >
+                <div className="player joinedPlayers">Players:</div>
+              </div>
               {lobby.users.map((player, index) => (
                 <div
                   key={`player-${index}`}
@@ -409,7 +510,9 @@ const LobbyDetailHost = () => {
                     alignItems: "center",
                     width: "fit-content",
                     margin: "0",
-                    zIndex: "1",
+                    zIndex: `${100 - index}`,
+                    backgroundColor: "#f0f0f0",
+                    color: "#7679ba",
                   }}
                 >
                   <div
@@ -424,6 +527,7 @@ const LobbyDetailHost = () => {
                       style={{
                         backgroundColor: "transparent",
                         border: "none",
+                        height: "24px",
                       }}
                       onClick={() => kickPlayer(player.userToken)}
                     >
@@ -469,7 +573,7 @@ const LobbyDetailHost = () => {
                         <br />
                         Username: {player.username}
                         <br />
-                        Birthdate: {player.birthDay}
+                        Birthdate: {player.birthDay || "-"}
                         <br />
                         Status: {player.status}
                         <br />
@@ -498,6 +602,13 @@ const LobbyDetailHost = () => {
         >
           Start Game
         </Button>
+        <Button
+          width="100%"
+          style={{ marginBottom: "10px" }}
+          onClick={() => leaveLobby()}
+        >
+          Leave and Delete lobby
+        </Button>
         <div className="tooltip-container">
           <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
           <ReactTooltip id="rulesTooltip" place="right" effect="solid">
@@ -522,60 +633,61 @@ const LobbyDetailHost = () => {
 
   if (lobby && editMode) {
     content = (
-      <div className="game">
-        <form onSubmit={handleSubmit}>
+      <div
+        className="join container"
+        style={{ marginTop: "0", width: "320px" }}
+      >
+        <h2>Edit Lobby Settings</h2>
+        <form onSubmit={handleSubmit} style={{ width: "320px" }}>
           {/* Assuming id is not editable but shown for reference */}
           <p>Lobby ID: {id}</p>
-          <div className="game form-field">
-            <label>Amount of Rounds:</label>
-            <select
-              name="amtOfRounds"
-              value={formData.amtOfRounds}
-              onChange={handleChange}
-            >
-              {[1, 2, 3].map((round) => (
-                <option key={round} value={round}>
-                  {round}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="game form-field">
-            <label>Maximum Amount of Users:</label>
-            <select
-              name="maxAmtUsers"
-              value={formData.maxAmtUsers}
-              onChange={handleChange}
-            >
-              {[2, 3, 4, 5].map((user) => (
-                <option key={user} value={user}>
-                  {user}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="game form-field">
-            <label>Time Limit:</label>
-            <select
-              name="timeLimit"
-              value={formData.timeLimit}
-              onChange={handleChange}
-            >
-              {[20, 30, 40, 50].map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </select>
-          </div>
-          <Button type="submit">Update Lobby</Button>
-          <Button onClick={() => setEditMode(false)}>Cancel</Button>
+          <FormField
+            label="Amount of rounds"
+            name="amtOfRounds"
+            value={formData.amtOfRounds}
+            onChange={handleChange}
+            options={[1, 2, 3]}
+          />
+          <FormField
+            label="Time limit to guess in seconds"
+            name="timeLimit"
+            value={formData.timeLimit}
+            onChange={handleChange}
+            options={[20, 30, 40, 50]}
+          />
+          <FormField
+            label="Maximum amount of users"
+            name="maxAmtUsers"
+            value={formData.maxAmtUsers}
+            onChange={handleChange}
+            options={maxAmtOfUsersRange()}
+          />
+          <br></br>
+          <br></br>
+          <Button type="submit" width="100%" style={{ marginBottom: "10px" }}>
+            Update Lobby
+          </Button>
+          <br></br>
+          <Button
+            width="100%"
+            style={{ marginBottom: "10px" }}
+            onClick={() => setEditMode(false)}
+          >
+            Cancel
+          </Button>
         </form>
       </div>
     );
   }
 
-  return <BaseContainer className="game container">{content}</BaseContainer>;
+  return (
+    <BaseContainer
+      className="game container"
+      style={{ background: "transparent", boxShadow: "none", paddingTop: "0" }}
+    >
+      {content}
+    </BaseContainer>
+  );
 };
 
 export default LobbyDetailHost;

@@ -145,15 +145,15 @@ const GameGuess = () => {
     return () => clearTimeout(timer);
   }, [isWaitingForImage]);
 
-  // useEffect(() => {
-  //   if (timer === 0) {
-  //     if (!playerSubmitted) {
-  //       console.log("--------------------------empty");
-  //       sendEmptyGuess();
-  //     }
-  //     //navigate(`/game/scoreboard/${id}`);
-  //   }
-  // }, [timer, navigate]);
+  useEffect(() => {
+    if (timer === 0) {
+      if (!playerSubmitted) {
+        console.log("--------------------------empty");
+        sendEmptyGuess();
+      }
+      //navigate(`/game/scoreboard/${id}`);
+    }
+  }, [timer, navigate]);
 
   const sendEmptyGuess = async () => {
     try {

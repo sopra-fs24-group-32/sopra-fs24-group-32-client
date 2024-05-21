@@ -35,6 +35,7 @@ const Scoreboard = () => {
   const [users, setUsers] = useState([]);
   const [currentRound, setCurrentRound] = useState(1);
   const [amtOfRounds, setAmtOfRounds] = useState(0);
+  const [turnsLeftToPlay, setTurnsLeftToPlay] = useState(100);
   const [lobbyOwner, setLobbyOwner] = useState(null);
   const [currentPictureGenerator, setCurrentPictureGenerator] = useState("");
   const [currentUser, setCurrentUser] = useState(
@@ -95,7 +96,7 @@ const Scoreboard = () => {
     async function fetchData() {
       try {
         const response = await api.get(`/lobby/${id}`); // Assuming this endpoint gives user scores
-        console.log(response.data);
+        setTurnsLeftToPlay(response.data.turnsLeftToPlay);
         setLobbyOwner(response.data.lobbyOwner);
         setAmtOfRounds(response.data.amtOfRounds);
         setCurrentRound(response.data.currentRound);
@@ -103,7 +104,6 @@ const Scoreboard = () => {
         const descriptionResponse = await api.get(
           `/game/lastDescription/${id}`
         );
-        console.log(descriptionResponse.data);
         setImageDescription(descriptionResponse.data);
         if (response.data.users && Array.isArray(response.data.users)) {
           const userMap = new Map();
@@ -155,7 +155,7 @@ const Scoreboard = () => {
   }, [timer]);
 
   const nextRound = () => {
-    if (currentRound < amtOfRounds) {
+    if (turnsLeftToPlay > 0 && currentUser === lobbyOwner) {
       stompClient.send(`/game/continueGame/${id}`, {}, id);
     }
   };
@@ -192,11 +192,9 @@ const Scoreboard = () => {
       const nextPictureGenerator = body.username;
 
       if (username === nextPictureGenerator) {
-        console.log("YOUR TURN TO GENERATE A PICTURE");
         stompClient.disconnect();
         navigate(`/game/create/${id}`);
       } else {
-        console.log("YOUR TURN TO GUESS THE INPUT");
         stompClient.disconnect();
         navigate(`/game/guess/${id}`, {
           state: { nextPictureGenerator: nextPictureGenerator },
@@ -228,7 +226,7 @@ const Scoreboard = () => {
         </ul>
         <div className="score button">
           {currentUser === lobbyOwner ? (
-            currentRound >= amtOfRounds || users.length < 2 ? (
+            turnsLeftToPlay === 0 || users.length < 2 ? (
               <Button className="nextButton" onClick={() => doGoHomeHost()}>
                 Home
               </Button>

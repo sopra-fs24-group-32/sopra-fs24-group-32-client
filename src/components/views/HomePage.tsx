@@ -17,26 +17,19 @@ const HomePage = () => {
   }
 
   return (
-    <BaseContainer className="login form">
-   
-      <Button 
-        width="100%"
-        align="center"
-        onClick={goToLoginPage}
-      >
-        Login
-      </Button>
-
-      <br></br>
-      <br></br>
-      <Button
-        width="100%" 
-        onClick={goToRegisterPage}
-      >
-      Register
-      </Button>
-    </BaseContainer>
-  )
+    <div>
+      <div className="backgroundContainer"></div> {/* Background Image Container */}
+      <BaseContainer className="login form">
+        <Button width="100%" align="center" onClick={goToLoginPage}>
+          Login
+        </Button>
+        <br /><br />
+        <Button width="100%" onClick={goToRegisterPage}>
+          Register
+        </Button>
+      </BaseContainer>
+    </div>
+  );
 }
 
 export default HomePage;

@@ -54,6 +54,7 @@ const UserChange = () => {
   const [user, setUser] = useState<User | null>(null);
   const [profilePic, setProfilePic] = useState(null);
   const [imageData, setImageData] = useState(null);
+  const [fileChanged, setFileChanged] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     username: "",
@@ -114,6 +115,9 @@ const UserChange = () => {
       const updatedUser = await api.put(`/users/update/${id}`, formData);
       console.log("User updated:", updatedUser.data);
       navigate(`/user/${id}`);
+      if (fileChanged) {
+        window.location.reload();
+      }
     } catch (error) {
       console.error(
         `Something went wrong while updating the user: \n${handleError(error)}`
@@ -133,6 +137,7 @@ const UserChange = () => {
       const file = event.target.files[0];
       setProfilePic(URL.createObjectURL(file));
       convertToBase64(file);
+      setFileChanged(true);
     } else {
       console.error("No file chosen or file input is not recognized");
       alert("No file chosen or file input is not recognized");

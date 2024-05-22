@@ -140,7 +140,7 @@ const GameGuess = () => {
         console.log("isWaitingForImage is true, fetching image...");
         fetchImage();
       }
-    }, 12000);
+    }, 40000);
 
     return () => clearTimeout(timer);
   }, [isWaitingForImage]);

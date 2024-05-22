@@ -253,7 +253,7 @@ const UserChange = () => {
             <Button
               type="submit"
               width="100%"
-              style={{ backgroundColor: "#86F877", marginBottom: "10px" }}
+              style={{ backgroundColor: "#59CF49", marginBottom: "10px" }}
               disabled={
                 !formData.username && !formData.birthDay && !formData.email
               }

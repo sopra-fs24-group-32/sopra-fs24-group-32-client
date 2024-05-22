@@ -102,9 +102,6 @@ const UserChange = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "username") {
-      localStorage.setItem("username", value);
-    }
     if (name === "birthDay" && value) {
       const year = value.split("-")[0];
       if (parseInt(year, 10) > 9999) {
@@ -123,6 +120,7 @@ const UserChange = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    localStorage.setItem("username", formData.username);
     try {
       console.log(formData, "--------------------formData");
       // eslint-disable-next-line

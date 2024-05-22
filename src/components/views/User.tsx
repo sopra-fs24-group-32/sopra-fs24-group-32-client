@@ -155,6 +155,11 @@ const UserDetail = () => {
               <div className="player username">username: {user.username}</div>
             </div>
           </li>
+          <li key={user.email}>
+            <div className="player container">
+              <div className="player email">email: {user.email}</div>
+            </div>
+          </li>
           <li key={user?.birthdate}>
             <div className="player container">
               <div className="player birthdate">birthdate: {user.birthDay}</div>

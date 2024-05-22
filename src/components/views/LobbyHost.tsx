@@ -452,23 +452,27 @@ const LobbyDetailHost = () => {
               </div>
             </div>
           </li>
-          <li key="lobbyOwner">
+          <li key="joinedPlayers">
             <div className="player container">
-              <div className="player lobbyOwner">
-                Game Host: {lobby.lobbyOwner}
+              <div className="player joinedPlayers">
+                Number of Rounds: {lobby.amtOfRounds}
               </div>
             </div>
           </li>
           <li key="joinedPlayers">
             <div className="player container">
               <div className="player joinedPlayers">
-                Number of Joined Players:{" "}
-                {lobby.users && lobby.users.length > 0
-                  ? `${lobby.users.length}`
-                  : "No players joined yet!"}
+                Guess Time Limit: {lobby.timeLimit} sec
               </div>
             </div>
           </li>
+          {/* <li key="lobbyOwner">
+            <div className="player container">
+              <div className="player lobbyOwner">
+                Game Host: {lobby.lobbyOwner}
+              </div>
+            </div>
+          </li> */}
           {lobby.users && (
             <li
               style={{

@@ -282,6 +282,13 @@ const LobbyDetailJoined = () => {
           </li>
           <li key="maxAmtPlayers">
             <div className="player container">
+              <div className="player maxAmtPlayers">
+                Number of Rounds: {lobby.amtOfRounds}
+              </div>
+            </div>
+          </li>
+          <li key="maxAmtPlayers">
+            <div className="player container">
               <div className="player timeLimit">
                 Guess Time Limit: {lobby.timeLimit} sec
               </div>

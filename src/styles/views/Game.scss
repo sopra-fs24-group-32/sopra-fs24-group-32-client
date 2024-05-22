@@ -116,13 +116,14 @@
   max-width: 320px;
 }
 
-@media (max-width: 600px) { /* Adjust values as needed */
+@media (max-width: 600px) {
+  /* Adjust values as needed */
   .tooltip-container {
-      font-size: 0.9rem; /* Smaller font size on smaller screens */
+    font-size: 0.9rem; /* Smaller font size on smaller screens */
   }
 
   .react-tooltip {
-      max-width: 85vw; /* Smaller max-width on smaller devices */
+    max-width: 85vw; /* Smaller max-width on smaller devices */
   }
 }
 
@@ -130,4 +131,19 @@
   background-color: rgba(255, 165, 0, 0.8);
   border: 1px solid #fff; /* Adds a white border */
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5); /* Adds a light white shadow for better visibility */
+}
+
+.leaveButtonHost {
+  background-color: rgb(254, 101, 101);
+}
+
+.cancelButton {
+  background-color: rgb(254, 101, 101);
+}
+
+.leaveButtonJoined {
+  background-color: rgb(254, 101, 101);
+}
+.updateButton {
+  background-color: rgb(134, 248, 119);
 }

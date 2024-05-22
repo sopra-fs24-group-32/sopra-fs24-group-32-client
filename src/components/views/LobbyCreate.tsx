@@ -149,7 +149,9 @@ const LobbyCreate = () => {
             options={[2, 3, 4, 5]}
           />
           <div className="join button-container">
-            <Button onClick={createLobby}>Create Lobby</Button>
+            <Button width="40%" onClick={createLobby}>
+              Create Lobby
+            </Button>
           </div>
         </div>
       </div>

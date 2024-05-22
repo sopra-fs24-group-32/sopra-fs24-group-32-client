@@ -253,7 +253,7 @@ const UserChange = () => {
             <Button
               type="submit"
               width="100%"
-              style={{ marginBottom: "10px" }}
+              style={{ backgroundColor: "#86F877", marginBottom: "10px" }}
               disabled={
                 !formData.username && !formData.birthDay && !formData.email
               }
@@ -263,7 +263,10 @@ const UserChange = () => {
             <br></br>
             <Button
               width="100%"
-              style={{ marginBottom: "10px" }}
+              style={{
+                backgroundColor: "#ff6666",
+                marginBottom: "10px",
+              }}
               onClick={() => navigate(`/user/${id}`)}
             >
               Cancel

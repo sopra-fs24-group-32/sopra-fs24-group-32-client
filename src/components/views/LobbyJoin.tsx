@@ -39,7 +39,10 @@ const LobbyJoin = () => {
         `/lobby/join/${invitationCode}`,
         requestBody
       );
-      console.log("invitation code in joining lobby===============: ", invitationCode)
+      console.log(
+        "invitation code in joining lobby===============: ",
+        invitationCode
+      );
       const lobby = new Lobby(response.data);
       navigate(`/lobby/joined/${lobby.id}`);
     } catch (error) {
@@ -52,10 +55,8 @@ const LobbyJoin = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
-      navigate("/home")
+      alert(`${errorMessage}`);
+      navigate("/home");
     }
   };
 
@@ -70,16 +71,16 @@ const LobbyJoin = () => {
     setInvitationCode(value);
   }, []);
 
-  const handleScan =(data) => {
+  const handleScan = (data) => {
     if (data) {
-      const getData = data.text
+      const getData = data.text;
       setInvitationCode(getData);
       setShowScanner(false);
       joinLobby(getData);
     }
   };
 
-  const handleError = err => {
+  const handleError = (err) => {
     console.error(err);
   };
 
@@ -89,7 +90,7 @@ const LobbyJoin = () => {
       const stream = qrReaderRef.current.getVideoElement().srcObject;
       const tracks = stream.getTracks();
 
-      tracks.forEach(track => track.stop());
+      tracks.forEach((track) => track.stop());
     }
     setShowScanner(!showScanner);
   };
@@ -105,16 +106,18 @@ const LobbyJoin = () => {
           />
           <Button
             disabled={!invitationCode}
-            width="100%"
+            width="40%"
             onClick={joinLobby.bind(null, invitationCode)}
           >
             Join Game
           </Button>
-          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>or</div> {/* OR separator */}
-          <Button
-            width="100%"
-            onClick={toggleScanner}
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
           >
+            or
+          </div>{" "}
+          {/* OR separator */}
+          <Button width="40%" onClick={toggleScanner}>
             {showScanner ? "Hide Scanner" : "Scan QR Code"}
           </Button>
         </div>
@@ -132,7 +135,7 @@ const LobbyJoin = () => {
                 video: { facingMode: "environment" },
               }}
             />
-            <p>Scan QR Code to join the game</p>
+            <p className="qrCodeText">Scan QR Code to join the game</p>
           </div>
         )}
       </div>

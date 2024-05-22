@@ -392,6 +392,7 @@ const LobbyDetailJoined = () => {
 
         <Button
           width="100%"
+          className="leaveButtonJoined"
           style={{ marginBottom: "10px" }}
           onClick={() => leaveLobby()}
         >

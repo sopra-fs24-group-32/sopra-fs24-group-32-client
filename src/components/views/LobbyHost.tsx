@@ -601,6 +601,7 @@ const LobbyDetailHost = () => {
           Start Game
         </Button>
         <Button
+          className="leaveButtonHost"
           width="100%"
           style={{ marginBottom: "10px" }}
           onClick={() => leaveLobby()}
@@ -682,7 +683,12 @@ const LobbyDetailHost = () => {
           />
           <br></br>
           <br></br>
-          <Button type="submit" width="100%" style={{ marginBottom: "10px" }}>
+          <Button
+            className="updateButton"
+            type="submit"
+            width="100%"
+            style={{ marginBottom: "10px" }}
+          >
             Update Lobby
           </Button>
           <br></br>
@@ -690,6 +696,7 @@ const LobbyDetailHost = () => {
             width="100%"
             style={{ marginBottom: "10px" }}
             onClick={() => setEditMode(false)}
+            className="cancelButton"
           >
             Cancel
           </Button>

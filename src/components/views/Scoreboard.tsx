@@ -303,10 +303,7 @@ const Scoreboard = () => {
           </div>
         )}
         <h3 className="roundDisplay">
-          Rounds played:{" "}
-          {currentRound === 0
-            ? `1/${amtOfRounds}`
-            : `${currentRound}/${amtOfRounds}`}
+          Rounds played:{currentRound}/{amtOfRounds}
         </h3>
       </div>
     </BaseContainer>

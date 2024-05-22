@@ -53,7 +53,7 @@ The deployed webapplication on Google Cloud can be found here: [https://sopra-fs
 After register or log in to the game, players land on the home screen, where they can view the game rules and decide between creating or joining a lobby.
 
 <p align="center>
-    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/docImages/HomeScreen.png"/> <br/>
+    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/src/docImages/HomeScreen.png"/> <br/>
 </p>
 
 ### Create Lobby
@@ -61,7 +61,7 @@ After register or log in to the game, players land on the home screen, where the
 When creating a lobby the player/host first has to specify the game settings, which can be also changed later in the lobby.
 
 <p align="center>
-    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/docImages/LobbySettings.png"/> <br/>
+    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/src/docImages/LobbySettings.png"/> <br/>
 </p>
 
 ### Join Lobby
@@ -69,7 +69,7 @@ When creating a lobby the player/host first has to specify the game settings, wh
 Players that want to join a lobby created by a host, they can either type in the lobby-code manually or scan the QR-Code displayed in the lobby.
 
 <p align="center>
-    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/docImages/JoinLobby.png"/> <br/>
+    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/src/docImages/JoinLobby.png"/> <br/>
 </p>
 
 ### Lobby
@@ -79,13 +79,13 @@ In the lobby players wait for the game to be started by the host. In addition th
 Host View:
 
 <p align="center>
-    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/docImages/LobbyHost.png"/> <br/>
+    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/src/docImages/LobbyHost.png"/> <br/>
 </p>
 
 Joined Players View:
 
 <p align="center>
-    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/docImages/LobbyJoined.png"/> <br/>
+    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/src/docImages/LobbyJoined.png"/> <br/>
 </p>
 
 ### Image Generation
@@ -93,7 +93,7 @@ Joined Players View:
 The player with the turn to provide an image description can type in a description for an image to be created by DALL-E.
 
 <p align="center>
-    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/docImages/ImageCreateScreen.png"/> <br/>
+    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/src/docImages/ImageCreateScreen.png"/> <br/>
 </p>
 
 ### Description Guessing
@@ -101,7 +101,7 @@ The player with the turn to provide an image description can type in a descripti
 Once the image is created and loaded it will be displayed and the players with the turn to guess can type in guess of the correct image description.
 
 <p align="center>
-    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/docImages/ImageGuessScreen.png"/> <br/>
+    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/src/docImages/ImageGuessScreen.png"/> <br/>
 </p>
 
 ### Scoreboard
@@ -109,7 +109,7 @@ Once the image is created and loaded it will be displayed and the players with t
 In the scoreboard players see the correct image description, points received and guesses/points of the other players in the lobby.
 
 <p align="center>
-    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/docImages/Scoreboard.png"/> <br/>
+    <img alt="GTPuessr" src="https://github.com/sopra-fs24-group-32/sopra-fs24-group-32-client/blob/main/src/docImages/Scoreboard.png"/> <br/>
 </p>
 
 ## Roadmap

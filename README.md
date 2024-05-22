@@ -113,6 +113,14 @@ In the scoreboard players see the correct image description, points received and
 
 ## Roadmap
 
+Like in every game there are always features that can be added in the future. Some of them could be the following:
+
+### different Gamemodes
+
+- A feature that could be implemented would be to change the evaluator for the image description guess. Instead of ChatGPT being the evaluator and distributing the points, there could be a gamemode where the host has to rank the descriptions by correctness or all players in the lobby have to vote for the best description.
+
+- Since Open AI's ChatGPT is constantly evolving and can also recognize images, there could be a mode where one competes against ChatGPT instead of real people.
+
 ## Authors and Acknowledgment
 
 ### Authors

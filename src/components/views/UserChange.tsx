@@ -63,6 +63,7 @@ const UserChange = () => {
     status: "",
     createdAt: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -101,6 +102,16 @@ const UserChange = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "birthDay" && value) {
+      const year = value.split("-")[0];
+      if (parseInt(year, 10) > 9999) {
+        setErrorMessage("Year cannot be more than 9999.");
+        
+        return;
+      } else {
+        setErrorMessage("");
+      }
+    }
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
@@ -217,9 +228,10 @@ const UserChange = () => {
               value={formData.birthDay}
               onChange={handleChange}
             />
+            {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
             <FormField
               label="Email"
-              type="text"
+              type="email"
               name="email"
               key="email"
               placeholder="enter your email.."

@@ -216,7 +216,12 @@ const GameCreate = () => {
             {generatedImage ? (
               <>
                 <h2>Your created Image:</h2>
-                <img src={generatedImage} width="60%" alt="Generated" />
+                <img
+                  style={{ maxHeight: "80vh" }}
+                  src={generatedImage}
+                  width="60%"
+                  alt="Generated"
+                />
                 <p>Waiting for all players to submit their guesses...</p>
                 <PropagateLoader color="#36d7b7" size={15} />
                 <p>Time remaining: {timer} seconds</p>

@@ -101,6 +101,9 @@ const UserChange = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    if (name === "username") {
+      localStorage.setItem("username", value);
+    }
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,

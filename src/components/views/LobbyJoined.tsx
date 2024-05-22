@@ -116,7 +116,10 @@ const LobbyDetailJoined = () => {
         //const subLeave = client.subscribe("/game/leave", onMessageReceived3);
         const subKick = stompClient.subscribe(`/game/kick/${id}`, kickMessage);
 
-        const subUpdate = stompClient.subscribe(`/game/updateSettings/${id}`, receiveUpdatedSettings);
+        const subUpdate = stompClient.subscribe(
+          `/game/updateSettings/${id}`,
+          receiveUpdatedSettings
+        );
 
         // Send the user token to server to register this client
         const userToken = localStorage.getItem("userToken");
@@ -152,10 +155,10 @@ const LobbyDetailJoined = () => {
       }
     };
 
-    const receiveUpdatedSettings = (payload) =>{
+    const receiveUpdatedSettings = (payload) => {
       const updatedSettings = JSON.parse(payload.body);
       setLobby(updatedSettings);
-    }
+    };
 
     const joinMessage = (payload) => {
       const data = JSON.parse(payload.body);
@@ -394,9 +397,12 @@ const LobbyDetailJoined = () => {
         >
           Leave lobby
         </Button>
-        <div className="tooltip-container" style={{ fontWeight: "bold", marginBottom: "5px" }}>
-          <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
-          <ReactTooltip id="rulesTooltip" place="right" effect="solid" className="custom-tooltip">
+        <div
+          className="tooltip-container"
+          style={{ fontWeight: "bold", marginBottom: "5px" }}
+        >
+          {/* <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" /> */}
+          {/* <ReactTooltip id="rulesTooltip" place="right" effect="solid" className="custom-tooltip">
             <div>
               <h4>Rules</h4>
               <p>
@@ -427,7 +433,7 @@ const LobbyDetailJoined = () => {
                 </ul>
               </p>
             </div>
-          </ReactTooltip>
+          </ReactTooltip> */}
         </div>
       </div>
     );

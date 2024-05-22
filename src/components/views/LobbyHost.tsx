@@ -104,13 +104,12 @@ const LobbyDetailHost = () => {
     const playersInLobby = lobby.users.length;
     let minAmtOfUsers = Math.max(playersInLobby, 2);
 
-    for(let i = minAmtOfUsers; i<=5; i++){
+    for (let i = minAmtOfUsers; i <= 5; i++) {
       maxUsersRange.push(i);
     }
-    
-    return maxUsersRange;
 
-  }
+    return maxUsersRange;
+  };
 
   const connectAndSubscribeUserToSocket = async () => {
     const sock = new SockJS(getDomain() + "/ws");
@@ -554,7 +553,7 @@ const LobbyDetailHost = () => {
                   )}
                   {/* <div className="player-score">Score: {player.score}</div> */}
                   <span className="tooltip-text">
-                    {player.picture ? (
+                    {player.picture && (
                       <img
                         src={formatBase64Image(player.picture)}
                         alt={`${player.username}'s Profile`}
@@ -564,22 +563,21 @@ const LobbyDetailHost = () => {
                           borderRadius: "50%",
                         }}
                       />
-                    ) : (
-                      <div
-                        className="player-username"
-                        style={{ fontWeight: "bold", marginBottom: "5px" }}
-                      >
-                        ID: {player.id}
-                        <br />
-                        Username: {player.username}
-                        <br />
-                        Birthdate: {player.birthDay || "-"}
-                        <br />
-                        Status: {player.status}
-                        <br />
-                        Created At: {formatDate(player.createDate)}
-                      </div>
                     )}
+                    <div
+                      className="player-username"
+                      style={{ fontWeight: "bold", marginBottom: "5px" }}
+                    >
+                      ID: {player.id}
+                      <br />
+                      Username: {player.username}
+                      <br />
+                      Birthdate: {player.birthDay || "-"}
+                      <br />
+                      Status: {player.status}
+                      <br />
+                      Created At: {formatDate(player.createDate)}
+                    </div>
                   </span>
                 </div>
               ))}
@@ -609,8 +607,11 @@ const LobbyDetailHost = () => {
         >
           Leave and Delete lobby
         </Button>
-        <div className="tooltip-container" style={{ fontWeight: "bold", marginBottom: "5px" }}>
-          <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
+        <div
+          className="tooltip-container"
+          style={{ fontWeight: "bold", marginBottom: "5px" }}
+        >
+          {/* <AiOutlineInfoCircle data-tooltip-id="rulesTooltip" />
           <ReactTooltip id="rulesTooltip" place="right" effect="solid" className="custom-tooltip">
             <div>
               <h4>Rules</h4>
@@ -642,7 +643,7 @@ const LobbyDetailHost = () => {
                 </ul>
               </p>
             </div>
-          </ReactTooltip>
+          </ReactTooltip> */}
         </div>
       </div>
     );

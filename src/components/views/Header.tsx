@@ -119,7 +119,7 @@ const Header = (props) => {
         )}
       </div>
       <h1 onClick={() => navigateHome()} className="header title">
-        GPTuesser
+        GPTuessr
       </h1>
       <div className="profile-button-container">
         {shouldShowProfileButton && (

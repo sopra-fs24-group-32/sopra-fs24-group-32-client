@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import Lobby from "models/Lobby";
 import { useNavigate, useParams } from "react-router-dom";
@@ -94,6 +94,21 @@ const LobbyJoin = () => {
     }
     setShowScanner(!showScanner);
   };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && invitationCode) {
+      joinLobby(invitationCode);
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener for the 'keydown' event
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      // Clean up the event listener when the component unmounts
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [invitationCode]);
 
   return (
     <BaseContainer>

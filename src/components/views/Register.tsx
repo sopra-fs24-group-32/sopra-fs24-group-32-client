@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
 import { useNavigate } from "react-router-dom";
@@ -66,11 +66,24 @@ const Register = () => {
         error.response?.data ||
         error.message ||
         "An unknown error occurred";
-      alert(
-        `${errorMessage}`
-      );
+      alert(`${errorMessage}`);
     }
   };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" && username && password) {
+      doRegister();
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener for the 'keydown' event
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      // Clean up the event listener when the component unmounts
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [username, password]);
 
   return (
     <BaseContainer>
@@ -99,10 +112,16 @@ const Register = () => {
           </div>
           <div className="register button-container">
             <p className="register prompt">
-              Already have an account? <a href="/login" onClick={(e) => {
-                e.preventDefault();
-                navigate("/login");
-              }}>Login</a>
+              Already have an account?{" "}
+              <a
+                href="/login"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/login");
+                }}
+              >
+                Login
+              </a>
             </p>
           </div>
         </div>

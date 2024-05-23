@@ -43,7 +43,16 @@ const Header = (props) => {
       prevPath.includes("/user/") &&
       prevPath.endsWith("/change")
     ) {
-      navigate(-3);
+      const prevPath = historyStack.current[historyStack.current.length - 4];
+      if (
+        prevPath &&
+        prevPath.includes("/user/") &&
+        prevPath.endsWith("/change")
+      ) {
+        navigate("home");
+      } else {
+        navigate(-3);
+      }
     } else {
       navigate(-1);
     }

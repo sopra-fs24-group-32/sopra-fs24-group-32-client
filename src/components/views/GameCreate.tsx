@@ -217,6 +217,7 @@ const GameCreate = () => {
   useEffect(() => {
     // Add event listener for the 'keydown' event
     document.addEventListener("keydown", handleKeyDown);
+
     return () => {
       // Clean up the event listener when the component unmounts
       document.removeEventListener("keydown", handleKeyDown);

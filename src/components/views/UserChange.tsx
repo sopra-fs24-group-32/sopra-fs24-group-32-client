@@ -120,12 +120,12 @@ const UserChange = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    localStorage.setItem("username", formData.username);
     try {
       console.log(formData, "--------------------formData");
       // eslint-disable-next-line
       const updatedUser = await api.put(`/users/update/${id}`, formData);
       console.log("User updated:", updatedUser.data);
+      localStorage.setItem("username", formData.username);
       navigate(`/user/${id}`);
       if (fileChanged) {
         window.location.reload();

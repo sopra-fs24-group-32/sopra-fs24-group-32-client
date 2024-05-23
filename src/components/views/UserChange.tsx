@@ -55,6 +55,7 @@ const UserChange = () => {
   const [profilePic, setProfilePic] = useState(null);
   const [imageData, setImageData] = useState(null);
   const [fileChanged, setFileChanged] = useState(false);
+  const [madeChanges, setMadeChanges] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     username: "",
@@ -101,6 +102,7 @@ const UserChange = () => {
   }, [id]); // Dependency array to re-fetch data if `id` changes
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMadeChanges(true);
     const { name, value } = e.target;
     if (name === "birthDay" && value) {
       const year = value.split("-")[0];
@@ -251,10 +253,8 @@ const UserChange = () => {
             <Button
               type="submit"
               width="100%"
-              style={{ backgroundColor: "#59CF49", marginBottom: "10px" }}
-              disabled={
-                !formData.username && !formData.birthDay && !formData.email
-              }
+              style={{ backgroundColor: "#5d62be", marginBottom: "10px" }}
+              disabled={!formData.username || !madeChanges}
             >
               Update User
             </Button>

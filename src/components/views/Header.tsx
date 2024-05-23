@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { ReactLogo } from "../ui/ReactLogo";
 import { api, handleError } from "helpers/api";
 import PropTypes from "prop-types";
@@ -10,6 +10,7 @@ const Header = (props) => {
   const location = useLocation();
   const id = localStorage.getItem("id");
   const [picture, setPicture] = useState(null);
+  const historyStack = useRef([]);
 
   const navigateToUser = () => {
     const id = localStorage.getItem("id");
@@ -23,6 +24,28 @@ const Header = (props) => {
       !location.pathname.includes("host")
     ) {
       navigate("/home");
+    }
+  };
+
+  useEffect(() => {
+    historyStack.current.push(location.pathname);
+    // Limit the history stack size to avoid memory issues
+    if (historyStack.current.length > 50) {
+      historyStack.current.shift();
+    }
+  }, [location.pathname]);
+
+  const handleBackClick = () => {
+    const prevPath = historyStack.current[historyStack.current.length - 2];
+
+    if (
+      prevPath &&
+      prevPath.includes("/user/") &&
+      prevPath.endsWith("/change")
+    ) {
+      navigate(-3);
+    } else {
+      navigate(-1);
     }
   };
 
@@ -98,7 +121,7 @@ const Header = (props) => {
         {shouldShowBackButton && (
           <button
             className="header-button back-button"
-            onClick={() => navigate(-1)}
+            onClick={() => handleBackClick()}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

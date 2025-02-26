@@ -1,0 +1,81 @@
+// components/StepCard/StepCard.scss
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.step-card {
+  position: relative;
+  padding: 2rem 1.5rem;
+  border-radius: $border-radius-lg;
+  background-color: $color-white;
+  box-shadow: $box-shadow-sm;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $box-shadow-md;
+    
+    .step-card__number {
+      transform: scale(1.1);
+    }
+    
+    .step-card__icon {
+      color: $color-primary;
+    }
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, $color-primary, $color-accent);
+    z-index: 2;
+  }
+  
+  &__number {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: rgba($color-primary, 0.1);
+    color: $color-primary;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+  
+  &__icon {
+    width: 3.5rem;
+    height: 3.5rem;
+    margin: 0 auto 1.5rem;
+    color: $color-text-light;
+    transition: color 0.3s ease;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $color-text;
+    margin-bottom: 0.75rem;
+  }
+  
+  &__description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: $color-text-light;
+  }
+}

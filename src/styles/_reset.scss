@@ -1,0 +1,85 @@
+// styles/_reset.scss
+
+// Box sizing reset
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// Remove default margin and padding
+html,
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul,
+li,
+figure,
+figcaption,
+blockquote,
+dl,
+dd {
+  margin: 0;
+  padding: 0;
+}
+
+// Set core body defaults
+body {
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  text-rendering: optimizeSpeed;
+  line-height: 1.5;
+}
+
+// Remove list styles on ul, ol elements
+ul,
+ol {
+  list-style: none;
+}
+
+// Make images easier to work with
+img {
+  max-width: 100%;
+  display: block;
+}
+
+// Inherit fonts for inputs and buttons
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+// Remove all animations and transitions for people that prefer not to see them
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Set default focus styles
+:focus {
+  outline: 3px solid rgba(#6366f1, 0.5);
+  outline-offset: 2px;
+}
+
+// Remove focus styles for mouse users
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Set focus-visible styles
+:focus-visible {
+  outline: 3px solid rgba(#6366f1, 0.5);
+  outline-offset: 2px;
+}

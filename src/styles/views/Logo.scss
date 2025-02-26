@@ -1,0 +1,47 @@
+// components/Logo/Logo.scss
+@import '../../styles/variables';
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  
+  &__icon {
+    width: 2rem;
+    height: 2rem;
+    color: $color-primary;
+    margin-right: 0.5rem;
+    transition: transform 0.3s ease;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  
+  &__text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $color-text;
+    position: relative;
+    
+    &::after {
+      content: 'AI';
+      position: absolute;
+      top: -0.5rem;
+      right: -1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: $color-accent;
+      background-color: rgba($color-accent, 0.1);
+      padding: 0.125rem 0.25rem;
+      border-radius: $border-radius-sm;
+    }
+  }
+  
+  &:hover {
+    .logo__icon {
+      transform: rotate(-10deg);
+    }
+  }
+}

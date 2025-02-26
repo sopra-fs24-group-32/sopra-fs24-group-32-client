@@ -8,14 +8,30 @@
   left: 0;
   width: 100%;
   z-index: 100;
-  background-color: transparent;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgba(#1a1a1a, 0.85); // Dark semi-transparent background when not scrolled
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
   padding: 1rem 0;
 
   &--scrolled {
-    background-color: rgba($color-background, 0.95);
+    background-color: $color-white; // White background when scrolled
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 0.75rem 0;
+    
+    .header__nav-link {
+      color: $color-text; // Black text when scrolled
+      
+      &:hover, &:focus {
+        color: $color-primary;
+      }
+      
+      &::after {
+        background-color: $color-primary;
+      }
+    }
+    
+    .header__mobile-toggle span {
+      background: $color-primary; // Dark hamburger menu when scrolled
+    }
   }
 
   &__container {
@@ -23,6 +39,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative; // Added to establish positioning context
+    
+    @include breakpoint-up(md) {
+      justify-content: flex-start; // Logo at start, actions at end, nav in center
+    }
   }
 
   &__mobile-toggle {
@@ -32,59 +53,77 @@
     cursor: pointer;
     width: 2rem;
     height: 1.5rem;
-    position: relative;
+    position: absolute; // Changed from relative to absolute
+    right: $container-padding; // Position at the right edge
+    top: 50%; // Center vertically
+    transform: translateY(-50%); // Perfect vertical centering
     z-index: 101;
-
+    
     span {
       display: block;
       position: absolute;
       height: 2px;
       width: 100%;
-      background: $color-primary;
+      background: $color-white; // White for visibility against dark header
       border-radius: 2px;
       opacity: 1;
       left: 0;
       transform: rotate(0deg);
       transition: 0.25s ease-in-out;
-
+      
       &:nth-child(1) {
         top: 0;
       }
-
+      
       &:nth-child(2) {
         top: 8px;
       }
-
+      
       &:nth-child(3) {
         top: 16px;
       }
     }
-
+    
     &.active {
+      position: fixed; // Fixed position when menu is open
+      right: 1.5rem; // Position from the right edge of the viewport
+      top: 1.5rem; // Position from the top edge of the viewport
+      transform: none; // Remove the vertical centering
+      
       span {
+        background: $color-primary; // Always use primary color for the X
+        
         &:nth-child(1) {
           top: 8px;
           transform: rotate(135deg);
         }
-
+        
         &:nth-child(2) {
           opacity: 0;
           left: -60px;
         }
-
+        
         &:nth-child(3) {
           top: 8px;
           transform: rotate(-135deg);
         }
       }
     }
-
+    
     @include breakpoint-down(md) {
       display: block;
     }
   }
 
   &__nav {
+    margin: 0 auto; // Center the nav horizontally
+    
+    @include breakpoint-up(md) {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
     @include breakpoint-down(md) {
       position: fixed;
       top: 0;
@@ -92,12 +131,27 @@
       width: 70%;
       max-width: 300px;
       height: 100vh;
-      background-color: $color-background;
-      padding: 5rem 2rem 2rem;
+      background-color: $color-white; // Always white background for mobile menu
+      padding: 5rem 2rem 2rem; // Extra top padding to make room for the close button
       transition: right 0.3s ease;
       box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
       z-index: 100;
-
+      overflow-y: auto; // Add scrolling if menu gets too long
+      
+      // Ensure text is always black in mobile menu regardless of scroll state
+      .header__nav-link {
+        color: $color-text; // Black text for mobile menu
+        font-weight: 600; // Make text slightly bolder for better readability
+        
+        &:hover, &:focus {
+          color: $color-primary;
+        }
+        
+        &::after {
+          background-color: $color-primary;
+        }
+      }
+      
       &--open {
         right: 0;
       }
@@ -109,28 +163,30 @@
     list-style: none;
     margin: 0;
     padding: 0;
-
+    justify-content: center; // Center items horizontally
+    
     @include breakpoint-down(md) {
       flex-direction: column;
+      align-items: center; // Center items in mobile view too
     }
   }
 
   &__nav-item {
     margin: 0 1rem;
-
+    
     @include breakpoint-down(md) {
       margin: 1rem 0;
     }
   }
 
   &__nav-link {
-    color: $color-text;
+    color: $color-white; // Changed to white for better visibility on dark header
     text-decoration: none;
     font-weight: 500;
     transition: color 0.2s ease;
     position: relative;
     padding: 0.5rem 0;
-
+    
     &::after {
       content: '';
       position: absolute;
@@ -138,13 +194,13 @@
       height: 2px;
       bottom: 0;
       left: 0;
-      background-color: $color-primary;
+      background-color: $color-accent; // Using accent color (cyan) from variables
       transition: width 0.3s ease;
     }
-
+    
     &:hover, &:focus {
-      color: $color-primary;
-
+      color: $color-accent; // Using accent color for hover state
+      
       &::after {
         width: 100%;
       }
@@ -155,9 +211,36 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-
+    margin-left: auto; // Pushes the actions to the right
+    
+    // Styling for non-scrolled state
+    .header__login-btn {
+      color: $color-white;
+      border-color: $color-white;
+      
+      &:hover {
+        background-color: rgba($color-white, 0.1);
+      }
+    }
+    
+    // Different styling for the scrolled state applied via parent
+    .header--scrolled & {
+      .header__login-btn {
+        color: $color-primary;
+        border-color: $color-primary;
+        
+        &:hover {
+          background-color: rgba($color-primary, 0.1);
+        }
+      }
+    }
+    
     @include breakpoint-down(md) {
-      margin-right: 3rem;
+      margin-right: 3.5rem; // Provide space for the menu button on mobile
+    }
+    
+    @include breakpoint-down(xs) {
+      margin-right: 3rem; // Slightly less space on very small screens
     }
   }
 

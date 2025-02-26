@@ -62,16 +62,6 @@ const Header = () => {
         <div className="header__container">
           <Logo />
           
-          <button 
-            className={`header__mobile-toggle ${menuOpen ? 'active' : ''}`} 
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-          
           <nav className={`header__nav ${menuOpen ? 'header__nav--open' : ''}`}>
             <ul className="header__nav-list">
               {isHomePage ? (
@@ -135,9 +125,20 @@ const Header = () => {
               />
             )}
           </div>
+          
+          {/* Mobile menu toggle button - moved after all other elements */}
+          <button 
+            className={`header__mobile-toggle ${menuOpen ? 'active' : ''}`} 
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </header>
     );
-  };
+};
   
-  export default Header;
+export default Header;

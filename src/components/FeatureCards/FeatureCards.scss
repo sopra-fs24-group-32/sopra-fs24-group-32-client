@@ -1,0 +1,59 @@
+// components/FeatureCards/FeatureCards.scss
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.feature-cards {
+  padding: 5rem 0;
+  background-color: $color-background-alt;
+  
+  &__container {
+    @include container;
+  }
+  
+  &__header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 4rem;
+  }
+  
+  &__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: $color-text;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -0.5rem;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 3px;
+      background-color: $color-primary;
+      border-radius: 1.5px;
+    }
+  }
+  
+  &__subtitle {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: $color-text-light;
+  }
+  
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    
+    @include breakpoint-up(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @include breakpoint-up(lg) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}

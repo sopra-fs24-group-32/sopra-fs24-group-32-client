@@ -1,20 +1,23 @@
 import React from "react";
-import Header from "./components/views/Header";
+import Header from "./components/layout/Header";
 import AppRouter from "./components/routing/routers/AppRouter";
 import { WebSocketProvider } from "./helpers/WebSocketContext";
+import Footer from "components/layout/Footer";
+import "./App.scss";
+import { BrowserRouter } from "react-router-dom";
 
-/**
- * Happy coding!
- * React Template by Lucas Pelloni
- * Overhauled by Kyrill Hux
- * Updated by Marco Leder
- */
 const App = () => {
   return (
     <WebSocketProvider>
-      <div>
-        <AppRouter />
-      </div>
+      <BrowserRouter>
+        <div className="app-container">
+          <Header />
+          <main className="main-content">
+            <AppRouter />
+          </main>
+          <Footer />
+        </div>
+      </BrowserRouter>
     </WebSocketProvider>
   );
 };

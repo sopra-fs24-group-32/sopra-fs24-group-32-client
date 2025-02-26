@@ -36,17 +36,23 @@ const Hero = ({ onGetStartedClick }) => {
             />
           </div>
           <div className="hero__stats">
-            <div className="hero__stat">
-              <span className="hero__stat-number">10k+</span>
-              <span className="hero__stat-label">Active Players</span>
+            <div className="hero__stat hero__stat--players">
+                <div className="hero__stat-box">
+                <span className="hero__stat-number">10k+</span>
+                <span className="hero__stat-label">Active Players</span>
+                </div>
             </div>
-            <div className="hero__stat">
-              <span className="hero__stat-number">50k+</span>
-              <span className="hero__stat-label">Games Played</span>
+            <div className="hero__stat hero__stat--games">
+                <div className="hero__stat-box">
+                <span className="hero__stat-number">50k+</span>
+                <span className="hero__stat-label">Games Played</span>
+                </div>
             </div>
-            <div className="hero__stat">
-              <span className="hero__stat-number">4.8</span>
-              <span className="hero__stat-label">User Rating</span>
+            <div className="hero__stat hero__stat--rating">
+                <div className="hero__stat-box">
+                <span className="hero__stat-number">4.8</span>
+                <span className="hero__stat-label">User Rating</span>
+                </div>
             </div>
           </div>
         </div>

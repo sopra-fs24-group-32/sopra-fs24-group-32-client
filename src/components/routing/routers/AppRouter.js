@@ -15,6 +15,7 @@ import GameCreate from "../../views/GameCreate";
 import GameGuess from "../../views/GameGuess";
 import Scoreboard from "../../views/Scoreboard";
 import HomePage from "../../views/HomePage";
+import About from "../../About/About";
 
 const AppRouter = () => {
   return (
@@ -23,6 +24,7 @@ const AppRouter = () => {
         {/* <Route index element={<Navigate to="" replace />} /> */}
         <Route path="*" element={<GameRouter />} />
       </Route>
+      <Route path="/about" element={<About />} />
       <Route element={<LoggedInGuard redirectTo="login" />}>
         <Route path="/home" element={<Home />} />
         <Route path="/lobby/create" element={<LobbyCreate />} />
@@ -37,8 +39,10 @@ const AppRouter = () => {
       <Route path="/login" element={<LoginGuard />}>
         <Route path="/login" element={<Login />} />
       </Route>
+      
       <Route path="/register" element={<Register />} />
       <Route path="/" element={<HomePage />} />
+      
     </Routes>
   );
 };

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LobbyHeader from './CreateGameSubComp/LobbyHeader';
 import GameSettingsForm from './CreateGameSubComp/GameSettingsForm';
@@ -31,6 +31,66 @@ const CreateGameLobby: React.FC = () => {
   const [players, setPlayers] = useState([
     { id: 1, username: user?.username || 'You', isHost: true, isReady: true, avatarUrl: user?.profilePicture || 'https://i.pravatar.cc/150?img=1' },
   ]);
+
+  // Handle beforeunload event
+  const handleBeforeUnload = useCallback((e) => {
+    // Cancel the event
+    e.preventDefault();
+    // Chrome requires returnValue to be set
+    e.returnValue = 'Are you sure you want to leave? The game lobby will be closed.';
+    // Return message for older browsers
+    return 'Are you sure you want to leave? The game lobby will be closed.';
+  }, []);
+
+  // Set up the beforeunload event listener when component mounts
+  useEffect(() => {
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    
+    // Clean up the event listener when component unmounts
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [handleBeforeUnload]);
+
+  // Handle browser history navigation (back button)
+  const location = useLocation();
+  const navigatingAway = useRef(false);
+  
+  useEffect(() => {
+    // Create a custom history blocker
+    const unblock = window.history.pushState(null, '', location.pathname);
+    
+    const handlePopState = (event) => {
+      // This runs when the back button is pressed
+      if (!navigatingAway.current) {
+        // Prevent the default navigation
+        event.preventDefault();
+        
+        // Ask for confirmation
+        const confirmed = window.confirm('Are you sure you want to leave? The game lobby will be closed.');
+        
+        if (confirmed) {
+          navigatingAway.current = true;
+          // In a real app, you would notify the server to close the lobby here
+          navigate('/home'); // Navigate to home or wherever they were going
+        } else {
+          // If they cancel, push the current URL back into history to maintain the current page
+          window.history.pushState(null, '', location.pathname);
+        }
+      }
+    };
+    
+    // Add popstate event listener for back button
+    window.addEventListener('popstate', handlePopState);
+    
+    // This function gets called when the component will unmount
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      // Here you might want to do cleanup, like notifying the server to close the lobby
+      // In a real app, you would make an API call to close the lobby
+      console.log('Lobby component unmounting, lobby being closed');
+    };
+  }, [location, navigate]);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -113,9 +173,13 @@ const CreateGameLobby: React.FC = () => {
     navigate(`/game/${lobbyCode}`);
   };
 
-  // Cancel and return to home
+  // Cancel and return to home with confirmation
   const handleCancel = () => {
-    navigate('/home');
+    const confirmLeave = window.confirm('Are you sure you want to leave? The game lobby will be closed.');
+    if (confirmLeave) {
+      // In a real app, you would notify the server to close the lobby here
+      navigate('/home');
+    }
   };
 
   if (isLoading) {

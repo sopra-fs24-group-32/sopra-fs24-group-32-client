@@ -9,7 +9,6 @@ import Register from "../../views/Register";
 import Home from "../../views/Home";
 import LobbyHost from "../../views/LobbyHost";
 import LobbyJoined from "../../views/LobbyJoined";
-import GameCreate from "../../views/GameCreate";
 import GameGuess from "../../views/GameGuess";
 import Scoreboard from "../../views/Scoreboard";
 import HomePage from "../../views/HomePage";
@@ -18,6 +17,7 @@ import { useAuth } from "../../context/AuthContext";
 import HomePageAuth from "../../HomePageAuth/HomePageAuth";
 import CreateGameLobby from "../../CreateGameLobby/CreateGameLobby";
 import JoinLobby from "../../JoinLobby/JoinLobby";
+import CreatingGame from "../../CreatingAGame/CreatingGame";
 
 const AppRouter = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -35,11 +35,10 @@ const AppRouter = () => {
       <Route path="/about" element={<About />} />
       <Route element={<LoggedInGuard redirectTo="login" />}>
         <Route path="/home" element={<HomePageAuth />} />
-        <Route path="/lobby/create" element={<CreateGameLobby />} />
+        <Route path="/lobby/create" element={<CreatingGame />} />
         <Route path="/lobby/join" element={<JoinLobby />} />
         <Route path="/lobby/joined/:id" element={<LobbyJoined />} />
-        <Route path="/lobby/host/:id" element={<LobbyHost />} />
-        <Route path="/game/create/:id" element={<GameCreate />} />
+        <Route path="/lobby/host/:id" element={<CreateGameLobby />} />
         <Route path="/game/guess/:id" element={<GameGuess />} />
       </Route>
       <Route path="/game/scoreboard/:id" element={<Scoreboard />} />

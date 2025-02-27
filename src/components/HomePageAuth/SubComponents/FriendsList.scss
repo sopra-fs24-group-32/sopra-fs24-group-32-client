@@ -1,0 +1,277 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.friends-list {
+  background-color: $color-white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $box-shadow-sm;
+  animation: slideUp 0.6s ease-out;
+  animation-delay: 0.5s;
+  animation-fill-mode: both;
+  
+  &__header {
+    @include flex-between;
+    margin-bottom: $spacing-lg;
+  }
+  
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $color-text;
+    margin: 0;
+    position: relative;
+    padding-bottom: $spacing-sm;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(to right, $color-accent, $color-secondary);
+      border-radius: 3px;
+    }
+  }
+  
+  &__filter {
+    display: flex;
+    gap: 2px;
+    border-radius: $border-radius-sm;
+    background-color: $color-background-alt;
+    padding: 2px;
+  }
+  
+  &__filter-btn {
+    background: none;
+    border: none;
+    padding: $spacing-xs $spacing-sm;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $color-text-light;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    
+    &--active {
+      background-color: $color-white;
+      color: $color-primary;
+      box-shadow: $box-shadow-sm;
+    }
+    
+    &:hover:not(&--active) {
+      background-color: rgba($color-white, 0.5);
+    }
+    
+    &:focus {
+      outline: none;
+    }
+  }
+  
+  &__empty {
+    padding: $spacing-lg;
+    text-align: center;
+    color: $color-text-light;
+    font-size: 0.875rem;
+    background-color: $color-background-alt;
+    border-radius: $border-radius;
+  }
+  
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+    max-height: 300px;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $color-background-alt;
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba($color-text-light, 0.3);
+      border-radius: 4px;
+      
+      &:hover {
+        background: rgba($color-text-light, 0.5);
+      }
+    }
+  }
+  
+  &__item {
+    display: flex;
+    align-items: center;
+    padding: $spacing-sm;
+    border-radius: $border-radius;
+    background-color: $color-background-alt;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInItem 0.5s ease-out both;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $box-shadow-sm;
+      
+      .friends-list__actions {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+  }
+  
+  &__avatar {
+    position: relative;
+    margin-right: $spacing-md;
+    
+    &-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba($color-white, 0.5);
+      transition: transform 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+  }
+  
+  &__status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid $color-white;
+  }
+  
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  &__name {
+    margin: 0 0 $spacing-xs;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: $color-text;
+    @include text-truncate;
+  }
+  
+  &__status-text {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  &__actions {
+    display: flex;
+    gap: $spacing-xs;
+    opacity: 0.7;
+    transform: translateX(5px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    
+    @include breakpoint-down(sm) {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  &__action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-text-light;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+    
+    &:hover {
+      background-color: rgba($color-text, 0.1);
+      color: $color-text;
+      transform: scale(1.1);
+    }
+    
+    &--invite:hover {
+      color: $color-primary;
+    }
+    
+    &--message:hover {
+      color: $color-secondary;
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba($color-primary, 0.2);
+    }
+  }
+  
+  &__add-btn {
+    @include button-base;
+    width: 100%;
+    background-color: $color-background-alt;
+    color: $color-primary;
+    font-size: 0.875rem;
+    font-weight: 500;
+    gap: $spacing-sm;
+    transition: all 0.3s ease;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    &:hover {
+      background-color: rgba($color-primary, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInItem {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

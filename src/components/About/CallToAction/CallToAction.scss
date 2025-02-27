@@ -1,0 +1,163 @@
+// components/About/CallToAction/CallToAction.scss
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.call-to-action {
+  padding: 8rem 0;
+  background: linear-gradient(135deg, $color-primary, $color-secondary);
+  position: relative;
+  overflow: hidden;
+  
+  @include breakpoint-down(md) {
+    padding: 6rem 0;
+  }
+  
+  &__content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  
+  &__title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: $color-white;
+    margin-bottom: 1.5rem;
+    
+    @include breakpoint-down(md) {
+      font-size: 2.3rem;
+    }
+    
+    @include breakpoint-down(sm) {
+      font-size: 2rem;
+    }
+  }
+  
+  &__description {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: rgba($color-white, 0.9);
+    margin-bottom: 2.5rem;
+    
+    @include breakpoint-down(md) {
+      font-size: 1.1rem;
+    }
+  }
+  
+  &__features {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    margin-bottom: 3rem;
+    
+    @include breakpoint-down(md) {
+      gap: 1.5rem;
+    }
+    
+    @include breakpoint-down(sm) {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+  
+  &__feature {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  
+  &__feature-icon {
+    font-size: 1.8rem;
+    
+    @include breakpoint-down(md) {
+      font-size: 1.6rem;
+    }
+  }
+  
+  &__feature-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: $color-white;
+    
+    @include breakpoint-down(md) {
+      font-size: 1rem;
+    }
+  }
+  
+  &__buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    
+    @include breakpoint-down(sm) {
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+  
+  &__button {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: $border-radius-md;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    
+    @include breakpoint-down(md) {
+      padding: 0.9rem 1.8rem;
+      font-size: 1rem;
+    }
+    
+    &--primary {
+      background-color: $color-white;
+      color: $color-primary;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+      }
+    }
+    
+    &--secondary {
+      background-color: transparent;
+      border: 2px solid $color-white;
+      color: $color-white;
+      
+      &:hover {
+        transform: translateY(-3px);
+        background-color: rgba($color-white, 0.1);
+      }
+    }
+  }
+  
+  &__decoration {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba($color-white, 0.1) 0%, rgba($color-white, 0) 70%);
+    
+    &--1 {
+      width: 300px;
+      height: 300px;
+      top: -100px;
+      left: -100px;
+    }
+    
+    &--2 {
+      width: 500px;
+      height: 500px;
+      bottom: -200px;
+      right: -200px;
+    }
+    
+    &--3 {
+      width: 200px;
+      height: 200px;
+      top: 50%;
+      right: 10%;
+    }
+  }
+}

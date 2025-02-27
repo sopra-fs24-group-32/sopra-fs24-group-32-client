@@ -1,0 +1,178 @@
+// components/About/Team/Team.scss
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.team {
+  padding: 6rem 0;
+  background-color: $color-white;
+  
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 4rem;
+    
+    @include breakpoint-down(sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  &__member {
+    background-color: $color-white;
+    border-radius: $border-radius-md;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+      
+      .team__member-social {
+        opacity: 1;
+      }
+    }
+  }
+  
+  &__member-avatar {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; // Square aspect ratio
+    overflow: hidden;
+    
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s ease;
+    }
+    
+    &:hover img {
+      transform: scale(1.05);
+    }
+  }
+  
+  &__member-social {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    opacity: 0;
+    transition: all 0.3s ease;
+    
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: rgba($color-white, 0.2);
+      color: $color-white;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: $color-white;
+        color: $color-primary;
+        transform: translateY(-3px);
+      }
+    }
+  }
+  
+  &__member-info {
+    padding: 1.5rem;
+  }
+  
+  &__member-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $color-text;
+    margin-bottom: 0.3rem;
+    
+    @include breakpoint-down(md) {
+      font-size: 1.2rem;
+    }
+  }
+  
+  &__member-role {
+    font-size: 0.95rem;
+    color: $color-primary;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  &__member-bio {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: $color-text-light;
+  }
+  
+  &__join {
+    background: linear-gradient(120deg, rgba($color-primary, 0.05), rgba($color-secondary, 0.05));
+    border-radius: $border-radius-lg;
+    padding: 3rem;
+    margin-top: 2rem;
+    
+    @include breakpoint-down(md) {
+      padding: 2rem;
+    }
+  }
+  
+  &__join-content {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    
+    h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: $color-text;
+      margin-bottom: 1.5rem;
+      
+      @include breakpoint-down(md) {
+        font-size: 1.6rem;
+      }
+    }
+    
+    p {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: $color-text-light;
+      margin-bottom: 2rem;
+      
+      @include breakpoint-down(md) {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  &__join-button {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(90deg, $color-primary, $color-secondary);
+    color: $color-white;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: $border-radius-md;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba($color-primary, 0.2);
+    
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba($color-primary, 0.3);
+    }
+    
+    @include breakpoint-down(sm) {
+      padding: 0.8rem 1.6rem;
+    }
+  }
+}

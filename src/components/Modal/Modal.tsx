@@ -56,8 +56,8 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
       <div className="modal" ref={modalRef}>
         <div className="modal__header">
           <h3 className="modal__title">{title}</h3>
-          <button 
-            className="modal__close" 
+          <button
+            className="modal__close"
             onClick={onClose}
             aria-label="Close"
           >

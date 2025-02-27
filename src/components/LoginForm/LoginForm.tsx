@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
 import './LoginForm.scss';
 import { useNavigate } from "react-router-dom";
 import { SignedIn, SignedOut, SignIn, SignUp, useClerk, UserButton, useUser } from "@clerk/clerk-react";

@@ -37,14 +37,15 @@
     align-items: center;
     justify-content: center;
     z-index: 10;
-    animation: pulseGlow 2s infinite ease-in-out, colorShift 8s infinite linear;
-    box-shadow: 0 0 0 rgba(255, 255, 255, 0.4);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
    
     &:hover {
       background-color: rgba(255, 255, 255, 0.3);
-      animation: colorShift 3s infinite linear;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+      transform: scale(1.1);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
     }
+    
     &::before {
       content: '';
       position: absolute;
@@ -54,7 +55,15 @@
       bottom: 0;
       border-radius: 50%;
       border: 2px solid rgba(255, 255, 255, 0.6);
-      animation: ripple 2.5s infinite ease-out, colorShiftBorder 8s infinite linear;
+      opacity: 0;
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+    
+    &:hover::before {
+      opacity: 1;
+      transform: scale(1.2);
+      animation: pulse-border 1.5s infinite ease-out;
     }
   }
  
@@ -150,8 +159,6 @@
     }
   }
 
-  /* Removed the mode-switch and switch-btn classes */
-
   &__success-animation {
     width: 100px;
     height: 100px;
@@ -228,24 +235,9 @@
   }
 }
 
-@keyframes pulseGlow {
+@keyframes pulse-border {
   0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.9;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes ripple {
-  0% {
-    transform: scale(1);
+    transform: scale(1.2);
     opacity: 0.6;
   }
   50% {
@@ -253,27 +245,9 @@
     opacity: 0.3;
   }
   100% {
-    transform: scale(1.8);
-    opacity: 0;
+    transform: scale(1.2);
+    opacity: 0.6;
   }
-}
-
-@keyframes colorShift {
-  0% { background-color: rgba(255, 105, 97, 0.5); }
-  20% { background-color: rgba(255, 180, 128, 0.5); }
-  40% { background-color: rgba(248, 243, 141, 0.5); }
-  60% { background-color: rgba(66, 214, 164, 0.5); }
-  80% { background-color: rgba(8, 202, 209, 0.5); }
-  100% { background-color: rgba(255, 105, 97, 0.5); }
-}
-
-@keyframes colorShiftBorder {
-  0% { border-color: rgba(255, 105, 97, 0.6); }
-  20% { border-color: rgba(255, 180, 128, 0.6); }
-  40% { border-color: rgba(248, 243, 141, 0.6); }
-  60% { border-color: rgba(66, 214, 164, 0.6); }
-  80% { border-color: rgba(8, 202, 209, 0.6); }
-  100% { border-color: rgba(255, 105, 97, 0.6); }
 }
 
 @keyframes stroke {

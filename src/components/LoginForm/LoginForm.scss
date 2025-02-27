@@ -13,21 +13,27 @@
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
+  padding: 20px;
+  overflow-y: auto; // Enable vertical scrolling for the entire modal
 
   &__form-container {
     position: relative;
     max-width: 500px;
     width: 90%;
+    max-height: 90vh; // Set a maximum height for the container
+    display: flex;
+    flex-direction: column;
+    margin: auto; // Center in viewport even when scrolling
   }
  
   &__close {
-    position: absolute;
-    top: -40px;
-    right: 0;
+    position: fixed; // Changed from absolute to fixed so it stays visible when scrolling
+    top: 20px;
+    right: 20px;
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 0, 0, 0.8); // Red background
     border: none;
     font-size: 24px;
     line-height: 1;
@@ -38,12 +44,12 @@
     justify-content: center;
     z-index: 10;
     transition: all 0.3s ease;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.5); // Red shadow
    
     &:hover {
-      background-color: rgba(255, 255, 255, 0.3);
+      background-color: rgba(220, 0, 0, 1); // Darker red on hover
       transform: scale(1.1);
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.7);
     }
     
     &::before {
@@ -65,6 +71,11 @@
       transform: scale(1.2);
       animation: pulse-border 1.5s infinite ease-out;
     }
+
+    @include breakpoint-down(xs) {
+      top: 10px;
+      right: 10px;
+    }
   }
  
   &__signedin {
@@ -77,6 +88,14 @@
     border-radius: $border-radius;
     box-shadow: $box-shadow-lg;
     animation: modalFadeIn 0.3s ease-out;
+    overflow-y: auto; // Enable scrolling for signed-in content
+  }
+
+  // Add styles to make Clerk components scrollable
+  :global(.cl-card) {
+    max-height: 80vh; // Set maximum height
+    overflow-y: auto; // Enable vertical scrolling
+    -webkit-overflow-scrolling: touch; // Better scrolling on iOS
   }
 
   &__user-info {
@@ -166,6 +185,19 @@
   }
 }
 
+// Responsive adjustments for small screens
+@include breakpoint-down(sm) {
+  .login-modal {
+    align-items: flex-start; // Align to top on small screens
+    padding: 15px;
+    
+    &__form-container {
+      width: 95%;
+      margin-top: 40px; // Add some space from the top
+    }
+  }
+}
+
 // Success animation
 .checkmark {
   width: 100px;
@@ -200,7 +232,10 @@
 :global {
   .cl-card {
     box-shadow: $box-shadow-lg !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
   }
+  
   .cl-formButtonPrimary {
     background-color: $color-primary !important;
    
@@ -208,6 +243,7 @@
       background-color: darken($color-primary, 10%) !important;
     }
   }
+  
   .cl-footerActionLink {
     color: $color-primary !important;
    

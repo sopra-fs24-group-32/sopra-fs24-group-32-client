@@ -1,0 +1,105 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.create-game-lobby {
+  min-height: 100vh;
+  background-color: $color-background;
+  background-image: linear-gradient(
+    135deg,
+    rgba($color-gradient-start, 0.05),
+    rgba($color-gradient-end, 0.1)
+  );
+  padding: $spacing-xl 0;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  
+  &--loaded {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  &__container {
+    @include container;
+    max-width: 1200px;
+  }
+  
+  &__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-xl;
+    margin-top: $spacing-xl;
+    
+    @include breakpoint-up(lg) {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+  
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xl;
+  }
+  
+  &__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xl;
+  }
+  
+  &__loading {
+    @include flex-center;
+    @include flex-column;
+    min-height: 80vh;
+    gap: $spacing-md;
+    
+    p {
+      color: $color-text-light;
+      font-size: 1.1rem;
+      margin-top: $spacing-md;
+      @include slide-in-up;
+    }
+  }
+  
+  &__error {
+    background-color: rgba($color-error, 0.1);
+    color: $color-error;
+    padding: $spacing-md;
+    border-radius: $border-radius;
+    margin: $spacing-md 0;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    animation: shake 0.5s ease-in-out;
+    
+    &::before {
+      content: '⚠️';
+      margin-right: $spacing-sm;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba($color-primary, 0.1);
+  border-radius: 50%;
+  border-top-color: $color-primary;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}

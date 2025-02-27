@@ -1,0 +1,332 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.invite-friends {
+  background-color: $color-white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $box-shadow-sm;
+  animation: slideUp 0.6s ease-out;
+  animation-delay: 0.5s;
+  animation-fill-mode: both;
+  
+  &__title {
+    margin: 0 0 $spacing-lg;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $color-text;
+    position: relative;
+    padding-bottom: $spacing-sm;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(to right, $color-secondary, $color-accent);
+      border-radius: 3px;
+    }
+  }
+  
+  &__methods {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+  
+  &__method {
+    &-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: $color-text;
+      margin: 0 0 $spacing-sm;
+    }
+  }
+  
+  &__link-container {
+    display: flex;
+    margin-bottom: $spacing-md;
+    
+    @include breakpoint-down(sm) {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+  
+  &__link {
+    flex: 1;
+    background-color: $color-background-alt;
+    border-radius: $border-radius-sm 0 0 $border-radius-sm;
+    padding: $spacing-sm $spacing-md;
+    font-size: 0.875rem;
+    color: $color-text-light;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    @include breakpoint-down(sm) {
+      border-radius: $border-radius-sm;
+      text-align: center;
+    }
+  }
+  
+  &__copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    background-color: $color-primary;
+    color: $color-white;
+    border: none;
+    border-radius: 0 $border-radius-sm $border-radius-sm 0;
+    padding: $spacing-sm $spacing-md;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    &:hover {
+      background-color: darken($color-primary, 5%);
+    }
+    
+    &:active {
+      transform: translateY(1px);
+    }
+    
+    &--copied {
+      background-color: $color-success;
+      
+      &:hover {
+        background-color: darken($color-success, 5%);
+      }
+    }
+    
+    @include breakpoint-down(sm) {
+      border-radius: $border-radius-sm;
+    }
+  }
+  
+  &__share-buttons {
+    display: flex;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
+  }
+  
+  &__share-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    svg {
+      width: 18px;
+      height: 18px;
+      color: $color-white;
+    }
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    &--whatsapp {
+      background-color: #25D366;
+      
+      &:hover {
+        background-color: darken(#25D366, 5%);
+      }
+    }
+    
+    &--telegram {
+      background-color: #26A5E4;
+      
+      &:hover {
+        background-color: darken(#26A5E4, 5%);
+      }
+    }
+    
+    &--discord {
+      background-color: #5865F2;
+      
+      &:hover {
+        background-color: darken(#5865F2, 5%);
+      }
+    }
+  }
+  
+  &__divider {
+    position: relative;
+    text-align: center;
+    margin: $spacing-sm 0;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background-color: $color-border;
+    }
+    
+    span {
+      position: relative;
+      display: inline-block;
+      background-color: $color-white;
+      padding: 0 $spacing-sm;
+      font-size: 0.875rem;
+      color: $color-text-light;
+    }
+  }
+  
+  &__email-form {
+    width: 100%;
+  }
+  
+  &__form-group {
+    display: flex;
+    
+    @include breakpoint-down(sm) {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+  
+  &__email-input {
+    @include input;
+    flex: 1;
+    border-radius: $border-radius-sm 0 0 $border-radius-sm;
+    
+    @include breakpoint-down(sm) {
+      border-radius: $border-radius-sm;
+    }
+  }
+  
+  &__send-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    background-color: $color-secondary;
+    color: $color-white;
+    border: none;
+    border-radius: 0 $border-radius-sm $border-radius-sm 0;
+    padding: $spacing-sm $spacing-md;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    &:hover:not(:disabled) {
+      background-color: darken($color-secondary, 5%);
+    }
+    
+    &:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+    
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    @include breakpoint-down(sm) {
+      border-radius: $border-radius-sm;
+    }
+  }
+  
+  &__spinner {
+    animation: rotate 2s linear infinite;
+    width: 16px;
+    height: 16px;
+    
+    circle {
+      stroke: currentColor;
+      stroke-linecap: round;
+      animation: dash 1.5s ease-in-out infinite;
+    }
+  }
+  
+  &__demo-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    width: 100%;
+    margin-top: $spacing-lg;
+    padding: $spacing-sm;
+    background-color: rgba($color-primary, 0.1);
+    color: $color-primary;
+    border: 1px dashed $color-primary;
+    border-radius: $border-radius-sm;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    &:hover {
+      background-color: rgba($color-primary, 0.15);
+    }
+    
+    &:active {
+      transform: translateY(1px);
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}

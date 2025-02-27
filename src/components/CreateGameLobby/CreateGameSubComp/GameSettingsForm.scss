@@ -1,0 +1,373 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.game-settings-form {
+  background-color: $color-white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $box-shadow-sm;
+  animation: slideUp 0.6s ease-out;
+  animation-delay: 0.3s;
+  animation-fill-mode: both;
+  
+  &__title {
+    margin: 0 0 $spacing-lg;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $color-text;
+    position: relative;
+    padding-bottom: $spacing-sm;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(to right, $color-primary, $color-secondary);
+      border-radius: 3px;
+    }
+  }
+  
+  &__tabs {
+    display: flex;
+    border-bottom: 1px solid $color-border;
+    margin-bottom: $spacing-lg;
+  }
+  
+  &__tab {
+    padding: $spacing-sm $spacing-md;
+    background: none;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: $color-text-light;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.2s ease;
+    
+    &--active {
+      color: $color-primary;
+      
+      &:after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background-color: $color-primary;
+      }
+    }
+    
+    &:hover:not(&--active) {
+      color: darken($color-text-light, 15%);
+    }
+    
+    &:focus {
+      outline: none;
+    }
+  }
+  
+  &__content {
+    animation: fadeContent 0.3s ease-out;
+  }
+  
+  &__basic-settings,
+  &__advanced-settings {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+  
+  &__setting {
+    background-color: $color-background-alt;
+    border-radius: $border-radius;
+    padding: $spacing-md;
+  }
+  
+  &__label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-md;
+    font-weight: 500;
+    color: $color-text;
+  }
+  
+  &__value {
+    font-weight: 600;
+    color: $color-primary;
+    background-color: rgba($color-primary, 0.1);
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+  }
+  
+  &__helper {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-left: $spacing-sm;
+  }
+  
+  &__slider-container {
+    position: relative;
+    padding: 0 $spacing-xs;
+  }
+  
+  &__slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, $color-primary, $color-secondary);
+    outline: none;
+    
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: $color-white;
+      border: 2px solid $color-primary;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 4px rgba($color-primary, 0.2);
+      }
+    }
+    
+    &::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: $color-white;
+      border: 2px solid $color-primary;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 4px rgba($color-primary, 0.2);
+      }
+    }
+  }
+  
+  &__slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: $spacing-xs;
+    font-size: 0.8rem;
+    color: $color-text-light;
+  }
+  
+  &__toggle-group {
+    display: flex;
+    gap: $spacing-sm;
+  }
+  
+  &__toggle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-sm;
+    background-color: $color-white;
+    font-size: 0.9rem;
+    color: $color-text-light;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+    
+    &:hover {
+      border-color: $color-primary;
+      color: $color-text;
+      
+      svg {
+        opacity: 0.9;
+      }
+    }
+    
+    &--active {
+      border-color: $color-primary;
+      background-color: rgba($color-primary, 0.1);
+      color: $color-primary;
+      font-weight: 500;
+      
+      svg {
+        opacity: 1;
+        color: $color-primary;
+      }
+      
+      &:hover {
+        background-color: rgba($color-primary, 0.15);
+      }
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+    }
+  }
+  
+  &__difficulty {
+    display: flex;
+    gap: $spacing-sm;
+    
+    @include breakpoint-down(sm) {
+      flex-direction: column;
+    }
+  }
+  
+  &__difficulty-btn {
+    flex: 1;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-sm;
+    background-color: $color-white;
+    font-size: 0.9rem;
+    color: $color-text-light;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      border-color: $color-primary;
+      color: $color-text;
+    }
+    
+    &--active {
+      border-color: transparent;
+      font-weight: 500;
+      
+      &:hover {
+        transform: translateY(-2px);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    }
+    
+    &--active:nth-child(1) {
+      background-color: rgba($color-success, 0.2);
+      color: darken($color-success, 10%);
+      
+      &:hover {
+        background-color: rgba($color-success, 0.25);
+      }
+    }
+    
+    &--active:nth-child(2) {
+      background-color: rgba($color-warning, 0.2);
+      color: darken($color-warning, 10%);
+      
+      &:hover {
+        background-color: rgba($color-warning, 0.25);
+      }
+    }
+    
+    &--active:nth-child(3) {
+      background-color: rgba($color-error, 0.2);
+      color: darken($color-error, 10%);
+      
+      &:hover {
+        background-color: rgba($color-error, 0.25);
+      }
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+    }
+  }
+  
+  &__categories {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-sm;
+    
+    @include breakpoint-up(sm) {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+  }
+  
+  &__category {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm;
+    border: 1px solid $color-border;
+    border-radius: $border-radius-sm;
+    background-color: $color-white;
+    font-size: 0.9rem;
+    color: $color-text-light;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+      color: $color-white;
+    }
+    
+    &:hover:not(:disabled) {
+      border-color: $color-primary;
+      color: $color-text;
+    }
+    
+    &--active {
+      border-color: $color-primary;
+      background-color: $color-primary;
+      color: $color-white;
+      font-weight: 500;
+      
+      &:hover:not(:disabled) {
+        background-color: darken($color-primary, 5%);
+        color: $color-white;
+      }
+    }
+    
+    &:disabled {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeContent {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

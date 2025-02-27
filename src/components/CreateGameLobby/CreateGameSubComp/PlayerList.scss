@@ -1,0 +1,235 @@
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.player-list {
+  background-color: $color-white;
+  border-radius: $border-radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $box-shadow-sm;
+  animation: slideUp 0.6s ease-out;
+  animation-delay: 0.4s;
+  animation-fill-mode: both;
+  
+  &__header {
+    @include flex-between;
+    margin-bottom: $spacing-lg;
+  }
+  
+  &__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $color-text;
+    margin: 0;
+    position: relative;
+    padding-bottom: $spacing-sm;
+    
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 40px;
+      height: 3px;
+      background: linear-gradient(to right, $color-accent, $color-primary);
+      border-radius: 3px;
+    }
+  }
+  
+  &__count {
+    background-color: rgba($color-primary, 0.1);
+    color: $color-primary;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-full;
+  }
+  
+  &__content {
+    max-height: 400px;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: $color-background-alt;
+      border-radius: 4px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba($color-text-light, 0.3);
+      border-radius: 4px;
+      
+      &:hover {
+        background: rgba($color-text-light, 0.5);
+      }
+    }
+  }
+  
+  &__empty {
+    padding: $spacing-lg;
+    text-align: center;
+    color: $color-text-light;
+    font-size: 0.875rem;
+    background-color: $color-background-alt;
+    border-radius: $border-radius;
+  }
+  
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+  
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-sm;
+    background-color: $color-background-alt;
+    border-radius: $border-radius;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInItem 0.5s ease-out both;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: $box-shadow-sm;
+    }
+  }
+  
+  &__player-info {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+  
+  &__avatar {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba($color-white, 0.5);
+    
+    &-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+  
+  &__details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  &__name {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-weight: 600;
+    color: $color-text;
+  }
+  
+  &__host-badge {
+    display: inline-flex;
+    align-items: center;
+    color: $color-warning;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  &__current-user {
+    font-size: 0.75rem;
+    color: $color-text-light;
+    font-style: italic;
+  }
+  
+  &__status {
+    display: flex;
+    align-items: center;
+  }
+  
+  &__ready,
+  &__not-ready {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+  
+  &__ready {
+    background-color: rgba($color-success, 0.1);
+    color: $color-success;
+  }
+  
+  &__not-ready {
+    background-color: rgba($color-text-light, 0.1);
+    color: $color-text-light;
+  }
+  
+  &__kick-btn {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: $color-text-light;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.6;
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    &:hover {
+      background-color: rgba($color-error, 0.1);
+      color: $color-error;
+      opacity: 1;
+    }
+    
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba($color-error, 0.2);
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInItem {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

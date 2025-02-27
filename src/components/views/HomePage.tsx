@@ -6,6 +6,7 @@ import FeatureCards from '../FeatureCards/FeatureCards';
 import LoginForm from '../LoginForm/LoginForm';
 import { useNavigate } from 'react-router-dom';
 import DashboardSample from '../Dashboard/DashboardSample';
+import HowToPlay from 'components/About/HowToPlay/HowToPlay';
 
 const HomePage = () => {
   const [showLoginForm, setShowLoginForm] = useState(false);
@@ -41,6 +42,7 @@ const HomePage = () => {
     <div className="home-page">
       <Hero onGetStartedClick={handleLoginClick} />
       <GameDescription />
+      {/* <HowToPlay /> */}
       <FeatureCards />
 
       {/* Dashboard Sample component with enhanced container */}

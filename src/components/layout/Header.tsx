@@ -88,7 +88,7 @@ const Header = () => {
                     <a href={isAboutPage ? "/#features" : "#features"} className="header__nav-link">Features</a>
                   </li>
                   <li className="header__nav-item">
-                    <a href="/about" className="header__nav-link">About</a>
+                    <Link to="/about" className="header__nav-link">About</Link>
                   </li>
                 </>
               ) : (

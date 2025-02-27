@@ -1,30 +1,45 @@
-// components/Logo/Logo.scss
 @import '../../styles/variables';
 
 .logo {
   display: flex;
   align-items: center;
   text-decoration: none;
-  
+ 
   &__icon {
     width: 2rem;
     height: 2rem;
-    color: $color-primary;
     margin-right: 0.5rem;
     transition: transform 0.3s ease;
-    
+    animation: colorPulse 8s infinite alternate;
+   
     svg {
       width: 100%;
       height: 100%;
     }
   }
-  
+ 
   &__text {
     font-size: 1.5rem;
     font-weight: 800;
     color: $color-text;
     position: relative;
     
+    // Animated gradient text
+    background: linear-gradient(
+      to right, 
+      $color-primary, 
+      $color-secondary, 
+      $color-accent, 
+      $color-gradient-start,
+      $color-gradient-end,
+      $color-primary
+    );
+    background-size: 300% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientText 10s ease infinite;
+   
     &::after {
       content: 'AI';
       position: absolute;
@@ -32,16 +47,43 @@
       right: -1rem;
       font-size: 0.75rem;
       font-weight: 700;
-      color: $color-accent;
-      background-color: rgba($color-accent, 0.1);
+      color: $color-white;
+      background-color: $color-accent;
       padding: 0.125rem 0.25rem;
       border-radius: $border-radius-sm;
+      animation: pulseAccent 5s infinite alternate;
+      -webkit-text-fill-color: $color-white; // Override the gradient text for the AI badge
     }
   }
-  
+ 
   &:hover {
     .logo__icon {
-      transform: rotate(-10deg);
+      transform: rotate(-10deg) scale(1.1);
     }
   }
+}
+
+// Color pulse animation for the icon
+@keyframes colorPulse {
+  0% { color: $color-primary; }
+  20% { color: $color-secondary; }
+  40% { color: $color-accent; }
+  60% { color: $color-success; }
+  80% { color: $color-gradient-start; }
+  100% { color: $color-gradient-end; }
+}
+
+// Text gradient animation
+@keyframes gradientText {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// Pulsing animation for the AI badge
+@keyframes pulseAccent {
+  0% { background-color: $color-accent; }
+  33% { background-color: $color-secondary; }
+  66% { background-color: $color-success; }
+  100% { background-color: $color-primary; }
 }

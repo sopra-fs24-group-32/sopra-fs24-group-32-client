@@ -1,134 +1,81 @@
-// components/LoginForm/LoginForm.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import Button from '../Button/Button';
 import './LoginForm.scss';
-import { api, handleError } from "../../helpers/api";
-import User from "../../models/User";
 import { useNavigate } from "react-router-dom";
+import { SignedIn, SignedOut, SignIn, SignUp, useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { useAuth } from '../context/AuthContext';
 
-const LoginForm = ({ onClose, onToggleMode, initialMode }) => {
-  // Set initial signup state based on initialMode prop
-  const [isSignUp, setIsSignUp] = useState(initialMode === 'signup');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const modalRef = useRef(null);
+interface LoginFormProps {
+  onClose: () => void;
+  initialMode?: 'login' | 'signup';
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onClose, initialMode = "login" }) => {
+  // Set initial mode based on initialMode prop
+  const [mode, setMode] = useState<'login' | 'signup'>(initialMode);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { openSignIn, openSignUp } = useClerk();
+  const { user: clerkUser, isSignedIn } = useUser();
+  const profileUpdatedRef = useRef(false);
+ 
+  // Use the auth context to access user state and update function
+  const { isAuthenticated, user, isLoading, error } = useAuth();
 
-  const toggleMode = () => {
-    // Update local state
-    const newSignUpState = !isSignUp;
-    setIsSignUp(newSignUpState);
-    setError('');
-    
-    // Call the callback if provided
-    if (typeof onToggleMode === 'function') {
-      onToggleMode(newSignUpState);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
-
-    // Basic validation
-    if (!username.trim()) {
-      setError('Username is required');
-      setIsLoading(false);
-      return;
-    }
-
-    if (isSignUp && !email.trim()) {
-      setError('Email is required');
-      setIsLoading(false);
-      return;
-    }
-
-    if (!password.trim()) {
-      setError('Password is required');
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      if (isSignUp) {
-        await doRegister();
-      } else {
-        await doLogin();
-      }
-      
-      // Close modal after successful login/registration
-      if (typeof onClose === 'function') {
-        onClose();
-      }
-      
-    } catch (error) {
-      console.error(`Authentication error: ${handleError(error)}`);
-      setError(error.response?.data?.message || 'Authentication failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const doLogin = async () => {
-    try {
-      const requestBody = JSON.stringify({ username, password });
-      const response = await api.post("/login", requestBody);
-
-      // Get the returned user and update a new object
-      const user = new User(response.data);
-
-      // Store the userToken into the local storage
-      localStorage.setItem("userToken", user.userToken);
-      localStorage.setItem("username", user.username);
-      localStorage.setItem("id", user.id);
-
-      // Navigate to the home page
-      navigate("/home");
-    } catch (error) {
-      console.error(`Login failed: ${handleError(error)}`);
-      throw error;
-    }
-  };
-
-  const doRegister = async () => {
-    try {
-      const requestBody = JSON.stringify({ username, email, password });
-      const response = await api.post("/users", requestBody);
-
-      // Get the returned user and update a new object
-      const user = new User(response.data);
-
-      // Store the userToken into the local storage
-      localStorage.setItem("userToken", user.userToken);
-      localStorage.setItem("username", user.username);
-      localStorage.setItem("id", user.id);
-
-      // Navigate to the home page
-      navigate("/home");
-    } catch (error) {
-      console.error(`Registration failed: ${handleError(error)}`);
-      throw error;
-    }
-  };
-
-  // Close modal when clicking outside
+  // Update auth context when Clerk authentication state changes
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target) && typeof onClose === 'function') {
+    const updateUserProfile = async () => {
+      if (isSignedIn && clerkUser && !profileUpdatedRef.current) {
+        profileUpdatedRef.current = true;
+        
+        // Extract relevant user data from Clerk user object
+        const userData = {
+          id: clerkUser.id,
+          username: clerkUser.username,
+          firstName: clerkUser.firstName,
+          lastName: clerkUser.lastName,
+          email: clerkUser.primaryEmailAddress?.emailAddress,
+          profilePicture: clerkUser.imageUrl,
+          // Add any other properties you need from the Clerk user object
+        };
+      }
+    };
+    
+    updateUserProfile();
+    
+    // Reset the flag when user signs out
+    if (!isSignedIn) {
+      profileUpdatedRef.current = false;
+    }
+  }, [isSignedIn, clerkUser]);
+
+  // Close modal when clicking outside the form
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (formRef.current &&
+          !formRef.current.contains(event.target as Node) &&
+          modalRef.current &&
+          modalRef.current.contains(event.target as Node) &&
+          typeof onClose === 'function') {
         onClose();
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClose]);
+
+  // Redirect to home when user is authenticated
+ useEffect(() => {
+    if ((isAuthenticated && user) || (isSignedIn && clerkUser)) {
+      // Show success state briefly before redirecting
+      setTimeout(() => {
+        navigate('/home');
+      }, 1000);
+    }
+  }, [isAuthenticated, user, isSignedIn, clerkUser, navigate]);
 
   // Prevent body scrolling when modal is open
   useEffect(() => {
@@ -139,120 +86,93 @@ const LoginForm = ({ onClose, onToggleMode, initialMode }) => {
   }, []);
 
   return (
-    <div className="login-modal">
-      <div className="login-modal__content" ref={modalRef}>
-        <button 
-          className="login-modal__close" 
+    <div className="login-modal" ref={modalRef}>
+      <div className="login-modal__form-container" ref={formRef}>
+        <button
+          className="login-modal__close"
           onClick={() => typeof onClose === 'function' && onClose()}
           aria-label="Close"
         >
           &times;
         </button>
-        <div className="login-modal__header">
-          <h2 className="login-modal__title">
-            {isSignUp ? 'Create Account' : 'Welcome Back'}
-          </h2>
-          <p className="login-modal__subtitle">
-            {isSignUp 
-              ? 'Join the GPTuessr community and start playing!' 
-              : 'Log in to continue your GPTuessr adventure'
-            }
-          </p>
-        </div>
-
+       
+        {/* Show loading indicator when auth state is being loaded */}
+        {isLoading && (
+          <div className="login-modal__loading">
+            <p>Loading...</p>
+          </div>
+        )}
+       
+        {/* Show error message if there's an error */}
         {error && (
           <div className="login-modal__error">
-            {error}
+            <p>{error}</p>
           </div>
         )}
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="login-form__field">
-            <label htmlFor="username" className="login-form__label">
-              Username
-            </label>
-            <input
-              id="username"
-              type="text"
-              className="login-form__input"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled={isLoading}
-            />
-          </div>
-
-          {isSignUp && (
-            <div className="login-form__field">
-              <label htmlFor="email" className="login-form__label">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                className="login-form__input"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading}
+        <SignedOut>
+          {mode === 'signup' ? (
+            <>
+              <SignUp
+                afterSignUpUrl="/home"
+                signInUrl="/login"
+                routing="virtual"
               />
-            </div>
+              {/* Removed the mode switch section */}
+            </>
+          ) : (
+            <>
+              <SignIn
+                afterSignInUrl="/home"
+                signUpUrl="/register"
+                routing="virtual"
+              />
+              {/* Removed the mode switch section */}
+            </>
           )}
-
-          <div className="login-form__field">
-            <label htmlFor="password" className="login-form__label">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              className="login-form__input"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-            />
+        </SignedOut>
+       
+        <SignedIn>
+          <div className="login-modal__signedin">
+            <div className="login-modal__success-animation">
+              <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle className="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path className="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+              </svg>
+            </div>
+            
+            {(user || (isSignedIn && clerkUser)) && (
+              <div className="login-modal__user-info">
+                <p className="login-modal__welcome">
+                  Welcome, {user?.username || user?.firstName || clerkUser?.username || clerkUser?.firstName || 'User'}!
+                </p>
+                {(user?.profilePicture || clerkUser?.imageUrl) && (
+                  <img
+                    src={user?.profilePicture || clerkUser?.imageUrl}
+                    alt="Profile"
+                    className="login-modal__avatar"
+                  />
+                )}
+              </div>
+            )}
+            <div className="login-modal__user-button">
+              <UserButton />
+            </div>
+            <p className="login-modal__redirect-text">Redirecting to dashboard...</p>
+            <button
+              className="login-modal__goto-home"
+              onClick={() => {
+                onClose();
+                navigate("/home");
+              }}
+            >
+              Go to Home
+            </button>
           </div>
-
-          {!isSignUp && (
-            <div className="login-form__forgot">
-              <a href="#reset-password">Forgot password?</a>
-            </div>
-          )}
-
-          <Button
-            type="submit"
-            variant="primary"
-            label={isLoading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Log In')}
-            className="login-form__submit"
-            disabled={isLoading}
-            onClick={() => {}} // Empty onClick handler to satisfy prop type requirement
-          />
-        </form>
-
-        <div className="login-modal__toggle">
-          {isSignUp ? 'Already have an account?' : 'Don\'t have an account?'}
-          <button 
-            className="login-modal__toggle-btn" 
-            onClick={toggleMode}
-            disabled={isLoading}
-          >
-            {isSignUp ? 'Log In' : 'Sign Up'}
-          </button>
-        </div>
+        </SignedIn>
       </div>
     </div>
   );
-};
-
-LoginForm.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onToggleMode: PropTypes.func,
-  initialMode: PropTypes.oneOf(['login', 'signup'])
-};
-
-LoginForm.defaultProps = {
-  initialMode: 'login'
 };
 
 export default LoginForm;

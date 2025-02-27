@@ -3,8 +3,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from '../Button/Button';
 import './Hero.scss';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Hero = ({ onGetStartedClick }) => {
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const handleHowItWorksClick = () => {
+    if (location.pathname === "/about") {
+      // If already on /about, scroll smoothly to #how-to-play
+      const element = document.getElementById("how-to-play");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      // Navigate to /about#how-to-play
+      navigate("/about#how-to-play");
+    }
+  };
   return (
     <section className="hero">
       <div className="hero__container">
@@ -28,11 +45,7 @@ const Hero = ({ onGetStartedClick }) => {
               label="How It Works"
               variant="secondary"
               size="large"
-              onClick={() => {
-                document.getElementById('how-to-play').scrollIntoView({
-                  behavior: 'smooth'
-                });
-              }}
+              onClick={handleHowItWorksClick}
             />
           </div>
           <div className="hero__stats">

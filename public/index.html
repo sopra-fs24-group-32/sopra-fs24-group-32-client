@@ -1,44 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="theme-color" content="#000000">
-  <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
+  <meta name="theme-color" content="#6366f1">
+  
+  <!-- Primary Meta Tags -->
+  <title>GPTuessr - AI-Powered Guessing Game</title>
+  <meta name="title" content="GPTuessr - AI-Powered Guessing Game | SoPra FS24">
+  <meta name="description" content="Join the most creative multiplayer guessing game powered by DALL-E. Create and guess AI-generated images in real-time with friends!">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="%PUBLIC_URL%/">
+  <meta property="og:title" content="GPTuessr - AI-Powered Guessing Game | SoPra FS24">
+  <meta property="og:description" content="Join the most creative multiplayer guessing game powered by DALL-E. Create and guess AI-generated images in real-time with friends!">
+  <meta property="og:image" content="%PUBLIC_URL%/og-image.jpg">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="%PUBLIC_URL%/">
+  <meta property="twitter:title" content="GPTuessr - AI-Powered Guessing Game | SoPra FS24">
+  <meta property="twitter:description" content="Join the most creative multiplayer guessing game powered by DALL-E. Create and guess AI-generated images in real-time with friends!">
+  <meta property="twitter:image" content="%PUBLIC_URL%/og-image.jpg">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="%PUBLIC_URL%/">
+  
+  <!-- App manifest -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build` or 
-      have a look at the documentation https://create-react-app.dev/docs/using-the-public-folder/.
-    -->
-  <title>SoPra FS24 - Group XX</title>
+  
+  <!-- Preconnect to critical origins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Robots -->
+  <meta name="robots" content="index, follow">
+  
+  <!-- Mobile App specific -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="GPTuessr">
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png">
 </head>
-
 <body>
   <noscript>
-    You need to enable JavaScript to run this app.
+    <div style="padding: 20px; text-align: center; font-family: sans-serif;">
+      <h1>JavaScript Required</h1>
+      <p>GPTuessr needs JavaScript to run. Please enable JavaScript in your browser settings to continue.</p>
+    </div>
   </noscript>
   <div id="app"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm run dev`.
-      To create a production bundle, use `npm run build`.
-    -->
+  <!-- Structured data for rich results -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "GPTuessr",
+      "description": "AI-powered multiplayer guessing game where players create and guess AI-generated images",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  </script>
 </body>
-
 </html>

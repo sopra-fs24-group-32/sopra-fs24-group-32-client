@@ -54,7 +54,6 @@ const HomePage = () => {
       {showLoginForm && (
         <LoginForm 
           onClose={handleClose} 
-          onToggleMode={handleToggleSignUp}
           initialMode="login"
         />
       )}

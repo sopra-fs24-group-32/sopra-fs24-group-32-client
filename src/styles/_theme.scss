@@ -3,11 +3,9 @@
  */
 
 /* Theme Colors
-
    these values control the colors of your application.
    feel free to play around with these and see what other look you can come up with! :D
 */
-
 $accent: #272727;
 $accentDark: #2e2e2e;
 $textColor: white;
@@ -15,25 +13,106 @@ $textInputColor: black;
 $background: #262632;
 $buttonColor: #5d62be;
 
-/* some constants */
+/* Color Palette - Modern Application Design 
+   Additional colors to enhance the application's visual design
+   Integrate these with the existing theme colors
+*/
+$color-primary: #6366f1;      // Indigo - can be used with $buttonColor
+$color-secondary: #8b5cf6;    // Violet - complementary to primary
+$color-accent: #22d3ee;       // Cyan - for highlighting and accents
+$color-text: #1e293b;         // Slate 800 - alternative to $textColor for light themes
+$color-text-light: #64748b;   // Slate 500 - for secondary text
+$color-white: #ffffff;        // White - already defined as $textColor
+$color-background: #f8fafc;   // Slate 50 - alternative to $background for light themes
+$color-background-alt: #f1f5f9; // Slate 100 - alternative background for sections
+$color-border: #e2e8f0;       // Slate 200 - for borders
+$color-error: #ef4444;        // Red 500 - for error states
+$color-success: #10b981;      // Emerald 500 - for success states
+$color-warning: #f59e0b;      // Amber 500 - for warning states
 
+/* Gradient - For modern visual elements */
+$color-gradient-start: #7e22ce; // Purple 800
+$color-gradient-end: #4f46e5;   // Indigo 600
+
+/* Responsive Breakpoints */
 $DESKTOP_WIDTH: 1160px;
 $SMALL_LAPTOPS_WIDTH: 970px;
 $TABLETS_WIDTH: 750px;
 $SMALL_WIDTH: 768px;
 
-/* some standard elements */
-/* fonts */
+/* Enhanced Breakpoints - Aligned with modern frameworks */
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: $SMALL_WIDTH;      // Aligned with existing $SMALL_WIDTH
+$breakpoint-lg: $TABLETS_WIDTH;    // Aligned with existing $TABLETS_WIDTH
+$breakpoint-xl: $SMALL_LAPTOPS_WIDTH; // Aligned with existing $SMALL_LAPTOPS_WIDTH
+$breakpoint-2xl: $DESKTOP_WIDTH;   // Aligned with existing $DESKTOP_WIDTH
+
+$breakpoints: (
+  'xs': $breakpoint-xs,
+  'sm': $breakpoint-sm,
+  'md': $breakpoint-md,
+  'lg': $breakpoint-lg,
+  'xl': $breakpoint-xl,
+  'xxl': $breakpoint-2xl
+);
+
+/* Typography */
 $fontDefault: "M PLUS Rounded 1c", sans-serif;
 $fontMono: "Roboto Mono", monospace;
 
-/* a standard drop shadow */
-$dropShadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.25);
+$font-family: $fontDefault;
+$font-family-base: $fontDefault;
+$font-family-heading: $fontDefault;
+$font-family-mono: $fontMono;
+$font-size-base: 16px;
+$line-height-base: 1.5;
 
+/* UI Elements */
+$dropShadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.25);
 $borderRadius: 0.75em;
 
-/* mixins
+/* Enhanced Shadows and Border Radius */
+$border-radius-sm: 0.25rem;      // 4px
+$border-radius-md: 0.5rem;       // 8px
+$border-radius-lg: $borderRadius; // Use existing border radius
+$border-radius-full: 9999px;     // For circular elements
+$border-width: 1px;
 
+$box-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+$box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$box-shadow-lg: $dropShadow;      // Use existing drop shadow
+$box-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+/* Spacing */
+$spacing-xs: 0.25rem;  // 4px
+$spacing-sm: 0.5rem;   // 8px
+$spacing-md: 1rem;     // 16px
+$spacing-lg: 1.5rem;   // 24px
+$spacing-xl: 2rem;     // 32px
+$spacing-2xl: 3rem;    // 48px
+$spacing-3xl: 4rem;    // 64px
+
+/* Transitions */
+$transition-default: all 0.3s ease;
+$transition-base: $transition-default;
+$transition-fast: all 0.15s ease;
+$transition-slow: all 0.5s ease;
+
+/* Z-index */
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+/* Container */
+$container-max-width: $DESKTOP_WIDTH;
+$container-padding: 1rem;
+
+/* mixins
   these allow you to create small snippets that you can insert with a one-liner in other stylesheets
   for an example, see styles/views/Login.scss
 */
@@ -41,4 +120,43 @@ $borderRadius: 0.75em;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@mixin flex-center {
+  @include center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Responsive Design Mixins */
+@mixin breakpoint-up($breakpoint) {
+  @if $breakpoint == sm {
+    @media (min-width: $breakpoint-sm) { @content; }
+  } @else if $breakpoint == md {
+    @media (min-width: $breakpoint-md) { @content; }
+  } @else if $breakpoint == lg {
+    @media (min-width: $breakpoint-lg) { @content; }
+  } @else if $breakpoint == xl {
+    @media (min-width: $breakpoint-xl) { @content; }
+  } @else if $breakpoint == 2xl {
+    @media (min-width: $breakpoint-2xl) { @content; }
+  }
+}
+
+@mixin breakpoint-down($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: #{$breakpoint-sm - 1px}) { @content; }
+  } @else if $breakpoint == sm {
+    @media (max-width: #{$breakpoint-md - 1px}) { @content; }
+  } @else if $breakpoint == md {
+    @media (max-width: #{$breakpoint-lg - 1px}) { @content; }
+  } @else if $breakpoint == lg {
+    @media (max-width: #{$breakpoint-xl - 1px}) { @content; }
+  } @else if $breakpoint == xl {
+    @media (max-width: #{$breakpoint-2xl - 1px}) { @content; }
+  }
 }

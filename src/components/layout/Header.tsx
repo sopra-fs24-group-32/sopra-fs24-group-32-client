@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Logo from './Logo';
 import Button from '../Button/Button';
 import 'styles/views/Header.scss';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -11,6 +11,7 @@ const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // Replace with actual auth state
     const location = useLocation();
     const isHomePage = location.pathname === '/';
+    const navigate = useNavigate();
   
     const toggleMenu = () => {
       setMenuOpen(!menuOpen);
@@ -73,7 +74,7 @@ const Header = () => {
                     <a href="#features" className="header__nav-link">Features</a>
                   </li>
                   <li className="header__nav-item">
-                    <a href="#about" className="header__nav-link">About</a>
+                    <Link to="/about" className="header__nav-link">About</Link>
                   </li>
                 </>
               ) : (

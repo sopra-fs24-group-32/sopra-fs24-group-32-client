@@ -19,7 +19,6 @@ const Register = () => {
   return (
     <LoginForm 
       onClose={handleClose} 
-      onToggleMode={handleToggleMode}
       initialMode="signup"
     />
   );

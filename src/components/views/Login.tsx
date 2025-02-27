@@ -9,16 +9,9 @@ const Login = () => {
     navigate("/");
   };
 
-  const handleToggleSignUp = (isSignUp) => {
-    if (isSignUp) {
-      navigate("/register");
-    }
-  };
-
   return (
     <LoginForm 
       onClose={handleClose} 
-      onToggleMode={handleToggleSignUp}
       initialMode="login"
     />
   );

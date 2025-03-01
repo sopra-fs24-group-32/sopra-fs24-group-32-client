@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './CreatingGame.scss';
+import { useAuth } from '../context/AuthContext';
+import useLobby from "../../store/hooks/useLobby";
 
 const CreatingGame = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useAuth();
+  const { createLobby, isLoading, error } = useLobby();
+  
   const [formData, setFormData] = useState({
-    lobbyName: '',
+    numberOfRounds: 3,
+    timeLimit: 60,
     maxPlayers: 4,
-    roundTime: 60,
-    totalRounds: 3,
     isPrivate: false,
-    gameMode: 'standard',
+    difficulty: 'medium',
+    gameSettings: ['standard'],
+    lobbyName: '',
     password: ''
   });
   
+  const [localError, setLocalError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [animationStage, setAnimationStage] = useState(0);
   
-  // Animation transitions for elements entering the view
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimationStage(1);
@@ -25,6 +31,19 @@ const CreatingGame = () => {
     
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
+  
+  // Update local error state when error changes
+  useEffect(() => {
+    if (error) {
+      setLocalError(error);
+    }
+  }, [error]);
   
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -35,24 +54,46 @@ const CreatingGame = () => {
     }));
   };
   
+  const handleGameModeChange = (mode) => {
+    setFormData(prevData => ({
+      ...prevData,
+      gameSettings: [mode]
+    }));
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setLocalError(null);
     
     try {
-      // Animation timing
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      // Map frontend form data to API DTO structure
+      const lobbyData = {
+        lobbyName: formData.lobbyName,
+        numberOfRounds: parseInt(formData.numberOfRounds),
+        timeLimit: parseInt(formData.timeLimit),
+        maxPlayers: parseInt(formData.maxPlayers),
+        isPrivate: formData.isPrivate,
+        password: formData.isPrivate ? formData.password : undefined,
+        difficulty: formData.difficulty,
+        gameSettings: [...formData.gameSettings]
+      };
       
-      // This would be replaced with your actual API call
-      // const response = await api.createLobby(formData);
-      // const lobbyId = response.data.id;
-      
-      const mockLobbyId = "lobby-" + Math.floor(Math.random() * 10000);
+      // Create the lobby using our custom hook
+      const lobbyCode = await createLobby(lobbyData);
       
       // Navigate to the created lobby
-      navigate(`/lobby/host/${mockLobbyId}`);
+      navigate(`/lobby/host/${lobbyCode}`);
     } catch (error) {
       console.error("Error creating lobby:", error);
+      
+      // Handle authentication errors specially
+      if (error.response && error.response.status === 401) {
+        navigate('/login', { state: { message: 'Your session has expired. Please log in again.' } });
+        return;
+      }
+      
+      setLocalError(error.message || 'Failed to create lobby');
       setIsSubmitting(false);
     }
   };
@@ -63,6 +104,9 @@ const CreatingGame = () => {
     { id: 'expert', name: 'Expert Mode', description: 'More challenging prompts and scoring' }
   ];
   
+  // Map gameSettings to gameMode for UI
+  const currentGameMode = formData.gameSettings[0] || 'standard';
+  
   return (
     <div className={`creating-game ${animationStage > 0 ? 'creating-game--visible' : ''}`}>
       <div className="creating-game__container">
@@ -72,6 +116,12 @@ const CreatingGame = () => {
             Set up your game lobby and invite friends to join your AI art guessing game!
           </p>
         </div>
+        
+        {localError && (
+          <div className="creating-game__error">
+            {localError}
+          </div>
+        )}
         
         <form className="creating-game__form" onSubmit={handleSubmit}>
           <div className="creating-game__section creating-game__section--basic">
@@ -88,7 +138,7 @@ const CreatingGame = () => {
                 onChange={handleChange}
                 placeholder="e.g. Fun AI Art Challenge"
                 required
-                disabled={isSubmitting}
+                disabled={isSubmitting || isLoading}
               />
             </div>
             
@@ -105,7 +155,7 @@ const CreatingGame = () => {
                       ...prev, 
                       maxPlayers: Math.max(2, prev.maxPlayers - 1) 
                     }))}
-                    disabled={formData.maxPlayers <= 2 || isSubmitting}
+                    disabled={formData.maxPlayers <= 2 || isSubmitting || isLoading}
                     aria-label="Decrease players"
                   >
                     -
@@ -119,7 +169,7 @@ const CreatingGame = () => {
                     onChange={handleChange}
                     min="2"
                     max="8"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isLoading}
                     aria-label="Maximum players"
                   />
                   <button
@@ -129,7 +179,7 @@ const CreatingGame = () => {
                       ...prev, 
                       maxPlayers: Math.min(8, prev.maxPlayers + 1) 
                     }))}
-                    disabled={formData.maxPlayers >= 8 || isSubmitting}
+                    disabled={formData.maxPlayers >= 8 || isSubmitting || isLoading}
                     aria-label="Increase players"
                   >
                     +
@@ -138,7 +188,7 @@ const CreatingGame = () => {
               </div>
               
               <div className="creating-game__field-group">
-                <label className="creating-game__label" htmlFor="totalRounds">
+                <label className="creating-game__label" htmlFor="numberOfRounds">
                   Total Number of Rounds
                 </label>
                 <div className="creating-game__number-input">
@@ -147,23 +197,23 @@ const CreatingGame = () => {
                     className="creating-game__number-btn"
                     onClick={() => setFormData(prev => ({ 
                       ...prev, 
-                      totalRounds: Math.max(1, prev.totalRounds - 1) 
+                      numberOfRounds: Math.max(1, prev.numberOfRounds - 1) 
                     }))}
-                    disabled={formData.totalRounds <= 1 || isSubmitting}
+                    disabled={formData.numberOfRounds <= 1 || isSubmitting || isLoading}
                     aria-label="Decrease rounds"
                   >
                     -
                   </button>
                   <input
                     type="number"
-                    id="totalRounds"
-                    name="totalRounds"
+                    id="numberOfRounds"
+                    name="numberOfRounds"
                     className="creating-game__input creating-game__input--number"
-                    value={formData.totalRounds}
+                    value={formData.numberOfRounds}
                     onChange={handleChange}
                     min="1"
                     max="10"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isLoading}
                     aria-label="Total rounds"
                   />
                   <button
@@ -171,9 +221,9 @@ const CreatingGame = () => {
                     className="creating-game__number-btn"
                     onClick={() => setFormData(prev => ({ 
                       ...prev, 
-                      totalRounds: Math.min(10, prev.totalRounds + 1) 
+                      numberOfRounds: Math.min(10, prev.numberOfRounds + 1) 
                     }))}
-                    disabled={formData.totalRounds >= 10 || isSubmitting}
+                    disabled={formData.numberOfRounds >= 10 || isSubmitting || isLoading}
                     aria-label="Increase rounds"
                   >
                     +
@@ -183,25 +233,25 @@ const CreatingGame = () => {
             </div>
             
             <div className="creating-game__field-group">
-              <label className="creating-game__label" htmlFor="roundTime">
+              <label className="creating-game__label" htmlFor="timeLimit">
                 Time Per Round (seconds)
               </label>
               <div className="creating-game__range-wrapper">
                 <input
                   type="range"
-                  id="roundTime"
-                  name="roundTime"
+                  id="timeLimit"
+                  name="timeLimit"
                   className="creating-game__range"
-                  value={formData.roundTime}
+                  value={formData.timeLimit}
                   onChange={handleChange}
                   min="30"
                   max="180"
                   step="10"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isLoading}
                   aria-label="Round time in seconds"
                 />
                 <div className="creating-game__range-value">
-                  {formData.roundTime} seconds
+                  {formData.timeLimit} seconds
                 </div>
               </div>
             </div>
@@ -213,18 +263,18 @@ const CreatingGame = () => {
               {gameModes.map(mode => (
                 <div 
                   key={mode.id}
-                  className={`creating-game__game-mode ${formData.gameMode === mode.id ? 'creating-game__game-mode--selected' : ''}`}
-                  onClick={() => !isSubmitting && setFormData({...formData, gameMode: mode.id})}
+                  className={`creating-game__game-mode ${currentGameMode === mode.id ? 'creating-game__game-mode--selected' : ''}`}
+                  onClick={() => !isSubmitting && !isLoading && handleGameModeChange(mode.id)}
                 >
                   <input
                     type="radio"
                     id={`gameMode-${mode.id}`}
                     name="gameMode"
                     value={mode.id}
-                    checked={formData.gameMode === mode.id}
-                    onChange={handleChange}
+                    checked={currentGameMode === mode.id}
+                    onChange={() => handleGameModeChange(mode.id)}
                     className="creating-game__game-mode-input"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isLoading}
                   />
                   <div className="creating-game__game-mode-content">
                     <h3 className="creating-game__game-mode-title">{mode.name}</h3>
@@ -251,7 +301,7 @@ const CreatingGame = () => {
                   checked={formData.isPrivate}
                   onChange={handleChange}
                   className="creating-game__toggle-input"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isLoading}
                 />
                 <div className="creating-game__toggle-control">
                   <div className="creating-game__toggle-switch"></div>
@@ -269,11 +319,11 @@ const CreatingGame = () => {
                     id="password"
                     name="password"
                     className="creating-game__input"
-                    value={formData.password}
+                    value={formData.password || ''}
                     onChange={handleChange}
                     placeholder="Create a secure password"
                     required={formData.isPrivate}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isLoading}
                   />
                 </div>
               )}
@@ -285,16 +335,16 @@ const CreatingGame = () => {
               type="button" 
               className="creating-game__button creating-game__button--secondary"
               onClick={() => navigate('/home')}
-              disabled={isSubmitting}
+              disabled={isSubmitting || isLoading}
             >
               Cancel
             </button>
             <button 
               type="submit" 
-              className={`creating-game__button creating-game__button--primary ${isSubmitting ? 'creating-game__button--loading' : ''}`}
-              disabled={isSubmitting}
+              className={`creating-game__button creating-game__button--primary ${(isSubmitting || isLoading) ? 'creating-game__button--loading' : ''}`}
+              disabled={isSubmitting || isLoading}
             >
-              {isSubmitting ? (
+              {(isSubmitting || isLoading) ? (
                 <>
                   <span className="creating-game__spinner"></span>
                   <span>Creating Game...</span>

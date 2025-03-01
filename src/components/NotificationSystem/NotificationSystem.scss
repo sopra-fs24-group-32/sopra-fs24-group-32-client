@@ -1,0 +1,121 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.notification-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: $z-index-tooltip;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  max-width: 350px;
+  width: 100%;
+  
+  @include breakpoint-down(sm) {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+  }
+}
+
+.notification-item {
+  border-radius: $border-radius;
+  background-color: $color-white;
+  box-shadow: $box-shadow-md;
+  padding: $spacing-md;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  animation: slideInRight 0.3s ease-out forwards;
+  
+  &.info {
+    border-left: 4px solid $color-primary;
+    
+    .notification-icon {
+      color: $color-primary;
+    }
+  }
+  
+  &.success {
+    border-left: 4px solid $color-success;
+    
+    .notification-icon {
+      color: $color-success;
+    }
+  }
+  
+  &.warning {
+    border-left: 4px solid $color-warning;
+    
+    .notification-icon {
+      color: $color-warning;
+    }
+  }
+  
+  &.error {
+    border-left: 4px solid $color-error;
+    
+    .notification-icon {
+      color: $color-error;
+    }
+  }
+  
+  @include breakpoint-down(sm) {
+    padding: $spacing-sm;
+  }
+}
+
+.notification-icon {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-message {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: $color-text;
+}
+
+.notification-dismiss {
+  background: none;
+  border: none;
+  color: $color-text-light;
+  font-size: 0.9rem;
+  padding: $spacing-xs;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: rgba($color-text, 0.1);
+    color: $color-text;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

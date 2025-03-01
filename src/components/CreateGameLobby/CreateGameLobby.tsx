@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LobbyHeader from './CreateGameSubComp/LobbyHeader';
 import GameSettingsForm from './CreateGameSubComp/GameSettingsForm';
@@ -7,38 +7,37 @@ import PlayerList from './CreateGameSubComp/PlayerList';
 import InviteFriends from './CreateGameSubComp/InviteFriends';
 import LobbyActions from './CreateGameSubComp/LobbyActions';
 import './CreateGameLobby.scss';
-
-// Default game settings
-const defaultSettings = {
-  rounds: 3,
-  timeLimit: 60,
-  maxPlayers: 8,
-  isPrivate: true,
-  difficulty: 'medium',
-  categories: ['animals', 'nature', 'food', 'travel', 'sports']
-};
+import useLobby from "../../store/hooks/useLobby";
 
 const CreateGameLobby: React.FC = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const [isPageLoaded, setIsPageLoaded] = useState(false);
-  const [gameSettings, setGameSettings] = useState(defaultSettings);
-  const [lobbyCode, setLobbyCode] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState('');
+  const { lobbyCode } = useParams<{ lobbyCode: string }>();
   
-  // Mock players (in a real app, this would come from a WebSocket connection)
-  const [players, setPlayers] = useState([
-    { id: 1, username: user?.username || 'You', isHost: true, isReady: true, avatarUrl: user?.profilePicture || 'https://i.pravatar.cc/150?img=1' },
-  ]);
-
+  const { 
+    lobbyState,
+    isLoading: isLobbyLoading,
+    error: lobbyError,
+    joinLobby,
+    getLobbyDetails,
+    leaveLobby,
+    updateLobbySettings,
+    startGame,
+    kickPlayer,
+    updatePlayerReady
+  } = useLobby();
+  
+  const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [localError, setLocalError] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const navigatingAway = useRef(false);
+  
   // Handle beforeunload event
   const handleBeforeUnload = useCallback((e) => {
-    // Cancel the event
     e.preventDefault();
-    // Chrome requires returnValue to be set
     e.returnValue = 'Are you sure you want to leave? The game lobby will be closed.';
-    // Return message for older browsers
     return 'Are you sure you want to leave? The game lobby will be closed.';
   }, []);
 
@@ -46,35 +45,38 @@ const CreateGameLobby: React.FC = () => {
   useEffect(() => {
     window.addEventListener('beforeunload', handleBeforeUnload);
     
-    // Clean up the event listener when component unmounts
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      
+      // If we're intentionally navigating away, don't clean up the lobby
+      if (!navigatingAway.current && lobbyCode) {
+        leaveLobby();
+      }
     };
-  }, [handleBeforeUnload]);
+  }, [handleBeforeUnload, lobbyCode, leaveLobby]);
 
   // Handle browser history navigation (back button)
   const location = useLocation();
-  const navigatingAway = useRef(false);
   
   useEffect(() => {
     // Create a custom history blocker
     const unblock = window.history.pushState(null, '', location.pathname);
     
     const handlePopState = (event) => {
-      // This runs when the back button is pressed
       if (!navigatingAway.current) {
-        // Prevent the default navigation
         event.preventDefault();
         
-        // Ask for confirmation
         const confirmed = window.confirm('Are you sure you want to leave? The game lobby will be closed.');
         
         if (confirmed) {
           navigatingAway.current = true;
-          // In a real app, you would notify the server to close the lobby here
-          navigate('/home'); // Navigate to home or wherever they were going
+          
+          if (lobbyCode) {
+            leaveLobby();
+          }
+          
+          navigate('/home');
         } else {
-          // If they cancel, push the current URL back into history to maintain the current page
           window.history.pushState(null, '', location.pathname);
         }
       }
@@ -83,110 +85,176 @@ const CreateGameLobby: React.FC = () => {
     // Add popstate event listener for back button
     window.addEventListener('popstate', handlePopState);
     
-    // This function gets called when the component will unmount
     return () => {
       window.removeEventListener('popstate', handlePopState);
-      // Here you might want to do cleanup, like notifying the server to close the lobby
-      // In a real app, you would make an API call to close the lobby
-      console.log('Lobby component unmounting, lobby being closed');
     };
-  }, [location, navigate]);
+  }, [location, navigate, lobbyCode, leaveLobby]);
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate('/');
+    if (!isAuthenticated) {
+      navigate('/login');
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, navigate]);
+  
+  useEffect(() => {
+    const joinExistingLobby = async () => {
+      if (lobbyCode && lobbyCode !== lobbyState.lobbyCode) {
+        try {
+          setLocalError('');
+          await joinLobby(lobbyCode);
+        } catch (error) {
+          console.error('Error joining lobby:', error);
+          setLocalError('Failed to join lobby. It may no longer exist.');
+          
+          setTimeout(() => {
+            navigate('/home');
+          }, 3000);
+        }
+      }
+    };
+    
+    joinExistingLobby();
+  }, [lobbyCode, lobbyState.lobbyCode, joinLobby, navigate]);
 
-  // Animation trigger after component mount
+  // Refresh lobby details periodically or when needed
+  const refreshLobbyDetails = useCallback(async () => {
+    if (lobbyCode) {
+      setIsRefreshing(true);
+      try {
+        await getLobbyDetails(lobbyCode);
+        setLocalError('');
+      } catch (error) {
+        console.error('Error refreshing lobby details:', error);
+        setLocalError('Failed to refresh lobby details');
+      } finally {
+        setIsRefreshing(false);
+      }
+    }
+  }, [lobbyCode, getLobbyDetails]);
+
+  // Initial lobby details fetch
+  useEffect(() => {
+    if (lobbyCode && lobbyState.lobbyCode) {
+      refreshLobbyDetails();
+    }
+  }, [lobbyCode, lobbyState.lobbyCode, refreshLobbyDetails]);
+
+  // Set up periodic refresh (every 30 seconds)
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (lobbyCode && lobbyState.lobbyCode) {
+        refreshLobbyDetails();
+      }
+    }, 30000);
+
+    return () => clearInterval(intervalId);
+  }, [lobbyCode, lobbyState.lobbyCode, refreshLobbyDetails]);
+
+  // Update local error when lobby error changes
+  useEffect(() => {
+    if (lobbyError) {
+      setLocalError(lobbyError);
+    }
+  }, [lobbyError]);
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsPageLoaded(true);
     }, 100);
     
-    // Generate a random lobby code
-    setLobbyCode(generateLobbyCode());
-    
     return () => clearTimeout(timer);
   }, []);
 
-  // Function to generate a random lobby code
-  const generateLobbyCode = () => {
-    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let result = '';
-    for (let i = 0; i < 6; i++) {
-      result += characters.charAt(Math.floor(Math.random() * characters.length));
+  const handleSettingsChange = async (newSettings) => {
+    setIsSaving(true);
+    
+    try {
+      await updateLobbySettings(newSettings);
+      setIsSaving(false);
+      
+      await refreshLobbyDetails();
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      setLocalError('Failed to update game settings');
+      setIsSaving(false);
     }
-    return result;
   };
 
-  // Handle settings changes
-  const handleSettingsChange = (newSettings: any) => {
-    setGameSettings({ ...gameSettings, ...newSettings });
-  };
-
-  // Add a mock player (for demo purposes)
-  const addMockPlayer = () => {
-    if (players.length >= gameSettings.maxPlayers) {
-      setError('Maximum player limit reached');
-      setTimeout(() => setError(''), 3000);
+  const handleAddMockPlayer = () => {
+    if (lobbyState.players.length >= lobbyState.maxPlayers) {
+      setLocalError('Maximum player limit reached');
+      setTimeout(() => setLocalError(''), 3000);
       return;
     }
     
-    const mockNames = ['Alex', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Quinn', 'Avery'];
-    const randomName = mockNames[Math.floor(Math.random() * mockNames.length)];
-    const newPlayer = {
-      id: players.length + 1,
-      username: randomName,
-      isHost: false,
-      isReady: Math.random() > 0.3, // Randomly set ready status
-      avatarUrl: `https://i.pravatar.cc/150?img=${players.length + 5}`
-    };
-    
-    setPlayers([...players, newPlayer]);
+    // Refresh lobby details after player joins
+    setTimeout(() => refreshLobbyDetails(), 500);
   };
 
-  // Remove a player from the lobby
-  const handleKickPlayer = (playerId: number) => {
-    setPlayers(players.filter(player => player.id !== playerId));
+  // Handle kick player
+  const handleKickPlayer = (playerId) => {
+    kickPlayer(playerId);
+    
+    // Refresh lobby details after player is kicked
+    setTimeout(() => refreshLobbyDetails(), 500);
   };
 
   // Start the game
-  const handleStartGame = () => {
+  const handleStartGame = async () => {
     // Check if there are enough players
-    if (players.length < 3) {
-      setError('At least 3 players are required to start the game');
-      setTimeout(() => setError(''), 3000);
+    if (lobbyState.players.length < 3) {
+      setLocalError('At least 3 players are required to start the game');
+      setTimeout(() => setLocalError(''), 3000);
       return;
     }
 
     // Check if all players are ready
-    if (!players.every(player => player.isReady)) {
-      setError('All players must be ready to start the game');
-      setTimeout(() => setError(''), 3000);
+    if (!lobbyState.players.every(player => player.isReady)) {
+      setLocalError('All players must be ready to start the game');
+      setTimeout(() => setLocalError(''), 3000);
       return;
     }
 
-    // In a real app, you would initialize the game on the server
-    // For now, we'll just navigate to a game route
-    navigate(`/game/${lobbyCode}`);
+    try {
+      setIsSaving(true);
+      await startGame();
+      setIsSaving(false);
+      
+      // Navigate to the game with the lobby code
+      navigate(`/game/${lobbyState.lobbyCode}`);
+    } catch (error) {
+      console.error('Error starting game:', error);
+      setLocalError('Failed to start the game');
+      setIsSaving(false);
+    }
   };
 
   // Cancel and return to home with confirmation
   const handleCancel = () => {
     const confirmLeave = window.confirm('Are you sure you want to leave? The game lobby will be closed.');
     if (confirmLeave) {
-      // In a real app, you would notify the server to close the lobby here
+      navigatingAway.current = true;
+      
+      leaveLobby();
+      
       navigate('/home');
     }
   };
 
-  if (isLoading) {
+  // Find current user in players list
+  const currentUser = lobbyState.players.find(player => 
+    user && player.id === user.id
+  );
+  
+  // Determine if current user is host
+  const isHost = currentUser?.isHost || false;
+
+  if (isLobbyLoading) {
     return (
       <div className="create-game-lobby__loading">
         <div className="loading-spinner"></div>
-        <p>Loading lobby creation...</p>
+        <p>Loading lobby...</p>
       </div>
     );
   }
@@ -195,38 +263,59 @@ const CreateGameLobby: React.FC = () => {
     <div className={`create-game-lobby ${isPageLoaded ? 'create-game-lobby--loaded' : ''}`}>
       <div className="create-game-lobby__container">
         <LobbyHeader 
-          lobbyCode={lobbyCode} 
-          playerCount={players.length} 
-          maxPlayers={gameSettings.maxPlayers} 
+          lobbyCode={lobbyState.lobbyCode} 
+          playerCount={lobbyState.players.length} 
+          maxPlayers={lobbyState.maxPlayers} 
+          lobbyName={lobbyState.lobbyName}
         />
         
-        {error && <div className="create-game-lobby__error">{error}</div>}
+        {localError && (
+          <div className="create-game-lobby__error">
+            {localError}
+          </div>
+        )}
         
         <div className="create-game-lobby__content">
           <div className="create-game-lobby__main">
             <GameSettingsForm 
-              settings={gameSettings} 
-              onSettingsChange={handleSettingsChange} 
+              settings={{
+                rounds: lobbyState.numberOfRounds,
+                timeLimit: lobbyState.timeLimit,
+                maxPlayers: lobbyState.maxPlayers,
+                isPrivate: lobbyState.isPrivate,
+                difficulty: lobbyState.difficulty,
+                gameSettings: lobbyState.gameSettings
+              }} 
+              onSettingsChange={handleSettingsChange}
+              isHost={isHost}
+              isDisabled={isSaving || isRefreshing}
             />
+            
             <PlayerList 
-              players={players} 
+              players={lobbyState.players} 
               onKickPlayer={handleKickPlayer} 
-              isHost={true} 
-              currentUserId={1} // Mock current user ID
+              isHost={isHost} 
+              currentUserId={user?.id} 
             />
           </div>
           
           <div className="create-game-lobby__sidebar">
             <InviteFriends 
-              lobbyCode={lobbyCode} 
-              onAddMockPlayer={addMockPlayer} // Just for demo purposes
+              lobbyCode={lobbyState.lobbyCode} 
+              onAddMockPlayer={handleAddMockPlayer}
             />
+            
             <LobbyActions 
               onStartGame={handleStartGame} 
               onCancel={handleCancel}
-              isStartDisabled={players.length < 3 || !players.every(player => player.isReady)}
-              playerCount={players.length}
-              isSaving={isSaving}
+              isStartDisabled={
+                lobbyState.players.length < 3 || 
+                !lobbyState.players.every(player => player.isReady) ||
+                !isHost ||
+                isRefreshing
+              }
+              playerCount={lobbyState.players.length}
+              isSaving={isSaving || isRefreshing}
             />
           </div>
         </div>

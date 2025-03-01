@@ -1,0 +1,45 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.ready-toggle {
+  @include button-base;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: 0.85rem;
+  padding: $spacing-xs $spacing-sm;
+  transition: all 0.2s ease;
+  min-width: 110px;
+  justify-content: center;
+  
+  .icon {
+    font-size: 1em;
+  }
+  
+  &.is-ready {
+    background-color: rgba($color-success, 0.2);
+    color: $color-success;
+    border: 1px solid rgba($color-success, 0.3);
+    
+    &:hover:not(.disabled) {
+      background-color: rgba($color-success, 0.3);
+    }
+  }
+  
+  &.not-ready {
+    background-color: rgba($color-text-light, 0.1);
+    color: $color-text-light;
+    border: 1px solid rgba($color-text-light, 0.2);
+    
+    &:hover:not(.disabled) {
+      background-color: rgba($color-success, 0.1);
+      color: $color-success;
+      border-color: rgba($color-success, 0.2);
+    }
+  }
+  
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

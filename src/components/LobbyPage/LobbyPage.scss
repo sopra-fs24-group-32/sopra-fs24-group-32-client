@@ -1,0 +1,73 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.lobby-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $color-gradient-start, $color-gradient-end);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+  
+  @include fade-in;
+}
+
+.lobby-container {
+  @include card;
+  width: 100%;
+  max-width: 1000px;
+  background-color: rgba($color-white, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  transform: none;
+  box-shadow: $box-shadow-xl;
+  
+  @include slide-in-up;
+  
+  &:hover {
+    transform: none;
+    box-shadow: $box-shadow-xl;
+  }
+}
+
+.lobby-content {
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint-up(lg) {
+    flex-direction: row;
+  }
+}
+
+.lobby-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  
+  @include breakpoint-up(md) {
+    flex-direction: row;
+  }
+}
+
+/* Custom scrollbar for the lobby */
+.lobby-container {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba($color-background-alt, 0.5);
+    border-radius: $border-radius-full;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: $color-primary;
+    border-radius: $border-radius-full;
+    
+    &:hover {
+      background: darken($color-primary, 10%);
+    }
+  }
+}

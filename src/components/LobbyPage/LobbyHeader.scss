@@ -1,0 +1,95 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.lobby-header {
+  padding: $spacing-lg;
+  background-color: $color-primary;
+  color: $color-white;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  
+  @include breakpoint-up(md) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.lobby-title {
+  @include heading-2;
+  margin: 0;
+  line-height: 1.2;
+  
+  @include breakpoint-up(md) {
+    margin-right: $spacing-lg;
+  }
+}
+
+.lobby-code-container {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+  
+  @include breakpoint-up(sm) {
+    flex-wrap: nowrap;
+  }
+}
+
+.lobby-code-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.lobby-code {
+  background-color: rgba($color-white, 0.2);
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-sm;
+  font-family: $font-family-mono;
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 1.1rem;
+}
+
+.copy-button {
+  @include button-base;
+  background-color: rgba($color-white, 0.2);
+  color: $color-white;
+  font-size: 1rem;
+  padding: $spacing-xs $spacing-sm;
+  position: relative;
+  
+  &:hover {
+    background-color: rgba($color-white, 0.3);
+    
+    .tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+  
+  .icon-success {
+    color: $color-success;
+  }
+  
+  .tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background-color: rgba($color-text, 0.9);
+    color: $color-white;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: $z-index-tooltip;
+  }
+}

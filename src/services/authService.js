@@ -40,11 +40,7 @@ class AuthService {
         });
       }
       
-      // Use Clerk's active session to get a token instead of calling getToken() directly
       const token = await this.getSessionToken();
-
-      console.log('Registering user:', userData);
-      console.log("token session", token);
       
       // Register user with backend
       const response = await axios.post(`${API_URL}/users/register`, userData, {
@@ -126,8 +122,6 @@ class AuthService {
   async getUserData(clerkUser) {
     try {
       const token = await this.getSessionToken();
-
-      console.log("token from get user data: ", token);
       
       const response = await axios.get(`${API_URL}/users/${clerkUser.id}`, {
         headers: {
@@ -161,7 +155,8 @@ class AuthService {
     try {
       // Using axios directly instead of undefined 'api'
       const response = await axios.post('/api/clerk/getToken');
-      return response.data.token;
+      const token = response.data.token;
+      return token;
     } catch (error) {
       console.error('Failed to get session token', error);
       throw new Error('Not authenticated');

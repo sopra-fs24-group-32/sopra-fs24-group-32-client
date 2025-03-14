@@ -1,4 +1,4 @@
-// components/About/HowToPlay/HowToPlay.jsx
+// components/About/HowToPlay/HowToPlay.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import './HowToPlay.scss';
 import { useLocation } from 'react-router-dom';
@@ -134,6 +134,7 @@ const HowToPlay = () => {
         <div className="how-to-play__shape how-to-play__shape--1"></div>
         <div className="how-to-play__shape how-to-play__shape--2"></div>
         <div className="how-to-play__shape how-to-play__shape--3"></div>
+        <div className="how-to-play__shape how-to-play__shape--4"></div>
       </div>
       
       <div className="container">

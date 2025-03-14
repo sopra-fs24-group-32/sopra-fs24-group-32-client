@@ -1,163 +1,310 @@
 // components/About/CallToAction/CallToAction.scss
-@import '../../../styles/variables';
 @import '../../../styles/mixins';
+@import '../../../styles/variables';
 
 .call-to-action {
-  padding: 8rem 0;
-  background: linear-gradient(135deg, $color-primary, $color-secondary);
   position: relative;
+  padding: $spacing-3xl 0;
+  background: linear-gradient(135deg, $color-gradient-start, $color-gradient-end);
   overflow: hidden;
+  color: $color-white;
   
-  @include breakpoint-down(md) {
-    padding: 6rem 0;
-  }
+  // Fix: Include mixin with proper parameters or define it in component
+  // @include slide-in-up;
+  animation: slide-in-up 0.5s ease-out forwards;
   
-  &__content {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
+  .container {
+    @include container;
     position: relative;
     z-index: 2;
   }
   
+  &__content {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
   &__title {
-    font-size: 2.8rem;
-    font-weight: 800;
+    @include heading-2;
+    margin-bottom: $spacing-lg;
     color: $color-white;
-    margin-bottom: 1.5rem;
+    font-weight: 800;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     
     @include breakpoint-down(md) {
-      font-size: 2.3rem;
-    }
-    
-    @include breakpoint-down(sm) {
-      font-size: 2rem;
+      font-size: 1.8rem;
     }
   }
   
   &__description {
     font-size: 1.2rem;
-    line-height: 1.7;
-    color: rgba($color-white, 0.9);
-    margin-bottom: 2.5rem;
+    line-height: 1.6;
+    margin-bottom: $spacing-xl;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
     
     @include breakpoint-down(md) {
       font-size: 1.1rem;
+      margin-bottom: $spacing-lg;
     }
   }
   
   &__features {
-    display: flex;
-    justify-content: center;
-    gap: 2.5rem;
-    margin-bottom: 3rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $spacing-lg;
+    margin-bottom: $spacing-xl;
     
     @include breakpoint-down(md) {
-      gap: 1.5rem;
-    }
-    
-    @include breakpoint-down(sm) {
-      flex-direction: column;
-      gap: 1rem;
+      grid-template-columns: 1fr;
+      gap: $spacing-md;
     }
   }
   
   &__feature {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
+    background-color: rgba($color-white, 0.1);
+    // Fix: backdrop-filter may not be fully supported, add fallback
+    @supports (backdrop-filter: blur(10px)) {
+      backdrop-filter: blur(10px);
+    }
+    border-radius: $border-radius-lg;
+    padding: $spacing-lg;
+    transition: all 0.3s ease;
+    border: 1px solid rgba($color-white, 0.15);
+    
+    &:hover {
+      transform: translateY(-5px);
+      background-color: rgba($color-white, 0.15);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    @include breakpoint-down(md) {
+      padding: $spacing-md;
+    }
   }
   
   &__feature-icon {
-    font-size: 1.8rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    margin-bottom: $spacing-md;
+    background: rgba($color-white, 0.2);
+    border-radius: 50%;
+    color: $color-white;
+    font-size: 1.5rem;
+    
+    svg {
+      width: 30px;
+      height: 30px;
+      stroke-width: 2;
+    }
     
     @include breakpoint-down(md) {
-      font-size: 1.6rem;
+      width: 50px;
+      height: 50px;
+      
+      svg {
+        width: 24px;
+        height: 24px;
+      }
     }
   }
   
   &__feature-text {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: $color-white;
+    h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: $spacing-xs;
+    }
     
-    @include breakpoint-down(md) {
-      font-size: 1rem;
+    p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      margin: 0;
     }
   }
   
   &__buttons {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xl;
     
     @include breakpoint-down(sm) {
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
     }
   }
   
   &__button {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
+    @include button-base;
+    min-width: 200px;
     font-weight: 600;
-    border-radius: $border-radius-md;
+    border-radius: $border-radius-full;
+    padding: $spacing-md $spacing-lg;
+    font-size: 1.05rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
-    text-decoration: none;
     
-    @include breakpoint-down(md) {
-      padding: 0.9rem 1.8rem;
-      font-size: 1rem;
+    &-icon {
+      margin-right: $spacing-xs;
     }
     
     &--primary {
       background-color: $color-white;
       color: $color-primary;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
       
       &:hover {
         transform: translateY(-3px);
-        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      }
+      
+      &:active {
+        transform: translateY(-1px);
       }
     }
     
     &--secondary {
-      background-color: transparent;
-      border: 2px solid $color-white;
+      background-color: rgba($color-white, 0.15);
       color: $color-white;
+      // Fix: backdrop-filter may not be fully supported, add fallback
+      @supports (backdrop-filter: blur(10px)) {
+        backdrop-filter: blur(10px);
+      }
+      border: 1px solid rgba($color-white, 0.3);
       
       &:hover {
+        background-color: rgba($color-white, 0.25);
         transform: translateY(-3px);
-        background-color: rgba($color-white, 0.1);
+      }
+      
+      &:active {
+        transform: translateY(-1px);
+      }
+    }
+    
+    @include breakpoint-down(md) {
+      font-size: 1rem;
+      min-width: 180px;
+    }
+  }
+  
+  &__testimonial {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: rgba($color-white, 0.1);
+    border-radius: $border-radius-lg;
+    padding: $spacing-lg;
+    // Fix: backdrop-filter may not be fully supported, add fallback
+    @supports (backdrop-filter: blur(10px)) {
+      backdrop-filter: blur(10px);
+    }
+    border: 1px solid rgba($color-white, 0.15);
+    
+    &-quote {
+      font-size: 1.1rem;
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: $spacing-sm;
+      
+      &::before {
+        content: '"';
+        font-size: 2rem;
+        line-height: 0;
+        vertical-align: -0.4em;
+        margin-right: 0.2em;
+      }
+      
+      &::after {
+        content: '"';
+        font-size: 2rem;
+        line-height: 0;
+        vertical-align: -0.4em;
+        margin-left: 0.2em;
+      }
+    }
+    
+    &-author {
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+    
+    @include breakpoint-down(md) {
+      padding: $spacing-md;
+      
+      &-quote {
+        font-size: 1rem;
       }
     }
   }
   
+  // Decorative elements
   &__decoration {
     position: absolute;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba($color-white, 0.1) 0%, rgba($color-white, 0) 70%);
+    opacity: 0.4;
+    filter: blur(60px);
+    z-index: 1;
     
     &--1 {
       width: 300px;
       height: 300px;
+      background-color: darken($color-gradient-start, 10%);
       top: -100px;
-      left: -100px;
+      right: 10%;
+      animation: float 8s ease-in-out infinite;
     }
     
     &--2 {
-      width: 500px;
-      height: 500px;
-      bottom: -200px;
-      right: -200px;
+      width: 400px;
+      height: 400px;
+      background-color: darken($color-gradient-end, 5%);
+      bottom: -150px;
+      left: -50px;
+      animation: float 10s ease-in-out infinite reverse;
     }
     
     &--3 {
       width: 200px;
       height: 200px;
-      top: 50%;
-      right: 10%;
+      background-color: $color-accent;
+      bottom: 20%;
+      right: -50px;
+      animation: float 12s ease-in-out infinite 2s;
     }
+  }
+}
+
+// Fix: Add the animation that was referenced but not defined
+@keyframes slide-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Animation for the floating decoration blobs
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-20px) translateX(15px);
+  }
+  100% {
+    transform: translateY(0) translateX(0);
   }
 }

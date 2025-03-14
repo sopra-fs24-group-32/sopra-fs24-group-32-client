@@ -1,0 +1,524 @@
+// components/GameSummary/GameSummary.scss
+@import '../../../styles/variables';
+@import '../../../styles/mixins';
+
+.game-summary {
+  position: relative;
+  border-radius: 1.5rem;
+  margin: 5rem auto;
+  max-width: 1200px;
+  padding: 5rem 2rem;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+              transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  
+  @include breakpoint-down(md) {
+    padding: 4rem 1.5rem;
+    margin: 4rem auto;
+  }
+  
+  @include breakpoint-down(sm) {
+    padding: 3rem 1.5rem;
+    margin: 3rem auto;
+  }
+  
+  // Visible state
+  &.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    
+    .game-summary__icon {
+      animation: float 3s ease-in-out infinite alternate, glow 3s ease-in-out infinite alternate;
+    }
+    
+    .game-summary__icon-ring {
+      animation: spin 15s linear infinite;
+    }
+    
+    .game-summary__title {
+      .game-summary__highlight {
+        &::after {
+          width: 100%;
+        }
+      }
+    }
+    
+    .game-summary__divider {
+      &-line {
+        width: 50px;
+        
+        &:first-child {
+          animation-delay: 0.3s;
+        }
+        
+        &:last-child {
+          animation-delay: 0.5s;
+        }
+      }
+      
+      &-dot {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .game-summary__text p {
+      opacity: 1;
+      transform: translateY(0);
+      
+      &:nth-child(1) {
+        transition-delay: 0.6s;
+      }
+      
+      &:nth-child(2) {
+        transition-delay: 0.8s;
+      }
+    }
+    
+    .game-summary__cta-container {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .game-summary__blob {
+      transform: translateY(0) scale(1);
+      opacity: 0.7;
+    }
+    
+    .game-summary__particle {
+      opacity: 0.6;
+      animation: float-particle 7s infinite ease-in-out;
+    }
+  }
+  
+  // Container
+  &__container {
+    position: relative;
+    z-index: 5;
+    backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 
+      0 25px 50px rgba(0, 0, 0, 0.1),
+      0 5px 15px rgba($color-primary, 0.05);
+    padding: 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+    
+    @include breakpoint-down(md) {
+      padding: 3rem 2rem;
+    }
+    
+    @include breakpoint-down(sm) {
+      padding: 2.5rem 1.5rem;
+    }
+  }
+  
+  // Gradient blobs in the background
+  &__blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(50px) scale(0.8);
+    transition: all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    
+    &--1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba($color-primary, 0.4), rgba($color-primary, 0));
+      top: -150px;
+      right: -100px;
+      transition-delay: 0.3s;
+    }
+    
+    &--2 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba($color-secondary, 0.4), rgba($color-secondary, 0));
+      bottom: -200px;
+      left: -150px;
+      transition-delay: 0.5s;
+    }
+  }
+  
+  // Floating particles
+  &__particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+  }
+  
+  &__particle {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba($color-primary, 0.8), rgba($color-secondary, 0.8));
+    opacity: 0;
+    transition: opacity 1s ease;
+    
+    @for $i from 1 through 20 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.2}s;
+      }
+    }
+  }
+  
+  // Content
+  &__content {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+  }
+  
+  // Icon
+  &__icon-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 2rem;
+    
+    @include breakpoint-down(md) {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 1.5rem;
+    }
+  }
+  
+  &__icon-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px dashed rgba($color-primary, 0.3);
+    
+    &::before, &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: rgba($color-primary, 0.1);
+    }
+    
+    &::before {
+      width: 120%;
+      height: 120%;
+      animation: pulse 3s infinite alternate ease-in-out;
+    }
+    
+    &::after {
+      width: 140%;
+      height: 140%;
+      animation: pulse 3s infinite alternate-reverse ease-in-out;
+      animation-delay: 1.5s;
+    }
+  }
+  
+  &__icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, $color-primary, $color-secondary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 0 10px rgba($color-primary, 0.5));
+    
+    @include breakpoint-down(md) {
+      font-size: 2rem;
+    }
+  }
+  
+  // Title
+  &__title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: $color-text;
+    margin-bottom: 2rem;
+    line-height: 1.2;
+    
+    @include breakpoint-down(md) {
+      font-size: 2.3rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    @include breakpoint-down(sm) {
+      font-size: 2rem;
+    }
+  }
+  
+  &__highlight {
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(90deg, $color-primary, $color-secondary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0.1em;
+      width: 0;
+      height: 0.15em;
+      background: linear-gradient(90deg, $color-primary, $color-secondary);
+      opacity: 0.3;
+      border-radius: 1rem;
+      transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s;
+    }
+  }
+  
+  // Divider
+  &__divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    
+    @include breakpoint-down(md) {
+      margin-bottom: 2rem;
+    }
+    
+    &-line {
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, $color-primary);
+      transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s;
+      
+      &:last-child {
+        background: linear-gradient(90deg, $color-secondary, transparent);
+      }
+    }
+    
+    &-dot {
+      width: 10px;
+      height: 10px;
+      background: linear-gradient(135deg, $color-primary, $color-secondary);
+      border-radius: 50%;
+      margin: 0 10px;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s;
+    }
+  }
+  
+  // Text
+  &__text {
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    
+    @include breakpoint-down(md) {
+      margin-bottom: 2.5rem;
+    }
+    
+    p {
+      font-size: 1.25rem;
+      line-height: 1.8;
+      color: $color-text;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      
+      @include breakpoint-down(md) {
+        font-size: 1.15rem;
+        line-height: 1.7;
+      }
+      
+      @include breakpoint-down(sm) {
+        font-size: 1.05rem;
+      }
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  // CTA
+  &__cta-container {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition-delay: 1s;
+  }
+  
+  &__cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem 0 2rem;
+    height: 4rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    overflow: hidden;
+    z-index: 1;
+    
+    @include breakpoint-down(md) {
+      height: 3.5rem;
+      padding: 0 0.8rem 0 1.8rem;
+    }
+    
+    &-text {
+      position: relative;
+      z-index: 3;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: $color-white;
+      margin-right: 0.8rem;
+      transition: transform 0.3s ease;
+      
+      @include breakpoint-down(md) {
+        font-size: 1rem;
+      }
+    }
+    
+    &-icon-container {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      
+      @include breakpoint-down(md) {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+    }
+    
+    &-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: $color-white;
+      transition: transform 0.3s ease;
+      
+      @include breakpoint-down(md) {
+        width: 1.3rem;
+        height: 1.3rem;
+      }
+    }
+    
+    &-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, $color-primary, $color-secondary);
+      z-index: 2;
+      transition: all 0.5s ease;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, $color-secondary, $color-primary);
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+    }
+    
+    &:hover, &.is-hovered {
+      .game-summary__cta-text {
+        transform: translateX(-5px);
+      }
+      
+      .game-summary__cta-icon-container {
+        transform: scale(1.1);
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+      
+      .game-summary__cta-icon {
+        transform: translateX(3px);
+      }
+      
+      .game-summary__cta-background::before {
+        opacity: 1;
+      }
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}
+
+// Animations
+@keyframes float {
+  0% {
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    transform: translate(-50%, -60%);
+  }
+}
+
+@keyframes glow {
+  0% {
+    filter: drop-shadow(0 0 10px rgba($color-primary, 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 20px rgba($color-primary, 0.8));
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.3;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0.1;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes float-particle {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+}

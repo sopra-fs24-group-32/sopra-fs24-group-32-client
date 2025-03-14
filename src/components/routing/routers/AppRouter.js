@@ -22,6 +22,7 @@ import CreatingGame from "../../CreatingAGame/CreatingGame";
 import { socketActions } from "../../../store";
 import { useAppDispatch } from "../../../store/hooks";
 import LobbyPage from "../../LobbyPage/LobbyPage";
+import MainCreateGame from "../../NewCreateGame/MainCreateGame";
 
 /**
  * Main application router that handles all routes and authentication protection
@@ -71,7 +72,8 @@ const AppRouter = () => {
       
       <Route element={<LoggedInGuard redirectTo="login" />}>
         <Route path="/home" element={<HomePageAuth />} />
-        <Route path="/lobby/create" element={<CreatingGame />} />
+        {/* <Route path="/lobby/create" element={<CreatingGame />} /> */}
+        <Route path="/lobby/create" element={<MainCreateGame />} />
         <Route path="/lobby/join" element={<JoinLobby />} />
         <Route path="/lobby/joined/:id" element={<LobbyJoined />} />
         <Route path="/lobby/waiting-room/:id" element={<LobbyPage />} />

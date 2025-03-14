@@ -1,17 +1,18 @@
-// JoinLobby.tsx
 import React, { useState, FC, FormEvent, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../store/hooks';
+import lobbyService from '../../services/lobbyService';
+import { setLobbyCode } from '../../store/slices/lobbySlice';
 import './JoinLobby.scss';
 
 interface JoinLobbyProps {
-  onJoinLobby: (lobbyId: string) => Promise<boolean>;
-  onJoinLobbyUrl?: (url: string) => Promise<boolean>;
-  navigateToHome: () => void;
+  navigateToHome?: () => void; // Optional since we'll be using useNavigate
 }
 
 // Emojis that will animate around the form
 const FLOATING_EMOJIS = ['🎮', '🎯', '🎲', '🎪', '🎭', '🎨', '🎤', '🏆', '🎁', '✨'];
 
-const JoinLobby: FC<JoinLobbyProps> = ({ onJoinLobby, onJoinLobbyUrl, navigateToHome }) => {
+const JoinLobby: FC<JoinLobbyProps> = ({ navigateToHome }) => {
   const [lobbyId, setLobbyId] = useState<string>('');
   const [lobbyUrl, setLobbyUrl] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -20,6 +21,9 @@ const JoinLobby: FC<JoinLobbyProps> = ({ onJoinLobby, onJoinLobbyUrl, navigateTo
   const [animateInput, setAnimateInput] = useState<boolean>(false);
   const [animateUrlInput, setAnimateUrlInput] = useState<boolean>(false);
   const [showTips, setShowTips] = useState<boolean>(true);
+  
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   // Create emoji elements with random positions and animation parameters
   useEffect(() => {
@@ -112,35 +116,42 @@ const JoinLobby: FC<JoinLobbyProps> = ({ onJoinLobby, onJoinLobbyUrl, navigateTo
     setIsLoading(true);
     
     try {
-      // If onJoinLobbyUrl is provided, use it, otherwise extract ID from URL and use onJoinLobby
-      if (onJoinLobbyUrl) {
-        const success = await onJoinLobbyUrl(lobbyUrl);
-        
-        if (!success) {
-          throw new Error('Invalid lobby URL or lobby not found');
-        }
-      } else {
-        // Extract lobby ID from URL (this is a simplistic example)
-        // In a real app, you'd use URL parsing to extract the ID properly
-        const urlParts = lobbyUrl.split('/');
-        const extractedId = urlParts[urlParts.length - 1];
-        
-        if (!extractedId) {
-          throw new Error('Could not extract lobby ID from URL');
-        }
-        
-        const success = await onJoinLobby(extractedId);
-        
-        if (!success) {
-          throw new Error('Invalid lobby URL or lobby not found');
-        }
+      // Extract lobby ID from URL (this is a simplistic example)
+      // In a real app, you'd use URL parsing to extract the ID properly
+      const urlParts = lobbyUrl.split('/');
+      const extractedId = urlParts[urlParts.length - 1];
+      
+      if (!extractedId) {
+        throw new Error('Could not extract lobby ID from URL');
       }
       
-      // If successful, the parent component will handle navigation
+      await joinLobbyWithCode(extractedId);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to join lobby. Please check the URL and try again.';
       setUrlError(errorMessage);
       setIsLoading(false);
+    }
+  };
+
+  const joinLobbyWithCode = async (code: string) => {
+    try {
+      // Call the backend service to join the lobby
+      const response = await lobbyService.joinLobby({ lobbyCode: code });
+      
+      // Set the lobby code in Redux store
+      dispatch(setLobbyCode(code));
+      
+      // Connect to WebSocket for the lobby
+      dispatch({ type: 'SOCKET_JOIN_LOBBY', payload: { lobbyCode: code } });
+      
+      // Navigate to the lobby page
+      navigate(`/lobby/waiting-room/${code}`);
+      
+      return true;
+    } catch (error) {
+      // Handle the error and return false to indicate failure
+      const errorMessage = error instanceof Error ? error.message : 'Failed to join lobby. Please try again.';
+      throw new Error(errorMessage);
     }
   };
 
@@ -153,21 +164,23 @@ const JoinLobby: FC<JoinLobbyProps> = ({ onJoinLobby, onJoinLobbyUrl, navigateTo
       setTimeout(() => setAnimateInput(false), 600);
       return;
     }
+    
     setIsLoading(true);
    
     try {
-      // This would be your API call to join the lobby
-      const success = await onJoinLobby(lobbyId);
-     
-      if (!success) {
-        throw new Error('Lobby not found or cannot be joined');
-      }
-     
-      // If successful, the parent component will handle navigation
+      await joinLobbyWithCode(lobbyId);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to join lobby. Please check the ID and try again.';
       setError(errorMessage);
       setIsLoading(false);
+    }
+  };
+
+  const handleNavigateToHome = () => {
+    if (navigateToHome) {
+      navigateToHome();
+    } else {
+      navigate('/home');
     }
   };
 
@@ -219,7 +232,7 @@ const JoinLobby: FC<JoinLobbyProps> = ({ onJoinLobby, onJoinLobbyUrl, navigateTo
                 <button
                   type="button"
                   className="join-lobby__button join-lobby__button--secondary"
-                  onClick={navigateToHome}
+                  onClick={handleNavigateToHome}
                   disabled={isLoading}
                 >
                   <span className="join-lobby__button-icon">🏠</span>
@@ -319,7 +332,7 @@ const JoinLobby: FC<JoinLobbyProps> = ({ onJoinLobby, onJoinLobbyUrl, navigateTo
                 <button
                   type="button"
                   className="join-lobby__create-button"
-                  onClick={navigateToHome}
+                  onClick={handleNavigateToHome}
                 >
                   <span>Create Your Own Game</span>
                   <span className="join-lobby__button-icon">➡️</span>

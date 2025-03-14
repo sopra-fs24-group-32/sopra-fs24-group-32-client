@@ -3,7 +3,7 @@
 @import '../../../styles/mixins';
 
 .game-description-about {
-  background-color: $color-white;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
   padding: 8rem 0;
   position: relative;
   overflow: hidden;
@@ -24,44 +24,56 @@
     width: 100%;
     height: 100%;
     z-index: 0;
+    pointer-events: none;
   }
   
   &__shape {
     position: absolute;
     border-radius: 50%;
-    opacity: 0.1;
+    filter: blur(40px);
+    will-change: transform;
     
     &--1 {
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, $color-primary, transparent 70%);
-      top: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba($color-primary, 0.15), rgba($color-primary, 0) 70%);
+      top: -150px;
       left: -150px;
-      animation: float-slow 25s infinite alternate ease-in-out;
+      animation: float-slow 30s infinite alternate ease-in-out;
     }
     
     &--2 {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, $color-secondary, transparent 70%);
-      bottom: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba($color-secondary, 0.1), rgba($color-secondary, 0) 70%);
+      bottom: -250px;
       right: -200px;
-      animation: float-slow 30s infinite alternate-reverse ease-in-out;
+      animation: float-slow 35s infinite alternate-reverse ease-in-out;
     }
     
     &--3 {
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, $color-accent, transparent 70%);
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba($color-accent, 0.1), rgba($color-accent, 0) 70%);
       top: 40%;
       right: 10%;
-      animation: float-slow 20s infinite alternate ease-in-out;
+      animation: float-slow 25s infinite alternate ease-in-out;
+    }
+    
+    &--4 {
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(#10b981, 0.1), rgba(#10b981, 0) 70%);
+      top: 60%;
+      left: 15%;
+      animation: float-slow 28s infinite alternate-reverse ease-in-out;
     }
   }
   
   .container {
     position: relative;
     z-index: 1;
+    @include container;
   }
   
   // Section header
@@ -85,10 +97,33 @@
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    border: 1px solid rgba($color-primary, 0.2);
+    border: 1px solid rgba($color-primary, 0.1);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 10px rgba($color-primary, 0.05);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba($color-primary, 0.1);
+    }
   }
   
   .section-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: $color-text;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+    
+    @include breakpoint-down(md) {
+      font-size: 2.4rem;
+    }
+    
+    @include breakpoint-down(sm) {
+      font-size: 2rem;
+    }
+    
     .highlight {
       background: linear-gradient(90deg, $color-primary, $color-secondary);
       -webkit-background-clip: text;
@@ -106,7 +141,29 @@
         background: linear-gradient(90deg, $color-primary, $color-secondary);
         opacity: 0.3;
         border-radius: 1rem;
+        transition: height 0.3s ease;
       }
+      
+      &:hover::after {
+        height: 0.15em;
+        opacity: 0.4;
+      }
+    }
+  }
+  
+  .section-description {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: $color-text-light;
+    max-width: 800px;
+    margin: 0 auto;
+    
+    @include breakpoint-down(md) {
+      font-size: 1.15rem;
+    }
+    
+    @include breakpoint-down(sm) {
+      font-size: 1.05rem;
     }
   }
   
@@ -141,17 +198,24 @@
     display: flex;
     align-items: flex-start;
     gap: 1.2rem;
-    padding: 1.5rem;
-    background-color: rgba($color-white, 0.5);
+    padding: 1.8rem;
+    background-color: rgba($color-white, 0.6);
     border-radius: $border-radius-md;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
     border: 1px solid rgba($color-primary, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(10px);
     
     &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+      transform: translateY(-5px) scale(1.01);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
       border-color: rgba($color-primary, 0.2);
+      background-color: rgba($color-white, 0.8);
+      
+      .game-description-about__text-icon {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 8px 16px rgba($color-primary, 0.2);
+      }
     }
     
     p {
@@ -170,16 +234,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, rgba($color-primary, 0.1), rgba($color-secondary, 0.1));
+    min-width: 55px;
+    height: 55px;
+    background: linear-gradient(135deg, $color-primary, $color-secondary);
     border-radius: 50%;
     font-size: 1.5rem;
-    color: $color-primary;
-    transition: all 0.3s ease;
+    color: $color-white;
+    transition: all 0.4s ease;
+    box-shadow: 0 6px 12px rgba($color-primary, 0.15);
     
-    .game-description-about__text-block:hover & {
-      transform: scale(1.1) rotate(5deg);
+    @include breakpoint-down(md) {
+      min-width: 50px;
+      height: 50px;
+      font-size: 1.3rem;
     }
   }
   
@@ -196,6 +263,18 @@
     &.is-visible {
       opacity: 1;
       transform: translateY(0);
+      
+      .game-description-about__stat-card {
+        opacity: 1;
+        transform: translateY(0);
+        animation: cards-entrance 0.6s forwards;
+        
+        @for $i from 1 through 4 {
+          &:nth-child(#{$i}) {
+            animation-delay: 0.1s * $i;
+          }
+        }
+      }
     }
     
     @include breakpoint-down(lg) {
@@ -208,7 +287,7 @@
   }
   
   &__stat-card {
-    background: linear-gradient(135deg, $color-white, rgba($color-white, 0.9));
+    background: linear-gradient(135deg, rgba($color-white, 0.8), rgba($color-white, 0.4));
     padding: 2rem 1.5rem;
     border-radius: $border-radius-md;
     display: flex;
@@ -216,19 +295,24 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba($color-primary, 0.1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba($color-white, 0.8);
     position: relative;
     overflow: hidden;
-    transition: all 0.4s ease;
+    transition: all 0.5s ease;
+    backdrop-filter: blur(10px);
+    transform: translateY(30px);
+    opacity: 0;
+    will-change: transform, opacity;
     
     &:hover {
       transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
       border-color: rgba($color-primary, 0.2);
       
       .game-description-about__stat-icon {
         transform: scale(1.1);
+        box-shadow: 0 10px 20px rgba($color-primary, 0.2);
       }
       
       &::before {
@@ -244,10 +328,11 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.4);
       transform: translateX(-100%) rotate(45deg);
       transition: transform 0.6s ease;
       opacity: 0;
+      pointer-events: none;
     }
   }
   
@@ -255,18 +340,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, rgba($color-primary, 0.1), rgba($color-secondary, 0.1));
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, $color-primary, $color-secondary);
     border-radius: 50%;
     font-size: 1.8rem;
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
+    margin-bottom: 1.2rem;
+    transition: all 0.4s ease;
+    color: $color-white;
+    box-shadow: 0 8px 16px rgba($color-primary, 0.15);
     
     @include breakpoint-down(md) {
-      width: 50px;
-      height: 50px;
+      width: 55px;
+      height: 55px;
       font-size: 1.6rem;
+    }
+  }
+  
+  &__stat-number-container {
+    position: relative;
+    height: 3rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    
+    @include breakpoint-down(md) {
+      height: 2.5rem;
     }
   }
   
@@ -277,8 +375,9 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    margin-bottom: 0.5rem;
-    position: relative;
+    position: absolute;
+    left: 0;
+    right: 0;
     display: inline-block;
     
     @include breakpoint-down(md) {
@@ -304,6 +403,11 @@
     font-size: 1rem;
     font-weight: 600;
     color: $color-text-light;
+    transition: color 0.3s ease;
+    
+    .game-description-about__stat-card:hover & {
+      color: $color-text;
+    }
   }
   
   // Features section
@@ -317,33 +421,38 @@
       grid-template-columns: 1fr;
       margin: 4rem 0;
     }
+    
+    &.is-visible .game-description-about__feature {
+      animation: fade-in-up 0.8s ease forwards;
+    }
   }
   
   &__feature {
-    background-color: $color-white;
-    padding: 2.5rem 2rem;
+    background: linear-gradient(135deg, rgba($color-white, 0.9), rgba($color-white, 0.4));
+    padding: 3rem 2rem;
     border-radius: $border-radius-lg;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-    transition: all 0.5s ease;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     position: relative;
-    border: 1px solid rgba(var(--feature-color), 0.2);
+    border: 1px solid rgba($color-white, 0.8);
     overflow: hidden;
     opacity: 0;
-    transform: translateY(30px);
-    animation: fade-in-up 0.8s ease forwards;
+    transform: translateY(50px);
+    backdrop-filter: blur(10px);
     animation-delay: var(--animation-delay, 0s);
     
     &:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+      border-color: var(--feature-color, rgba($color-primary, 0.2));
       
       .game-description-about__feature-icon-wrapper {
         transform: scale(1.05);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 15px 30px rgba($color-primary, 0.15);
       }
       
       .game-description-about__feature-icon {
@@ -354,41 +463,46 @@
         opacity: 1;
         transform: translateX(100%) rotate(45deg);
       }
+      
+      .game-description-about__feature-title::after {
+        width: 70px;
+        opacity: 0.7;
+      }
     }
   }
   
   &__feature-icon-wrapper {
-    width: 90px;
-    height: 90px;
-    background: linear-gradient(135deg, rgba(var(--feature-color), 0.1), rgba(var(--feature-color), 0.05));
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, var(--feature-color, rgba($color-primary, 0.2)), rgba($color-white, 0.5));
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.5rem;
-    transition: all 0.4s ease;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(var(--feature-color), 0.1);
+    margin-bottom: 2rem;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--feature-color, rgba($color-primary, 0.1));
     
     @include breakpoint-down(md) {
-      width: 80px;
-      height: 80px;
+      width: 90px;
+      height: 90px;
     }
   }
   
   &__feature-icon {
-    font-size: 3rem;
-    transition: all 0.3s ease;
+    font-size: 3.2rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     
     @include breakpoint-down(md) {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
     }
   }
   
   &__feature-title {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
     color: var(--feature-color, $color-text);
     position: relative;
     display: inline-block;
@@ -404,10 +518,11 @@
       background: var(--feature-color, linear-gradient(90deg, $color-primary, $color-secondary));
       border-radius: 3px;
       opacity: 0.5;
+      transition: all 0.4s ease;
     }
     
     @include breakpoint-down(md) {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
     }
   }
   
@@ -428,7 +543,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4);
     transform: translateX(-100%) rotate(45deg);
     transition: transform 0.6s ease;
     opacity: 0;
@@ -437,15 +552,18 @@
   
   // Summary section
   &__summary {
-    background: linear-gradient(135deg, rgba($color-primary, 0.05), rgba($color-secondary, 0.05));
+    background: linear-gradient(135deg, rgba($color-white, 0.8), rgba($color-white, 0.3));
     border-radius: $border-radius-lg;
-    padding: 4rem 3rem;
+    padding: 5rem;
     margin-top: 5rem;
     position: relative;
     overflow: hidden;
     opacity: 0;
     transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba($color-white, 0.8);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.08);
     
     &.is-visible {
       opacity: 1;
@@ -453,11 +571,11 @@
     }
     
     @include breakpoint-down(md) {
-      padding: 3rem 2rem;
+      padding: 4rem 2.5rem;
     }
     
     @include breakpoint-down(sm) {
-      padding: 2.5rem 1.5rem;
+      padding: 3rem 1.5rem;
       margin-top: 4rem;
     }
     
@@ -466,23 +584,24 @@
       position: absolute;
       border-radius: 50%;
       background: linear-gradient(135deg, rgba($color-primary, 0.1), rgba($color-secondary, 0.1));
+      filter: blur(30px);
       z-index: 0;
     }
     
     &::before {
-      width: 300px;
-      height: 300px;
+      width: 400px;
+      height: 400px;
       top: -150px;
       right: -150px;
-      opacity: 0.3;
+      opacity: 0.4;
     }
     
     &::after {
-      width: 200px;
-      height: 200px;
+      width: 300px;
+      height: 300px;
       bottom: -100px;
       left: -100px;
-      opacity: 0.2;
+      opacity: 0.3;
     }
   }
   
@@ -495,49 +614,60 @@
   }
   
   &__summary-icon {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
+    font-size: 3rem;
+    margin-bottom: 2rem;
     display: inline-block;
-    animation: bounce 3s infinite ease;
+    background: linear-gradient(135deg, $color-primary, $color-secondary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: float-glow 3s infinite ease-in-out alternate;
+    filter: drop-shadow(0 0 8px rgba($color-primary, 0.3));
+    
+    @include breakpoint-down(md) {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
   }
   
   &__summary-content h3 {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: $color-text;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     position: relative;
     display: inline-block;
     
     &::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -12px;
       left: 50%;
       transform: translateX(-50%);
       width: 80px;
       height: 3px;
       background: linear-gradient(90deg, $color-primary, $color-secondary);
       border-radius: 3px;
+      transition: width 0.3s ease;
     }
     
     @include breakpoint-down(md) {
-      font-size: 1.8rem;
+      font-size: 2rem;
     }
     
     @include breakpoint-down(sm) {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
     }
   }
   
   &__summary-content p {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     line-height: 1.8;
     color: $color-text;
     margin-bottom: 1.5rem;
     
     @include breakpoint-down(md) {
-      font-size: 1.05rem;
+      font-size: 1.1rem;
     }
     
     &:last-of-type {
@@ -553,36 +683,45 @@
     color: $color-white;
     font-weight: 600;
     font-size: 1.1rem;
-    padding: 1rem 2rem;
+    padding: 1.2rem 2.5rem;
     border-radius: 50px;
     text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 20px rgba($color-primary, 0.3);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 10px 25px rgba($color-primary, 0.3);
     position: relative;
     overflow: hidden;
+    z-index: 1;
+    
+    span {
+      position: relative;
+      z-index: 2;
+    }
+    
+    svg {
+      position: relative;
+      z-index: 2;
+      transition: transform 0.3s ease;
+    }
     
     &::before {
       content: '';
       position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateX(-100%) rotate(45deg);
-      transition: transform 0.6s ease;
-    }
-    
-    svg {
-      transition: transform 0.3s ease;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, $color-secondary, $color-primary);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
     }
     
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 30px rgba($color-primary, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba($color-primary, 0.4);
       
       &::before {
-        transform: translateX(100%) rotate(45deg);
+        opacity: 1;
       }
       
       svg {
@@ -591,57 +730,12 @@
     }
     
     &:active {
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
     
     @include breakpoint-down(md) {
       font-size: 1rem;
-      padding: 0.9rem 1.8rem;
+      padding: 1rem 2rem;
     }
-  }
-}
-
-// Animations
-@keyframes float-slow {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(30px, 30px);
-  }
-}
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
   }
 }

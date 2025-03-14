@@ -9,6 +9,8 @@ const GameDescriptionAbout = () => {
     features: false,
     summary: false
   });
+  
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   const sectionRefs = {
     intro: useRef(null),
@@ -17,12 +19,22 @@ const GameDescriptionAbout = () => {
     summary: useRef(null)
   };
 
+  // Handle scroll for parallax effects
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Intersection Observer to trigger animations when elements come into view
   useEffect(() => {
     const observerOptions = {
       root: null,
       rootMargin: '0px',
-      threshold: 0.2
+      threshold: 0.15
     };
 
     const observerCallback = (entries) => {
@@ -58,38 +70,58 @@ const GameDescriptionAbout = () => {
       icon: '🎮',
       title: 'Interactive Gameplay',
       description: 'Take turns creating prompts and guessing what others have described, all with the help of AI-generated images.',
-      color: '#6366f1' // Primary color
+      color: 'rgba(99, 102, 241, 0.8)' // Primary color with opacity
     },
     {
       icon: '🤖',
       title: 'AI Integration',
       description: 'Powered by DALL-E, our game transforms your text prompts into stunning visual creations instantly.',
-      color: '#8b5cf6' // Secondary color
+      color: 'rgba(139, 92, 246, 0.8)' // Secondary color with opacity
     },
     {
       icon: '🏆',
       title: 'Competitive Fun',
       description: 'Earn points for accurate guesses and creative prompts, climbing the leaderboard as you play.',
-      color: '#ec4899' // Pink/accent
+      color: 'rgba(236, 72, 153, 0.8)' // Pink/accent with opacity
     },
     {
       icon: '👥',
       title: 'Social Experience',
       description: 'Connect with friends or make new ones in our vibrant community of creative minds.',
-      color: '#10b981' // Success green
+      color: 'rgba(16, 185, 129, 0.8)' // Success green with opacity
     }
   ];
+
+  const calculateParallax = (multiplier = 1) => {
+    return {
+      transform: `translateY(${scrollPosition * 0.05 * multiplier}px)`
+    };
+  };
 
   return (
     <section className="game-description-about" id="game-description-about">
       <div className="game-description-about__bg-shapes">
-        <div className="game-description-about__shape game-description-about__shape--1"></div>
-        <div className="game-description-about__shape game-description-about__shape--2"></div>
-        <div className="game-description-about__shape game-description-about__shape--3"></div>
+        <div 
+          className="game-description-about__shape game-description-about__shape--1"
+          style={calculateParallax(0.3)}
+        ></div>
+        <div 
+          className="game-description-about__shape game-description-about__shape--2"
+          style={calculateParallax(-0.2)}
+        ></div>
+        <div 
+          className="game-description-about__shape game-description-about__shape--3"
+          style={calculateParallax(0.1)}
+        ></div>
+        <div 
+          className="game-description-about__shape game-description-about__shape--4"
+          style={calculateParallax(-0.15)}
+        ></div>
       </div>
       
       <div className="container">
         <div className="game-description-about__header">
+          <div className="game-description-about__badge">Discover GPTuessr</div>
           <h2 className="section-title">What is <span className="highlight">GPTuessr</span>?</h2>
           <p className="section-description">
             GPTuessr is an innovative online game that combines the creative power of AI with the fun of social guessing games. It&apos;s where imagination meets technology for an unparalleled gaming experience.
@@ -131,25 +163,33 @@ const GameDescriptionAbout = () => {
           >
             <div className="game-description-about__stat-card">
               <div className="game-description-about__stat-icon">👥</div>
-              <span className="game-description-about__stat-number" data-count="10000">10K+</span>
+              <div className="game-description-about__stat-number-container">
+                <span className="game-description-about__stat-number" data-count="10000">10K+</span>
+              </div>
               <span className="game-description-about__stat-label">Active Players</span>
             </div>
             
             <div className="game-description-about__stat-card">
               <div className="game-description-about__stat-icon">🖼️</div>
-              <span className="game-description-about__stat-number" data-count="500000">500K+</span>
+              <div className="game-description-about__stat-number-container">
+                <span className="game-description-about__stat-number" data-count="500000">500K+</span>
+              </div>
               <span className="game-description-about__stat-label">Images Generated</span>
             </div>
             
             <div className="game-description-about__stat-card">
               <div className="game-description-about__stat-icon">⭐</div>
-              <span className="game-description-about__stat-number" data-count="4.8">4.8</span>
+              <div className="game-description-about__stat-number-container">
+                <span className="game-description-about__stat-number" data-count="4.8">4.8</span>
+              </div>
               <span className="game-description-about__stat-label">User Rating</span>
             </div>
             
             <div className="game-description-about__stat-card">
               <div className="game-description-about__stat-icon">🚀</div>
-              <span className="game-description-about__stat-number" data-count="2023">2023</span>
+              <div className="game-description-about__stat-number-container">
+                <span className="game-description-about__stat-number" data-count="2023">2023</span>
+              </div>
               <span className="game-description-about__stat-label">Launched In</span>
             </div>
           </div>
@@ -191,7 +231,7 @@ const GameDescriptionAbout = () => {
               Join our community today and discover why thousands of players are making GPTuessr their go-to game for creative entertainment.
             </p>
             <a href="/signup" className="game-description-about__cta">
-              Join the Community
+              <span>Join the Community</span>
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M12 5L19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

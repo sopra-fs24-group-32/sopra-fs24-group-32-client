@@ -1,0 +1,70 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.info-tooltip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-text-light;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: $color-primary;
+    }
+  }
+  
+  &__content {
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: $color-text;
+    color: $color-white;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $border-radius-md;
+    font-size: 0.875rem;
+    box-shadow: $box-shadow-md;
+    width: max-content;
+    max-width: 250px;
+    z-index: $z-index-tooltip;
+    pointer-events: none;
+    @include fade-in;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: $color-text transparent transparent transparent;
+    }
+    
+    @include breakpoint-down(sm) {
+      left: auto;
+      right: 0;
+      transform: none;
+      max-width: 200px;
+      
+      &::after {
+        left: auto;
+        right: 5px;
+      }
+    }
+  }
+  
+  &:focus {
+    outline: none;
+    
+    .info-tooltip__icon {
+      color: $color-primary;
+    }
+  }
+}

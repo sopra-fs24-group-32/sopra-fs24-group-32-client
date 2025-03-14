@@ -1,0 +1,97 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.create-game {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+    
+    h1 {
+      @include heading-2;
+      margin: 0;
+      color: $color-text;
+    }
+  }
+  
+  &__tabs {
+    display: flex;
+    border-bottom: 1px solid $color-border;
+    margin-bottom: $spacing-lg;
+  }
+  
+  &__tab {
+    @include button-base;
+    background: none;
+    color: $color-text-light;
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: $spacing-md $spacing-lg;
+    font-weight: 500;
+    
+    &:hover {
+      color: $color-text;
+      background-color: rgba($color-primary, 0.05);
+    }
+    
+    &.active {
+      color: $color-primary;
+      border-bottom-color: $color-primary;
+    }
+  }
+  
+  &__content {
+    flex: 1;
+    min-height: 400px;
+    margin-bottom: $spacing-lg;
+    overflow-y: auto;
+    
+    @include breakpoint-down(md) {
+      min-height: 350px;
+    }
+  }
+  
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-md;
+    margin-top: $spacing-lg;
+    
+    @include breakpoint-down(sm) {
+      flex-direction: column;
+    }
+  }
+  
+  &__button {
+    @include button-base;
+    
+    &--primary {
+      @include button-primary;
+      min-width: 120px;
+    }
+    
+    &--secondary {
+      @include button-outline;
+      min-width: 120px;
+    }
+    
+    @include breakpoint-down(sm) {
+      width: 100%;
+    }
+  }
+  
+  // Responsive adjustments
+  @include breakpoint-down(md) {
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}

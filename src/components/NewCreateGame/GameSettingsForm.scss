@@ -1,0 +1,107 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+
+.game-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  
+  &__section {
+    h2 {
+      @include heading-3;
+      color: $color-text;
+      margin-top: 0;
+      margin-bottom: $spacing-md;
+      padding-bottom: $spacing-xs;
+      border-bottom: 1px solid $color-border;
+    }
+  }
+}
+
+.form-group {
+  margin-bottom: $spacing-lg;
+  
+  label {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-weight: 500;
+    margin-bottom: $spacing-sm;
+    color: $color-text;
+  }
+  
+  input[type="text"],
+  textarea {
+    @include input;
+    font-family: $font-family;
+  }
+  
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  &__value {
+    display: inline-block;
+    font-weight: 600;
+    color: $color-primary;
+    margin-top: $spacing-xs;
+    min-width: 3ch;
+    text-align: center;
+  }
+  
+  &__help {
+    display: block;
+    margin-top: $spacing-xs;
+    color: $color-text-light;
+    font-size: 0.875rem;
+  }
+  
+  &--checkbox {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    
+    input[type="checkbox"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid $color-border;
+      border-radius: $border-radius-sm;
+      cursor: pointer;
+      position: relative;
+      
+      &:checked {
+        background-color: $color-primary;
+        border-color: $color-primary;
+        
+        &::after {
+          content: "";
+          position: absolute;
+          top: 2px;
+          left: 6px;
+          width: 5px;
+          height: 10px;
+          border: solid white;
+          border-width: 0 2px 2px 0;
+          transform: rotate(45deg);
+        }
+      }
+      
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+      }
+    }
+    
+    label {
+      cursor: pointer;
+      margin-bottom: 0;
+    }
+  }
+  
+  @include breakpoint-down(sm) {
+    margin-bottom: $spacing-md;
+  }
+}

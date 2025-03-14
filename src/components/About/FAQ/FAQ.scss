@@ -1,161 +1,427 @@
 // components/About/FAQ/FAQ.scss
-@import '../../../styles/variables';
 @import '../../../styles/mixins';
+@import '../../../styles/variables';
 
 .faq {
-  padding: 6rem 0;
+  position: relative;
+  padding: $spacing-3xl 0;
+  background-color: $color-background-alt;
+  overflow: hidden;
   
+  // With IntersectionObserver removed, use default visible state
+  opacity: 1;
+  transform: translateY(0);
+  @include slide-in-up;
+  
+  &__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(120deg, rgba($color-primary, 0.03) 0%, rgba($color-secondary, 0.03) 100%);
+    z-index: 0;
+  }
+  
+  .container {
+    @include container;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    @include heading-2;
+    text-align: center;
+    margin-bottom: $spacing-md;
+    background: linear-gradient(to right, $color-gradient-start, $color-gradient-end);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    @include slide-in-up;
+    animation-delay: 0.1s;
+  }
+
+  .section-description {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto $spacing-xl;
+    color: $color-text-light;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    
+    @include slide-in-up;
+    animation-delay: 0.2s;
+  }
+  
+  // Search functionality
+  &__search-container {
+    max-width: 600px;
+    margin: 0 auto $spacing-xl;
+    
+    @include slide-in-up;
+    animation-delay: 0.3s;
+  }
+  
+  &__search-wrapper {
+    position: relative;
+    margin-bottom: $spacing-sm;
+  }
+  
+  &__search {
+    @include input;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    height: 50px;
+    border-radius: $border-radius-full;
+    font-size: 1rem;
+    box-shadow: $box-shadow-sm;
+    transition: all 0.3s ease;
+    
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    &::placeholder {
+      color: $color-text-light;
+      opacity: 0.7;
+    }
+  }
+  
+  &__search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $color-primary;
+    pointer-events: none;
+  }
+  
+  &__search-clear {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: $color-text-light;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    padding: 0;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      color: $color-error;
+      background-color: rgba($color-error, 0.1);
+    }
+  }
+  
+  &__search-results {
+    color: $color-text-light;
+    font-size: 0.9rem;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+    
+    p {
+      margin: 0;
+    }
+  }
+  
+  &__no-results {
+    text-align: center;
+    padding: $spacing-2xl;
+    background-color: $color-white;
+    border-radius: $border-radius-lg;
+    box-shadow: $box-shadow-sm;
+    margin: $spacing-xl auto;
+    max-width: 600px;
+    
+    svg {
+      color: $color-text-light;
+      margin-bottom: $spacing-md;
+      opacity: 0.5;
+    }
+    
+    h3 {
+      font-size: 1.25rem;
+      margin-bottom: $spacing-sm;
+      color: $color-text;
+    }
+    
+    p {
+      color: $color-text-light;
+      margin: 0;
+    }
+  }
+  
+  &__reset-search {
+    background: none;
+    border: none;
+    padding: 0;
+    color: $color-primary;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    
+    &:hover {
+      color: darken($color-primary, 10%);
+    }
+  }
+  
+  // FAQ Accordion
   &__accordion {
     max-width: 800px;
-    margin: 0 auto 4rem;
+    margin: 0 auto $spacing-2xl;
+    position: relative;
+    z-index: 2;
   }
   
   &__item {
+    margin-bottom: $spacing-md;
+    border-radius: $border-radius;
     background-color: $color-white;
-    border-radius: $border-radius-md;
-    margin-bottom: 1rem;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
+    box-shadow: $box-shadow-sm;
     transition: all 0.3s ease;
+    position: relative;
+    
+    // Items now visible by default (no need for in-viewport class)
+    opacity: 1;
+    transform: translateY(0);
+    animation: fadeIn 0.5s ease;
     
     &--active {
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      box-shadow: $box-shadow-md;
       
       .faq__question {
         color: $color-primary;
-      }
-      
-      .faq__icon {
-        background-color: $color-primary;
         
-        svg {
-          transform: rotate(45deg);
+        &::before {
+          opacity: 1;
         }
       }
+    }
+    
+    &:hover {
+      box-shadow: $box-shadow-md;
+      transform: translateY(-2px);
     }
   }
   
   &__question {
+    @include button-base;
+    width: 100%;
+    text-align: left;
+    padding: $spacing-lg;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
-    background: none;
-    border: none;
-    padding: 1.5rem;
-    font-size: 1.1rem;
     font-weight: 600;
+    font-size: 1.1rem;
     color: $color-text;
-    text-align: left;
-    cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
+    border-left: 3px solid transparent;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -3px;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, $color-gradient-start, $color-gradient-end);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
     
     &:hover {
       color: $color-primary;
+      
+      &::before {
+        opacity: 0.7;
+      }
     }
     
-    @include breakpoint-down(md) {
-      font-size: 1rem;
-      padding: 1.2rem;
+    &-text {
+      flex: 1;
+      padding-right: $spacing-md;
+      
+      mark {
+        background-color: rgba($color-primary, 0.15);
+        color: $color-text;
+        padding: 0 2px;
+        border-radius: 2px;
+      }
     }
   }
   
   &__icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background-color: rgba($color-primary, 0.1);
-    color: $color-white;
-    transition: all 0.3s ease;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    position: relative;
+    transition: transform 0.3s ease;
     
     svg {
-      width: 16px;
-      height: 16px;
-      transition: all 0.3s ease;
-      
-      path {
-        stroke: currentColor;
-      }
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    // Hide horizontal line when active
+    &--active {
+      transform: rotate(45deg);
     }
   }
   
-  &__answer-container {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
+  // New answer container that uses rendering rather than height transitions
+  &__answer-wrapper {
+    animation: fadeIn 0.3s ease;
+    background-color: $color-white;
+    position: relative;
+    z-index: 2;
   }
   
   &__answer {
-    padding: 0 1.5rem 1.5rem;
-    font-size: 1rem;
-    line-height: 1.7;
+    padding: 0 $spacing-lg $spacing-lg;
     color: $color-text-light;
+    line-height: 1.7;
     
-    @include breakpoint-down(md) {
-      padding: 0 1.2rem 1.2rem;
+    p {
+      margin-top: 0;
+    }
+    
+    mark {
+      background-color: rgba($color-primary, 0.15);
+      color: $color-text;
+      padding: 0 2px;
+      border-radius: 2px;
     }
   }
   
+  // Additional help section
   &__more {
-    text-align: center;
-    background-color: $color-white;
-    padding: 2.5rem;
+    position: relative;
+    padding: $spacing-lg;
+    margin-top: $spacing-2xl;
+    
+    @include fade-in;
+    animation-delay: 0.5s;
+  }
+  
+  &__more-content {
+    background: linear-gradient(135deg, $color-gradient-start, $color-gradient-end);
+    padding: $spacing-xl;
     border-radius: $border-radius-lg;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    max-width: 700px;
-    margin: 0 auto;
+    color: $color-white;
+    text-align: center;
+    
+    h3 {
+      font-size: 1.5rem;
+      margin-bottom: $spacing-sm;
+    }
     
     p {
-      font-size: 1.2rem;
-      color: $color-text;
-      margin-bottom: 1.5rem;
-      
-      @include breakpoint-down(md) {
-        font-size: 1.1rem;
-      }
+      margin-bottom: $spacing-lg;
+      opacity: 0.9;
     }
   }
   
   &__buttons {
     display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
     justify-content: center;
-    gap: 1rem;
-    
-    @include breakpoint-down(sm) {
-      flex-direction: column;
-      align-items: center;
-    }
   }
   
   &__button {
-    padding: 0.9rem 1.8rem;
-    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    padding: $spacing-md $spacing-lg;
+    border-radius: $border-radius-full;
     font-weight: 600;
-    border-radius: $border-radius-md;
-    transition: all 0.3s ease;
     text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: $box-shadow-sm;
     
-    &--primary {
-      background: linear-gradient(90deg, $color-primary, $color-secondary);
-      color: $color-white;
-      box-shadow: 0 4px 15px rgba($color-primary, 0.2);
-      
-      &:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba($color-primary, 0.3);
-      }
+    svg {
+      margin-right: $spacing-xs;
     }
     
-    &--secondary {
-      background-color: rgba($color-primary, 0.1);
+    &--primary {
+      background-color: $color-white;
       color: $color-primary;
       
       &:hover {
         transform: translateY(-3px);
-        background-color: rgba($color-primary, 0.15);
+        box-shadow: $box-shadow-md;
+      }
+    }
+    
+    &--secondary {
+      background-color: rgba($color-white, 0.15);
+      color: $color-white;
+      backdrop-filter: blur(10px);
+      
+      &:hover {
+        background-color: rgba($color-white, 0.25);
+        transform: translateY(-3px);
+        box-shadow: $box-shadow-md;
+      }
+    }
+  }
+}
+
+// Animation keyframes
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Media queries
+@include breakpoint-down(md) {
+  .faq {
+    padding: $spacing-2xl 0;
+    
+    &__question {
+      padding: $spacing-md;
+      font-size: 1rem;
+    }
+    
+    &__answer {
+      padding: 0 $spacing-md $spacing-md;
+    }
+    
+    &__buttons {
+      flex-direction: column;
+    }
+  }
+}
+
+@include breakpoint-down(sm) {
+  .faq {
+    &__search {
+      font-size: 0.9rem;
+    }
+    
+    &__more-content {
+      padding: $spacing-md;
+      
+      h3 {
+        font-size: 1.3rem;
       }
     }
   }

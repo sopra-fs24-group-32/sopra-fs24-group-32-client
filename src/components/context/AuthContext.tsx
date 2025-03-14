@@ -43,28 +43,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return;
       }
       
-      console.log('Starting user sync with backend...');
-      console.log('isSignedIn:', isSignedIn);
-      console.log('Clerk user:', user);
-      
       try {
         setIsLoading(true);
         setError(null);
         
-        if (isSignedIn && user) {
-          console.log('User is signed in, attempting to sync with backend');
-          
+        if (isSignedIn && user) {          
           // Try to get existing user data from backend
           try {
-            console.log('Fetching user data from backend for:', user.id);
             const userData = await authService.getUserData(user);
-            console.log('User data retrieved from backend:', userData);
             setBackendUser(userData);
             
             // Update login status
-            console.log('Updating login status with session:', session?.id);
             await authService.loginUser(user, session?.id);
-            console.log('Login status updated successfully');
           } catch (error: any) {
             console.error('Error fetching user data:', error);
             

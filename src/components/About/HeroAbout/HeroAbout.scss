@@ -5,31 +5,36 @@
 .hero-about {
   position: relative;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8rem 0 8rem;
+  padding: $spacing-3xl 0;
+  background: linear-gradient(135deg, lighten($color-gradient-start, 35%), lighten($color-gradient-end, 35%));
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(36, 36, 56, 0.98) 0%, rgba(47, 47, 78, 0.98) 100%);
-  color: $color-white;
-  transition: opacity 0.5s ease-in;
+  transition: opacity 0.6s ease, transform 0.6s ease;
   opacity: 0;
+  transform: translateY(20px);
   
   &--visible {
     opacity: 1;
+    transform: translateY(0);
   }
   
-  @include breakpoint-down(md) {
-    padding: 7rem 0 7rem;
-    min-height: 85vh;
+  // Container layout
+  .container {
+    @include container;
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-xl;
+    
+    @include breakpoint-up(lg) {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      min-height: calc(100vh - 200px);
+    }
   }
   
-  @include breakpoint-down(sm) {
-    min-height: auto;
-    padding: 6rem 0 6rem;
-  }
-  
-  &__bg-shapes {
+  // Animated particles
+  &__particles {
     position: absolute;
     top: 0;
     left: 0;
@@ -39,291 +44,223 @@
     overflow: hidden;
   }
   
-  &__shape {
+  &__particle {
     position: absolute;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    z-index: 1;
+    opacity: 0;
+    animation: floatParticle 15s infinite ease-in-out;
     
     &--1 {
-      width: 300px;
-      height: 300px;
-      background: linear-gradient(45deg, rgba($color-primary, 0.15), rgba($color-secondary, 0.15));
-      top: -100px;
-      left: -100px;
-      filter: blur(20px);
-      animation: float-slow 20s infinite alternate ease-in-out;
+      background-color: rgba($color-primary, 0.3);
+      width: 12px;
+      height: 12px;
     }
     
     &--2 {
-      width: 500px;
-      height: 500px;
-      background: linear-gradient(45deg, rgba($color-secondary, 0.15), rgba($color-accent, 0.15));
-      bottom: -250px;
-      right: -150px;
-      filter: blur(30px);
-      animation: float-slow 25s infinite alternate-reverse ease-in-out;
+      background-color: rgba($color-secondary, 0.3);
+      width: 16px;
+      height: 16px;
     }
     
     &--3 {
-      width: 200px;
-      height: 200px;
-      background: radial-gradient(circle, rgba($color-accent, 0.15), rgba($color-primary, 0.15));
-      top: 20%;
-      right: 15%;
-      filter: blur(15px);
-      animation: float-slow 15s infinite alternate ease-in-out;
+      background-color: rgba($color-accent, 0.3);
+      width: 10px;
+      height: 10px;
     }
     
     &--4 {
-      width: 250px;
-      height: 250px;
-      background: radial-gradient(circle, rgba($color-primary, 0.15), rgba($color-secondary, 0.15));
-      bottom: 20%;
-      left: 10%;
-      filter: blur(20px);
-      animation: float-slow 18s infinite alternate-reverse ease-in-out;
+      background-color: rgba(white, 0.4);
+      width: 6px;
+      height: 6px;
     }
   }
   
-  &__overlay {
+  // Gradient overlay
+  &__gradient-overlay {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 30% 40%, rgba($color-primary, 0.08), transparent 60%),
-                radial-gradient(circle at 70% 60%, rgba($color-secondary, 0.08), transparent 60%);
-    z-index: 1;
-  }
-  
-  .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 50%, rgba($color-gradient-start, 0.05) 0%, rgba($color-gradient-end, 0.1) 100%);
     z-index: 2;
-    
-    @include breakpoint-down(lg) {
-      flex-direction: column;
-      text-align: center;
-    }
   }
   
+  // Content section
   &__content {
-    flex: 1;
-    max-width: 600px;
-    animation: slide-up 1s ease-out forwards;
-    opacity: 0;
-    transform: translateY(30px);
-    animation-delay: 0.3s;
+    padding: $spacing-xl 0;
+    z-index: 10;
     
-    @include breakpoint-down(lg) {
-      max-width: 100%;
-      margin-bottom: 4rem;
+    @include breakpoint-up(lg) {
+      padding-right: $spacing-2xl;
     }
   }
   
+  // Badge
   &__badge {
-    display: inline-block;
-    background: rgba($color-accent, 0.15);
-    color: $color-accent;
-    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    background: rgba($color-white, 0.9);
+    border-radius: $border-radius-full;
+    padding: $spacing-xs $spacing-md;
+    margin-bottom: $spacing-md;
+    box-shadow: $box-shadow-sm;
+    border: 1px solid rgba($color-primary, 0.1);
+    backdrop-filter: blur(4px);
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+  
+  &__badge-text {
+    font-size: 0.875rem;
     font-weight: 600;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    margin-bottom: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba($color-accent, 0.2);
-    transform: translateY(30px);
-    opacity: 0;
-    animation: slide-up 1s ease-out forwards;
-    animation-delay: 0.4s;
+    color: $color-primary;
+    background: linear-gradient(to right, $color-gradient-start, $color-gradient-end);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   
+  // Title
   &__title {
-    font-size: 4.5rem;
-    font-weight: 900;
+    @include heading-1;
+    margin-bottom: $spacing-md;
+    color: $color-text;
     line-height: 1.1;
-    margin-bottom: 1.5rem;
-    color: $color-white;
-    transform: translateY(30px);
-    opacity: 0;
-    animation: slide-up 1s ease-out forwards;
-    animation-delay: 0.5s;
+  }
+  
+  &__title-highlight {
+    display: inline;
+    position: relative;
+    color: $color-primary;
+    font-weight: 800;
     
-    @include breakpoint-down(xl) {
-      font-size: 4rem;
-    }
-    
-    @include breakpoint-down(md) {
-      font-size: 3.5rem;
-    }
-    
-    @include breakpoint-down(sm) {
-      font-size: 2.8rem;
-    }
-    
-    &-highlight {
-      background: linear-gradient(90deg, $color-primary, $color-secondary);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      display: inline-block;
-      position: relative;
-      
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 0.1em;
-        width: 100%;
-        height: 0.1em;
-        background: linear-gradient(90deg, $color-primary, $color-secondary);
-        opacity: 0.3;
-        border-radius: 1rem;
-      }
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0.1em;
+      left: 0;
+      width: 100%;
+      height: 0.2em;
+      background: linear-gradient(to right, rgba($color-gradient-start, 0.2), rgba($color-gradient-end, 0.2));
+      z-index: -1;
+      border-radius: 2px;
     }
   }
   
+  // Subtitle
   &__subtitle {
-    font-size: 1.4rem;
+    font-size: 1.125rem;
     line-height: 1.6;
-    margin-bottom: 2.5rem;
-    color: rgba($color-white, 0.85);
-    transform: translateY(30px);
-    opacity: 0;
-    animation: slide-up 1s ease-out forwards;
-    animation-delay: 0.6s;
+    color: $color-text-light;
+    margin-bottom: $spacing-xl;
+    max-width: 540px;
     
-    @include breakpoint-down(md) {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-    }
-    
-    @include breakpoint-down(sm) {
-      font-size: 1.1rem;
+    @include breakpoint-up(md) {
+      font-size: 1.25rem;
     }
   }
   
+  // Features
   &__features {
-    display: flex;
-    gap: 2rem;
-    margin-bottom: 2.5rem;
-    transform: translateY(30px);
-    opacity: 0;
-    animation: slide-up 1s ease-out forwards;
-    animation-delay: 0.7s;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xl;
     
-    @include breakpoint-down(lg) {
-      justify-content: center;
+    @include breakpoint-up(sm) {
+      grid-template-columns: repeat(2, 1fr);
     }
     
-    @include breakpoint-down(sm) {
-      flex-direction: column;
-      gap: 1rem;
-      align-items: center;
+    @include breakpoint-up(md) {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
   
   &__feature {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.8rem;
+    text-align: center;
+    background: rgba($color-white, 0.7);
+    padding: $spacing-md;
+    border-radius: $border-radius;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba($color-primary, 0.08);
+    
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: $box-shadow-md;
+      
+      .hero-about__feature-icon-inner {
+        transform: scale(1.1) rotate(5deg);
+      }
+    }
   }
   
-  &__feature-icon {
+  &__feature-icon-inner {
+    width: 64px;
+    height: 64px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba($color-white, 0.1);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba($color-white, 0.15);
-    font-size: 1.2rem;
-    flex-shrink: 0;
+    background: linear-gradient(135deg, $color-gradient-start, $color-gradient-end);
+    border-radius: $border-radius;
+    font-size: 1.8rem;
+    color: $color-white;
+    box-shadow: $box-shadow-sm;
+    margin-bottom: $spacing-md;
+    transition: transform 0.3s ease;
   }
   
-  &__feature-text {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: rgba($color-white, 0.85);
+  &__feature-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: $spacing-xs;
+    color: $color-text;
   }
   
+  &__feature-description {
+    font-size: 0.875rem;
+    color: $color-text-light;
+    line-height: 1.4;
+  }
+  
+  // Buttons
   &__buttons {
     display: flex;
-    gap: 1rem;
-    transform: translateY(30px);
-    opacity: 0;
-    animation: slide-up 1s ease-out forwards;
-    animation-delay: 0.8s;
-    
-    @include breakpoint-down(lg) {
-      justify-content: center;
-    }
-    
-    @include breakpoint-down(sm) {
-      flex-direction: column;
-      gap: 0.8rem;
-    }
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    margin-bottom: $spacing-xl;
   }
   
   &__button {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-    text-decoration: none;
+    @include button-base;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    
-    @include breakpoint-down(md) {
-      padding: 0.9rem 1.8rem;
-      font-size: 1rem;
-    }
-    
-    &::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: rgba(255, 255, 255, 0.1);
-      transform: rotate(45deg);
-      z-index: 1;
-      opacity: 0;
-      transition: opacity 0.5s ease;
-    }
-    
-    &-arrow {
-      margin-left: 0.5rem;
-      transition: transform 0.3s ease;
-    }
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
     
     &--primary {
-      background: linear-gradient(90deg, $color-primary, $color-secondary);
+      padding: $spacing-sm $spacing-xl;
+      background: linear-gradient(135deg, $color-gradient-start, $color-gradient-end);
       color: $color-white;
-      box-shadow: 0 4px 20px rgba($color-primary, 0.4);
+      border-radius: $border-radius-full;
+      box-shadow: 0 4px 16px rgba($color-gradient-start, 0.4);
       
-      &:hover {
+      &:hover, &:focus {
         transform: translateY(-3px);
-        box-shadow: 0 6px 25px rgba($color-primary, 0.6);
-        
-        .hero-about__button-arrow {
-          transform: translateX(5px);
-        }
-        
-        &::before {
-          opacity: 1;
-          animation: shine 1.5s ease-in-out;
-        }
+        box-shadow: 0 6px 20px rgba($color-gradient-start, 0.5);
       }
       
       &:active {
@@ -332,19 +269,16 @@
     }
     
     &--secondary {
-      background-color: rgba($color-white, 0.05);
-      color: $color-white;
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba($color-white, 0.15);
+      padding: $spacing-sm $spacing-xl;
+      background-color: rgba($color-white, 0.8);
+      color: $color-text;
+      border-radius: $border-radius-full;
+      border: 1px solid rgba($color-primary, 0.1);
       
-      &:hover {
+      &:hover, &:focus {
+        background-color: rgba($color-white, 1);
         transform: translateY(-3px);
-        background-color: rgba($color-white, 0.1);
-        
-        &::before {
-          opacity: 1;
-          animation: shine 1.5s ease-in-out;
-        }
+        box-shadow: $box-shadow-sm;
       }
       
       &:active {
@@ -353,209 +287,254 @@
     }
   }
   
-  &__visual {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    transform: translateY(30px);
-    opacity: 0;
-    animation: slide-up 1s ease-out forwards;
-    animation-delay: 0.9s;
+  &__button-text {
+    margin-right: $spacing-xs;
+  }
+  
+  &__button-icon {
+    transition: transform 0.3s ease;
     
-    @include breakpoint-up(md) {
-      justify-content: flex-end;
+    .hero-about__button:hover & {
+      transform: translateX(4px);
     }
+  }
+  
+  // Visual section
+  &__visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
   }
   
   &__image-container {
     position: relative;
     width: 100%;
-    max-width: 550px;
+    max-width: 540px;
+    margin: 0 auto;
+    perspective: 1000px;
+  }
+  
+  &__3d-card {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+  
+  &__3d-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: $spacing-md;
+    transform: rotateY(0) rotateX(0);
+    transition: transform 0.4s ease;
     
-    @include breakpoint-down(sm) {
-      max-width: 320px;
+    &:hover {
+      transform: rotateY(-5deg) rotateX(5deg);
+      
+      .hero-about__image-glow {
+        opacity: 0.8;
+      }
+      
+      .hero-about__decoration {
+        transform: translateZ(30px);
+      }
     }
   }
   
   &__image-frame {
     position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 20px;
-    border: 2px solid rgba($color-white, 0.15);
-    top: 20px;
-    left: 20px;
-    z-index: 0;
-  }
-  
-  &__decoration {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    background: rgba($color-white, 0.1);
-    backdrop-filter: blur(15px);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    animation: float 6s ease-in-out infinite;
-    z-index: 4;
-    border: 1px solid rgba($color-white, 0.15);
-    
-    @include breakpoint-down(sm) {
-      width: 50px;
-      height: 50px;
-      font-size: 1.8rem;
-    }
-    
-    &--1 {
-      top: 5%;
-      left: -5%;
-      animation-delay: 0s;
-    }
-    
-    &--2 {
-      top: 20%;
-      right: -5%;
-      animation-delay: 1s;
-    }
-    
-    &--3 {
-      bottom: 10%;
-      left: 10%;
-      animation-delay: 2s;
-    }
-  }
-  
-  &__emoji {
-    animation: pulse 3s ease-in-out infinite;
-  }
-  
-  &__image-wrapper {
-    position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-    background: rgba($color-white, 0.05);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba($color-white, 0.15);
-    z-index: 2;
-    transform: perspective(1000px) rotateY(-5deg);
-    transition: all 0.5s ease;
-    
-    &:hover {
-      transform: perspective(1000px) rotateY(0deg);
-    }
-  }
-  
-  &__image {
-    display: block;
-    width: 100%;
-    height: auto;
-    z-index: 1;
-    position: relative;
-    transition: transform 0.5s ease;
-    
-    &:hover {
-      transform: scale(1.03);
-    }
-  }
-  
-  &__image-overlay {
-    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba($color-primary, 0.2), rgba($color-secondary, 0.2));
-    z-index: 3;
-    opacity: 0.6;
-    transition: opacity 0.3s ease;
+    border-radius: $border-radius-lg;
+    background: rgba($color-white, 0.8);
+    backdrop-filter: blur(10px);
+    box-shadow: 
+      0 10px 30px rgba(0, 0, 0, 0.1),
+      0 1px 8px rgba(0, 0, 0, 0.05),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba($color-primary, 0.1);
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+  &__decoration {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background: $color-white;
+    border-radius: 50%;
+    box-shadow: $box-shadow-md;
+    z-index: 10;
+    transition: transform 0.5s ease;
     
-    &:hover {
-      opacity: 0.4;
+    &--1 {
+      top: -15px;
+      right: 30px;
+      transform: translateZ(10px);
+      background: linear-gradient(135deg, lighten($color-gradient-start, 10%), lighten($color-gradient-end, 10%));
+    }
+    
+    &--2 {
+      bottom: 30px;
+      left: -15px;
+      transform: translateZ(15px);
+      background: $color-white;
+    }
+    
+    &--3 {
+      top: 40%;
+      right: -15px;
+      transform: translateZ(20px);
+      background: $color-white;
     }
   }
   
-  &__scroll-down {
+  &__emoji {
+    font-size: 1.5rem;
+    display: block;
+    
+    &--animated {
+      animation: pulse 2s infinite;
+    }
+  }
+  
+  &__image-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    transform: translateZ(10px);
+    z-index: 2;
+  }
+  
+  &__image-glow {
     position: absolute;
-    bottom: 2rem;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba($color-primary, 0.3) 0%, rgba($color-primary, 0) 70%);
+    transform: translateZ(5px);
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+  
+  &__image {
+    position: relative;
+    width: 100%;
+    border-radius: calc($border-radius-lg - 2px);
+    transform: translateZ(15px);
+    z-index: 3;
+  }
+  
+  &__image-reflection {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.2));
+    transform: rotateX(180deg);
+    opacity: 0.4;
+    z-index: 2;
+  }
+  
+  // Scroll indicator
+  &__scroll-indicator {
+    position: absolute;
+    bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10;
-    opacity: 0;
-    animation: fade-in 1s ease-out forwards;
-    animation-delay: 1.5s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 20;
     
     a {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background-color: rgba($color-white, 0.05);
-      backdrop-filter: blur(15px);
-      border: 1px solid rgba($color-white, 0.15);
-      color: $color-white;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      animation: bob 2s ease-in-out infinite;
-      transition: all 0.3s ease;
+      color: $color-text-light;
+      text-decoration: none;
+      transition: transform 0.3s ease, color 0.3s ease;
       
       &:hover {
+        color: $color-primary;
         transform: translateY(-3px);
-        background-color: rgba($color-white, 0.1);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        
+        .hero-about__scroll-icon {
+          border-color: $color-primary;
+          background: rgba($color-white, 0.9);
+        }
       }
     }
   }
   
+  &__scroll-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: $spacing-xs;
+    border-radius: 50%;
+    border: 1px solid rgba($color-text-light, 0.3);
+    background: rgba($color-white, 0.7);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    animation: bounce 2s infinite;
+  }
+  
+  &__scroll-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  // Wave separator
   &__wave {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    overflow: hidden;
+    z-index: 5;
     line-height: 0;
-    z-index: 2;
     
     svg {
-      position: relative;
-      display: block;
-      width: calc(100% + 1.3px);
-      height: 80px;
+      width: 100%;
+      height: 70px;
       
-      @include breakpoint-up(lg) {
-        height: 120px;
-      }
-      
-      path {
-        fill: $color-background;
+      @include breakpoint-up(md) {
+        height: 100px;
       }
     }
   }
 }
 
-@keyframes float {
+// Animations
+@keyframes floatParticle {
   0% {
-    transform: translateY(0);
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
   }
-  50% {
-    transform: translateY(-10px);
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
   }
   100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes float-slow {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(20px, 20px);
+    transform: translateY(-100px) translateX(100px) scale(1.5);
+    opacity: 0;
   }
 }
 
@@ -571,48 +550,14 @@
   }
 }
 
-@keyframes bob {
-  0% {
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
     transform: translateY(0);
   }
-  50% {
-    transform: translateY(-8px);
+  40% {
+    transform: translateY(-10px);
   }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes shine {
-  0% {
-    opacity: 0;
-    transform: translateX(-100%) rotate(45deg);
-  }
-  20% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(100%) rotate(45deg);
+  60% {
+    transform: translateY(-5px);
   }
 }
